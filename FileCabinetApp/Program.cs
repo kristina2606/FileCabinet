@@ -1,4 +1,10 @@
-﻿namespace FileCabinetApp
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Text.RegularExpressions;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+
+namespace FileCabinetApp
 {
     public static class Program
     {
@@ -9,17 +15,24 @@
         private const int ExplanationHelpIndex = 2;
 
         private static bool isRunning = true;
+        private static FileCabinetService fileCabinetService = new FileCabinetService();
 
         private static Tuple<string, Action<string>>[] commands = new Tuple<string, Action<string>>[]
         {
             new Tuple<string, Action<string>>("help", PrintHelp),
             new Tuple<string, Action<string>>("exit", Exit),
+            new Tuple<string, Action<string>>("stat", Stat),
+            new Tuple<string, Action<string>>("create", Create),
+            new Tuple<string, Action<string>>("list", List),
         };
 
         private static string[][] helpMessages = new string[][]
         {
             new string[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
+            new string[] { "stat", "displays statistics on records", "The 'stat' displays statistics on records." },
+            new string[] { "create", "creat data", "The 'create' creat data." },
+            new string[] { "list", "returns a list of records added to the service.", "The 'list' returns a list of records added to the service.." },
         };
 
         public static void Main(string[] args)
@@ -94,6 +107,77 @@
         {
             Console.WriteLine("Exiting an application...");
             isRunning = false;
+        }
+
+        private static void Stat(string parameters)
+        {
+            var recordsCount = Program.fileCabinetService.GetStat();
+            Console.WriteLine($"{recordsCount} record(s).");
+        }
+
+        private static void Create(string parameters)
+        {
+            Console.Write("First name: ");
+            var name = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentNullException(name);
+            }
+
+            Console.Write("Last name: ");
+            var lastName = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(lastName))
+            {
+                throw new ArgumentNullException(lastName);
+            }
+
+            Console.Write("Date of birth: ");
+            var culture = CultureInfo.InvariantCulture;
+            var styles = DateTimeStyles.None;
+            if (!DateTime.TryParseExact(Console.ReadLine(), "dd/MM/yyyy", culture, styles, out DateTime dateOfBitrh))
+            {
+                throw new ArgumentException("date entered in wrong format.");
+            }
+
+            Console.Write("Gender (m or f): ");
+            if (!char.TryParse(Console.ReadLine(), out char gender))
+            {
+                throw new ArgumentException("gender is entered in the wrong format.");
+            }
+
+            Console.Write("Height ");
+            if (!short.TryParse(Console.ReadLine(), culture, out short height))
+            {
+                throw new ArgumentException("height is entered in the wrong format.");
+            }
+
+            Console.Write("Weight: ");
+            if (!decimal.TryParse(Console.ReadLine(), culture, out decimal weight))
+            {
+                throw new ArgumentException("weight is entered in the wrong format.");
+            }
+
+            var recordId = Program.fileCabinetService.CreateRecord(name, lastName, dateOfBitrh, gender, height, weight);
+
+            Console.WriteLine($"Record #{recordId} is created.");
+        }
+
+        private static void List(string parameters)
+        {
+            var list = Program.fileCabinetService.GetRecords();
+
+            foreach (var record in list)
+            {
+                var id = record.Id;
+                var firstName = record.FirstName;
+                var lastName = record.LastName;
+                var dateOfBirth = record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture);
+                var gender = record.Gender;
+                var height = record.Height;
+                var weight = record.Weight;
+
+                Console.WriteLine($"#{id}, {firstName}, {lastName}, {dateOfBirth}, {gender}, {height}, {weight}");
+            }
         }
     }
 }

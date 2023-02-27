@@ -1,4 +1,9 @@
-﻿namespace FileCabinetApp
+﻿using System.Collections.Generic;
+using System.Globalization;
+using System.Text.RegularExpressions;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+
+namespace FileCabinetApp
 {
     public static class Program
     {
@@ -16,6 +21,7 @@
             new Tuple<string, Action<string>>("help", PrintHelp),
             new Tuple<string, Action<string>>("exit", Exit),
             new Tuple<string, Action<string>>("stat", Stat),
+            new Tuple<string, Action<string>>("create", Create),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -23,6 +29,7 @@
             new string[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
             new string[] { "stat", "displays statistics on records", "The 'stat' displays statistics on records." },
+            new string[] { "create", "creat data", "The 'create' creat data." },
         };
 
         public static void Main(string[] args)
@@ -103,6 +110,32 @@
         {
             var recordsCount = Program.fileCabinetService.GetStat();
             Console.WriteLine($"{recordsCount} record(s).");
+        }
+
+        private static void Create(string parameters)
+        {
+            Console.Write("First name: ");
+            var name = Console.ReadLine();
+            if (name is null)
+            {
+                throw new ArgumentNullException(name);
+            }
+
+            Console.Write("Last name: ");
+            var lastName = Console.ReadLine();
+            if (lastName is null)
+            {
+                throw new ArgumentNullException(lastName);
+            }
+
+            Console.Write("Date of birth: ");
+            var culture = CultureInfo.InvariantCulture;
+            var styles = DateTimeStyles.None;
+            _ = DateTime.TryParseExact(Console.ReadLine(), "dd/MM/yyyy", culture, styles, out DateTime dateOfBitrh);
+
+            var create = fileCabinetService.CreateRecord(name, lastName, dateOfBitrh);
+
+            Console.WriteLine($"Record #{create} is created.");
         }
     }
 }

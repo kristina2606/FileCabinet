@@ -1,3 +1,5 @@
+using System;
+
 namespace FileCabinetApp
 {
     public class FileCabinetRecord
@@ -12,8 +14,8 @@ namespace FileCabinetApp
 
         public char Gender { get; set; }
 
-        public uint PhoneNumber { get; set; }
+        public short Height { get; set; }
 
-        public decimal Height { get; set; }        
+        public decimal Weight { get; set; }
     }
 }

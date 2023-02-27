@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -118,14 +119,14 @@ namespace FileCabinetApp
         {
             Console.Write("First name: ");
             var name = Console.ReadLine();
-            if (name is null)
+            if (string.IsNullOrWhiteSpace(name))
             {
                 throw new ArgumentNullException(name);
             }
 
             Console.Write("Last name: ");
             var lastName = Console.ReadLine();
-            if (lastName is null)
+            if (string.IsNullOrWhiteSpace(lastName))
             {
                 throw new ArgumentNullException(lastName);
             }
@@ -133,40 +134,54 @@ namespace FileCabinetApp
             Console.Write("Date of birth: ");
             var culture = CultureInfo.InvariantCulture;
             var styles = DateTimeStyles.None;
-            _ = DateTime.TryParseExact(Console.ReadLine(), "dd/MM/yyyy", culture, styles, out DateTime dateOfBitrh);
-
-            Console.Write("Gender (m or f): ");
-            _ = char.TryParse(Console.ReadLine(), out char gender);
-            if (gender != 'f' || gender != 'm')
+            if (!DateTime.TryParseExact(Console.ReadLine(), "dd/MM/yyyy", culture, styles, out DateTime dateOfBitrh))
             {
-                throw new ArgumentException("wrong gender");
+                throw new ArgumentException("date entered in wrong format.");
             }
 
-            Console.Write("Phone number: ");
-            _ = uint.TryParse(Console.ReadLine(), culture, out uint phoneNumber);
+            Console.Write("Gender (m or f): ");
+            if (!char.TryParse(Console.ReadLine(), out char gender))
+            {
+                throw new ArgumentException("gender is entered in the wrong format.");
+            }
 
-            Console.Write("Height: ");
-            _ = decimal.TryParse(Console.ReadLine(), culture, out decimal height);
+            //if (gender != 'f' || gender != 'm')
+            //{
+            //    throw new ArgumentException("wrong gender");
+            //}
 
-            var create = Program.fileCabinetService.CreateRecord(name, lastName, dateOfBitrh, gender, phoneNumber, height);
+            Console.Write("Height ");
+            if (!short.TryParse(Console.ReadLine(), culture, out short height))
+            {
+                throw new ArgumentException("height is entered in the wrong format.");
+            }
 
-            Console.WriteLine($"Record #{create} is created.");
+            Console.Write("Weight: ");
+            if (!decimal.TryParse(Console.ReadLine(), culture, out decimal weight))
+            {
+                throw new ArgumentException("weight is entered in the wrong format.");
+            }
+
+            var recordId = Program.fileCabinetService.CreateRecord(name, lastName, dateOfBitrh, gender, height, weight);
+
+            Console.WriteLine($"Record #{recordId} is created.");
         }
 
         private static void List(string parameters)
         {
             var list = Program.fileCabinetService.GetRecords();
 
-            for (var i = 0; i < list.Length; i++)
+            foreach (var record in list)
             {
-                var firstName = list[i].FirstName;
-                var lastName = list[i].LastName;
-                var dateOfBirth = list[i].DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture);
-                var gender = list[i].Gender;
-                var phoneNumber = list[i].PhoneNumber;
-                var height = list[i].Height;
+                var id = record.Id;
+                var firstName = record.FirstName;
+                var lastName = record.LastName;
+                var dateOfBirth = record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture);
+                var gender = record.Gender;
+                var height = record.Height;
+                var weight = record.Weight;
 
-                Console.WriteLine($"#{i + 1}, {firstName}, {lastName}, {dateOfBirth}, {gender}, {phoneNumber}, {height}");
+                Console.WriteLine($"#{id}, {firstName}, {lastName}, {dateOfBirth}, {gender}, {height}, {weight}");
             }
         }
     }

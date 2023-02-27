@@ -1,10 +1,13 @@
+using System;
+using System.Collections.Generic;
+
 namespace FileCabinetApp
 {
     public class FileCabinetService
     {
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
 
-        public int CreateRecord(string firstName, string lastName, DateTime dateOfBirth, char gender, uint phoneNumber, decimal height)
+        public int CreateRecord(string firstName, string lastName, DateTime dateOfBirth, char gender, short height, decimal weight)
         {
             var record = new FileCabinetRecord
             {
@@ -13,8 +16,8 @@ namespace FileCabinetApp
                 LastName = lastName,
                 DateOfBirth = dateOfBirth,
                 Gender = gender,
-                PhoneNumber = phoneNumber,
                 Height = height,
+                Weight = weight,
             };
 
             this.list.Add(record);
@@ -24,9 +27,7 @@ namespace FileCabinetApp
 
         public FileCabinetRecord[] GetRecords()
         {
-            var copyOfTheList = this.list.ToArray();
-
-            return copyOfTheList;
+            return this.list.ToArray();
         }
 
         public int GetStat()

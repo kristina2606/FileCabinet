@@ -145,11 +145,6 @@ namespace FileCabinetApp
                 throw new ArgumentException("gender is entered in the wrong format.");
             }
 
-            //if (gender != 'f' || gender != 'm')
-            //{
-            //    throw new ArgumentException("wrong gender");
-            //}
-
             Console.Write("Height ");
             if (!short.TryParse(Console.ReadLine(), culture, out short height))
             {

@@ -9,5 +9,11 @@ namespace FileCabinetApp
         public string LastName { get; set; }
 
         public DateTime DateOfBirth { get; set; }
+
+        public char Gender { get; set; }
+
+        public uint PhoneNumber { get; set; }
+
+        public decimal Height { get; set; }        
     }
 }

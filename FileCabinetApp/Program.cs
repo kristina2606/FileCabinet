@@ -135,7 +135,20 @@ namespace FileCabinetApp
             var styles = DateTimeStyles.None;
             _ = DateTime.TryParseExact(Console.ReadLine(), "dd/MM/yyyy", culture, styles, out DateTime dateOfBitrh);
 
-            var create = Program.fileCabinetService.CreateRecord(name, lastName, dateOfBitrh);
+            Console.Write("Gender (m or f): ");
+            _ = char.TryParse(Console.ReadLine(), out char gender);
+            if (gender != 'f' || gender != 'm')
+            {
+                throw new ArgumentException("wrong gender");
+            }
+
+            Console.Write("Phone number: ");
+            _ = uint.TryParse(Console.ReadLine(), culture, out uint phoneNumber);
+
+            Console.Write("Height: ");
+            _ = decimal.TryParse(Console.ReadLine(), culture, out decimal height);
+
+            var create = Program.fileCabinetService.CreateRecord(name, lastName, dateOfBitrh, gender, phoneNumber, height);
 
             Console.WriteLine($"Record #{create} is created.");
         }
@@ -149,8 +162,11 @@ namespace FileCabinetApp
                 var firstName = list[i].FirstName;
                 var lastName = list[i].LastName;
                 var dateOfBirth = list[i].DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture);
+                var gender = list[i].Gender;
+                var phoneNumber = list[i].PhoneNumber;
+                var height = list[i].Height;
 
-                Console.WriteLine($"#{i + 1}, {firstName}, {lastName}, {dateOfBirth}");
+                Console.WriteLine($"#{i + 1}, {firstName}, {lastName}, {dateOfBirth}, {gender}, {phoneNumber}, {height}");
             }
         }
     }

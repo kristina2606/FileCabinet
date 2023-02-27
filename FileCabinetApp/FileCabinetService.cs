@@ -4,15 +4,17 @@ namespace FileCabinetApp
     {
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
 
-        public int CreateRecord(string firstName, string lastName, DateTime dateOfBirth)
+        public int CreateRecord(string firstName, string lastName, DateTime dateOfBirth, char gender, uint phoneNumber, decimal height)
         {
-            // TODO: добавьте реализацию метода
             var record = new FileCabinetRecord
             {
                 Id = this.list.Count + 1,
                 FirstName = firstName,
                 LastName = lastName,
                 DateOfBirth = dateOfBirth,
+                Gender = gender,
+                PhoneNumber = phoneNumber,
+                Height = height,
             };
 
             this.list.Add(record);
@@ -22,7 +24,6 @@ namespace FileCabinetApp
 
         public FileCabinetRecord[] GetRecords()
         {
-            // TODO: добавьте реализацию метода
             var copyOfTheList = this.list.ToArray();
 
             return copyOfTheList;
@@ -30,7 +31,6 @@ namespace FileCabinetApp
 
         public int GetStat()
         {
-            // TODO: добавьте реализацию метода
             return this.list.Count;
         }
     }

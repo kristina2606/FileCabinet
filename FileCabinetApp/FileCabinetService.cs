@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 
@@ -79,37 +80,26 @@ namespace FileCabinetApp
 
         public void EditRecord(int id, string firstName, string lastName, DateTime dateOfBirth, char gender, short height, decimal weight)
         {
-            foreach (var record in this.list)
-            {
-                if (record.Id == id)
-                {
-                    record.FirstName = firstName;
-                    record.LastName = lastName;
-                    record.DateOfBirth = dateOfBirth;
-                    record.Gender = gender;
-                    record.Height = height;
-                    record.Weight = weight;
-                    break;
-                }
-            }
-        }
+            var result = this.list.FirstOrDefault(x => x.Id == id);
 
-        public void ChekId(int id)
-        {
-            var isNoRecord = true;
-            foreach (var record in this.list)
-            {
-                if (record.Id == id)
-                {
-                    isNoRecord = false;
-                    break;
-                }
-            }
-
-            if (isNoRecord)
+            if (result is null)
             {
                 throw new ArgumentException("records with the specified ID do not exist.");
             }
+
+            result.FirstName = firstName;
+            result.LastName = lastName;
+            result.DateOfBirth = dateOfBirth;
+            result.Gender = gender;
+            result.Height = height;
+            result.Weight = weight;
+        }
+
+        public bool IsExist(int id)
+        {
+            var result = this.list.FirstOrDefault(x => x.Id == id);
+
+            return result is null;
         }
     }
 }

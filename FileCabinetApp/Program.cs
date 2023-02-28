@@ -149,24 +149,23 @@ namespace FileCabinetApp
         private static void Edit(string parameters)
         {
             Console.Write("Enter the record number for editing: ");
-            var id_ = Console.ReadLine();
+            var inputId = Console.ReadLine();
             int id;
-            while (!int.TryParse(id_, out id))
+            while (!int.TryParse(inputId, out id))
             {
                 Console.WriteLine("You introduced an incorrect ID. Repeat the input.");
-                Console.Write("> edit");
-                id_ = Console.ReadLine();
+                Console.Write("Enter the record number for editing: ");
+                inputId = Console.ReadLine();
             }
 
-            try
+            if (!Program.fileCabinetService.IsExist(id))
             {
-                Program.fileCabinetService.ChekId(id);
                 ReadInput(out string firstName, out string lastName, out DateTime dateOfBirth, out char gender, out short height, out decimal weight);
                 Program.fileCabinetService.EditRecord(id, firstName, lastName, dateOfBirth, gender, height, weight);
 
                 Console.WriteLine($"Record #{id} is updated.");
             }
-            catch
+            else
             {
                 Console.WriteLine($"#{id} record is not found.");
             }
@@ -218,37 +217,37 @@ namespace FileCabinetApp
             }
 
             Console.Write("Gender (man - 'm' or woman - 'f'): ");
-            var gender_ = Console.ReadLine();
-            while (!IsStringCorrect(gender_))
+            var inputGender = Console.ReadLine();
+            while (!IsStringCorrect(inputGender))
             {
                 Console.WriteLine("The gender contains not only letters. Repeat the input.");
                 Console.Write("Gender (man - 'm' or woman - 'f'): ");
-                gender_ = Console.ReadLine();
+                inputGender = Console.ReadLine();
             }
 
-            while (!char.TryParse(gender_, out gender))
+            while (!char.TryParse(inputGender, out gender))
             {
                 Console.WriteLine("The gender length is not equal to one. Repeat the input.");
                 Console.Write("Gender (man - 'm' or woman - 'f'): ");
-                gender_ = Console.ReadLine();
+                inputGender = Console.ReadLine();
             }
 
             Console.Write("Height: ");
-            var height_ = Console.ReadLine();
-            while (!short.TryParse(height_, culture, out height))
+            var inputHeight = Console.ReadLine();
+            while (!short.TryParse(inputHeight, culture, out height))
             {
                 Console.WriteLine("Height is entered in the wrong format. Repeat the input.");
                 Console.Write("Height: ");
-                height_ = Console.ReadLine();
+                inputHeight = Console.ReadLine();
             }
 
             Console.Write("Weight: ");
-            var weight_ = Console.ReadLine();
-            while (!decimal.TryParse(weight_, culture, out weight))
+            var inputWeight = Console.ReadLine();
+            while (!decimal.TryParse(inputWeight, culture, out weight))
             {
                 Console.WriteLine("Weight is entered in the wrong format. Repeat the input.");
                 Console.Write("Weight: ");
-                weight_ = Console.ReadLine();
+                inputWeight = Console.ReadLine();
             }
         }
     }

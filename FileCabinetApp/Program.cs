@@ -150,9 +150,16 @@ namespace FileCabinetApp
             Console.Write("Gender (man - 'm' or woman - 'f'): ");
             var gender_ = Console.ReadLine();
             char gender;
-            while (!IsStringCorrect(gender_) && !char.TryParse(gender_, out gender))
+            while (!IsStringCorrect(gender_))
             {
-                Console.WriteLine("The gender contains not only letters or the length is not equal to one. Repeat the input.");
+                Console.WriteLine("The gender contains not only letters. Repeat the input.");
+                Console.Write("Gender (man - 'm' or woman - 'f'): ");
+                gender_ = Console.ReadLine();
+            }
+
+            while (!char.TryParse(gender_, out gender))
+            {
+                Console.WriteLine("The gender length is not equal to one. Repeat the input.");
                 Console.Write("Gender (man - 'm' or woman - 'f'): ");
                 gender_ = Console.ReadLine();
             }

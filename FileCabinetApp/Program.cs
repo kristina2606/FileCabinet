@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Xml.Linq;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FileCabinetApp
@@ -24,6 +26,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("stat", Stat),
             new Tuple<string, Action<string>>("create", Create),
             new Tuple<string, Action<string>>("list", List),
+            new Tuple<string, Action<string>>("edit", Edit),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -31,8 +34,9 @@ namespace FileCabinetApp
             new string[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
             new string[] { "stat", "displays statistics on records", "The 'stat' displays statistics on records." },
-            new string[] { "create", "creat data", "The 'create' creat data." },
-            new string[] { "list", "returns a list of records added to the service.", "The 'list' returns a list of records added to the service.." },
+            new string[] { "create", "creat new record", "The 'create' creat new record." },
+            new string[] { "list", "returns a list of records added to the service.", "The 'list' returns a list of records added to the service." },
+            new string[] { "edit", "editing a record by id.", "The 'edit' editing a record by id." },
         };
 
         public static void Main(string[] args)
@@ -117,74 +121,9 @@ namespace FileCabinetApp
 
         private static void Create(string parameters)
         {
-            var culture = CultureInfo.InvariantCulture;
+            ReadInput(out string firstName, out string lastName, out DateTime dateOfBirth, out char gender, out short height, out decimal weight);
 
-            Console.Write("First name: ");
-            var name = Console.ReadLine();
-            while (!IsStringCorrect(name))
-            {
-                Console.WriteLine("Your first name contains not only letters. Repeat the input.");
-                Console.Write("First name: ");
-                name = Console.ReadLine();
-            }
-
-            Console.Write("Last name: ");
-            var lastName = Console.ReadLine();
-            while (!IsStringCorrect(lastName))
-            {
-                Console.WriteLine("Your last name contains not only letters. Repeat the input.");
-                Console.Write("Last name: ");
-                lastName = Console.ReadLine();
-            }
-
-            Console.Write("Date of birth: ");
-            var date = Console.ReadLine();
-            DateTime dateOfBitrh;
-            while (!DateTime.TryParseExact(date, "dd/MM/yyyy", culture, DateTimeStyles.None, out dateOfBitrh))
-            {
-                Console.WriteLine("You introduced the date in the wrong format. Repeat the input of the date in the format 'dd/MM/yyyy'.");
-                Console.Write("Date of birth: ");
-                date = Console.ReadLine();
-            }
-
-            Console.Write("Gender (man - 'm' or woman - 'f'): ");
-            var gender_ = Console.ReadLine();
-            char gender;
-            while (!IsStringCorrect(gender_))
-            {
-                Console.WriteLine("The gender contains not only letters. Repeat the input.");
-                Console.Write("Gender (man - 'm' or woman - 'f'): ");
-                gender_ = Console.ReadLine();
-            }
-
-            while (!char.TryParse(gender_, out gender))
-            {
-                Console.WriteLine("The gender length is not equal to one. Repeat the input.");
-                Console.Write("Gender (man - 'm' or woman - 'f'): ");
-                gender_ = Console.ReadLine();
-            }
-
-            Console.Write("Height: ");
-            var height_ = Console.ReadLine();
-            short height;
-            while (!short.TryParse(height_, culture, out height))
-            {
-                Console.WriteLine("Height is entered in the wrong format. Repeat the input.");
-                Console.Write("Height: ");
-                height_ = Console.ReadLine();
-            }
-
-            Console.Write("Weight: ");
-            var weight_ = Console.ReadLine();
-            decimal weight;
-            while (!decimal.TryParse(weight_, culture, out weight))
-            {
-                Console.WriteLine("Weight is entered in the wrong format. Repeat the input.");
-                Console.Write("Weight: ");
-                weight_ = Console.ReadLine();
-            }
-
-            var recordId = Program.fileCabinetService.CreateRecord(name, lastName, dateOfBitrh, gender, height, weight);
+            var recordId = Program.fileCabinetService.CreateRecord(firstName, lastName, dateOfBirth, gender, height, weight);
 
             Console.WriteLine($"Record #{recordId} is created.");
         }
@@ -207,6 +146,32 @@ namespace FileCabinetApp
             }
         }
 
+        private static void Edit(string parameters)
+        {
+            Console.Write("Enter the record number for editing: ");
+            var id_ = Console.ReadLine();
+            int id;
+            while (!int.TryParse(id_, out id))
+            {
+                Console.WriteLine("You introduced an incorrect ID. Repeat the input.");
+                Console.Write("> edit");
+                id_ = Console.ReadLine();
+            }
+
+            try
+            {
+                Program.fileCabinetService.ChekId(id);
+                ReadInput(out string firstName, out string lastName, out DateTime dateOfBirth, out char gender, out short height, out decimal weight);
+                Program.fileCabinetService.EditRecord(id, firstName, lastName, dateOfBirth, gender, height, weight);
+
+                Console.WriteLine($"Record #{id} is updated.");
+            }
+            catch
+            {
+                Console.WriteLine($"#{id} record is not found.");
+            }
+        }
+
         private static bool IsStringCorrect(string name)
         {
             var result = true;
@@ -219,6 +184,72 @@ namespace FileCabinetApp
             }
 
             return result;
+        }
+
+        private static void ReadInput(out string firstName, out string lastName, out DateTime dateOfBirth, out char gender, out short height, out decimal weight)
+        {
+            var culture = CultureInfo.InvariantCulture;
+
+            Console.Write("First name: ");
+            firstName = Console.ReadLine();
+            while (!IsStringCorrect(firstName))
+            {
+                Console.WriteLine("Your first name contains not only letters. Repeat the input.");
+                Console.Write("First name: ");
+                firstName = Console.ReadLine();
+            }
+
+            Console.Write("Last name: ");
+            lastName = Console.ReadLine();
+            while (!IsStringCorrect(lastName))
+            {
+                Console.WriteLine("Your last name contains not only letters. Repeat the input.");
+                Console.Write("Last name: ");
+                lastName = Console.ReadLine();
+            }
+
+            Console.Write("Date of birth: ");
+            var date = Console.ReadLine();
+            while (!DateTime.TryParseExact(date, "dd/MM/yyyy", culture, DateTimeStyles.None, out dateOfBirth))
+            {
+                Console.WriteLine("You introduced the date in the wrong format. Repeat the input of the date in the format 'dd/MM/yyyy'.");
+                Console.Write("Date of birth: ");
+                date = Console.ReadLine();
+            }
+
+            Console.Write("Gender (man - 'm' or woman - 'f'): ");
+            var gender_ = Console.ReadLine();
+            while (!IsStringCorrect(gender_))
+            {
+                Console.WriteLine("The gender contains not only letters. Repeat the input.");
+                Console.Write("Gender (man - 'm' or woman - 'f'): ");
+                gender_ = Console.ReadLine();
+            }
+
+            while (!char.TryParse(gender_, out gender))
+            {
+                Console.WriteLine("The gender length is not equal to one. Repeat the input.");
+                Console.Write("Gender (man - 'm' or woman - 'f'): ");
+                gender_ = Console.ReadLine();
+            }
+
+            Console.Write("Height: ");
+            var height_ = Console.ReadLine();
+            while (!short.TryParse(height_, culture, out height))
+            {
+                Console.WriteLine("Height is entered in the wrong format. Repeat the input.");
+                Console.Write("Height: ");
+                height_ = Console.ReadLine();
+            }
+
+            Console.Write("Weight: ");
+            var weight_ = Console.ReadLine();
+            while (!decimal.TryParse(weight_, culture, out weight))
+            {
+                Console.WriteLine("Weight is entered in the wrong format. Repeat the input.");
+                Console.Write("Weight: ");
+                weight_ = Console.ReadLine();
+            }
         }
     }
 }

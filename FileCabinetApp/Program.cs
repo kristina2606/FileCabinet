@@ -158,7 +158,7 @@ namespace FileCabinetApp
                 inputId = Console.ReadLine();
             }
 
-            if (!Program.fileCabinetService.IsExist(id))
+            if (Program.fileCabinetService.IsExist(id))
             {
                 ReadInput(out string firstName, out string lastName, out DateTime dateOfBirth, out char gender, out short height, out decimal weight);
                 Program.fileCabinetService.EditRecord(id, firstName, lastName, dateOfBirth, gender, height, weight);

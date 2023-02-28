@@ -97,9 +97,7 @@ namespace FileCabinetApp
 
         public bool IsExist(int id)
         {
-            var result = this.list.FirstOrDefault(x => x.Id == id);
-
-            return result is null;
+            return this.list.Any(x => x.Id == id);
         }
     }
 }

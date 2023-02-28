@@ -149,44 +149,32 @@ namespace FileCabinetApp
 
             Console.Write("Gender (man - 'm' or woman - 'f'): ");
             var gender_ = Console.ReadLine();
-            while (!IsStringCorrect(gender_))
+            char gender;
+            while (!IsStringCorrect(gender_) && !char.TryParse(gender_, out gender))
             {
-                Console.WriteLine("The gender contains not only letters. Repeat the input.");
+                Console.WriteLine("The gender contains not only letters or the length is not equal to one. Repeat the input.");
                 Console.Write("Gender (man - 'm' or woman - 'f'): ");
                 gender_ = Console.ReadLine();
             }
 
-            if (!char.TryParse(gender_, out char gender))
-            {
-                throw new ArgumentException("gender is entered in the wrong format.");
-            }
-
             Console.Write("Height: ");
             var height_ = Console.ReadLine();
-            while (!IsNumberCorrect(height_))
+            short height;
+            while (!short.TryParse(height_, culture, out height))
             {
-                Console.WriteLine("Height contains not only numbers. Repeat the input.");
+                Console.WriteLine("Height is entered in the wrong format. Repeat the input.");
                 Console.Write("Height: ");
                 height_ = Console.ReadLine();
             }
 
-            if (!short.TryParse(height_, culture, out short height))
-            {
-                throw new ArgumentException("height is entered in the wrong format.");
-            }
-
             Console.Write("Weight: ");
             var weight_ = Console.ReadLine();
-            while (!IsNumberCorrect(weight_))
+            decimal weight;
+            while (!decimal.TryParse(weight_, culture, out weight))
             {
-                Console.WriteLine("Weight contains not only numbers. Repeat the input.");
-                Console.Write("Height: ");
+                Console.WriteLine("Weight is entered in the wrong format. Repeat the input.");
+                Console.Write("Weight: ");
                 weight_ = Console.ReadLine();
-            }
-
-            if (!decimal.TryParse(weight_, culture, out decimal weight))
-            {
-                throw new ArgumentException("weight is entered in the wrong format.");
             }
 
             var recordId = Program.fileCabinetService.CreateRecord(name, lastName, dateOfBitrh, gender, height, weight);
@@ -218,20 +206,6 @@ namespace FileCabinetApp
             foreach (var letter in name)
             {
                 if (!char.IsLetter(letter))
-                {
-                    result = false;
-                }
-            }
-
-            return result;
-        }
-
-        private static bool IsNumberCorrect(string number)
-        {
-            var result = true;
-            foreach (var digit in number)
-            {
-                if (!char.IsDigit(digit))
                 {
                     result = false;
                 }

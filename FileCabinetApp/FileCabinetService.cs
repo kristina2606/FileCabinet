@@ -74,5 +74,11 @@ namespace FileCabinetApp
         {
             return this.list.Count;
         }
+
+        public void EditRecord(int id, string firstName, string lastName, DateTime dateOfBirth, char gender, short height, decimal weight)
+        { 
+        
+        
+        }
     }
 }

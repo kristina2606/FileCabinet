@@ -117,42 +117,74 @@ namespace FileCabinetApp
 
         private static void Create(string parameters)
         {
+            var culture = CultureInfo.InvariantCulture;
+
             Console.Write("First name: ");
             var name = Console.ReadLine();
-            if (string.IsNullOrWhiteSpace(name))
+            while (!IsStringCorrect(name))
             {
-                throw new ArgumentNullException(name);
+                Console.WriteLine("Your first name contains not only letters. Repeat the input.");
+                Console.Write("First name: ");
+                name = Console.ReadLine();
             }
 
             Console.Write("Last name: ");
             var lastName = Console.ReadLine();
-            if (string.IsNullOrWhiteSpace(lastName))
+            while (!IsStringCorrect(lastName))
             {
-                throw new ArgumentNullException(lastName);
+                Console.WriteLine("Your last name contains not only letters. Repeat the input.");
+                Console.Write("Last name: ");
+                lastName = Console.ReadLine();
             }
 
             Console.Write("Date of birth: ");
-            var culture = CultureInfo.InvariantCulture;
-            var styles = DateTimeStyles.None;
-            if (!DateTime.TryParseExact(Console.ReadLine(), "dd/MM/yyyy", culture, styles, out DateTime dateOfBitrh))
+            var date = Console.ReadLine();
+            DateTime dateOfBitrh;
+            while (!DateTime.TryParseExact(date, "dd/MM/yyyy", culture, DateTimeStyles.None, out dateOfBitrh))
             {
-                throw new ArgumentException("date entered in wrong format.");
+                Console.WriteLine("You introduced the date in the wrong format. Repeat the input of the date in the format 'dd/MM/yyyy'.");
+                Console.Write("Date of birth: ");
+                date = Console.ReadLine();
             }
 
-            Console.Write("Gender (m or f): ");
-            if (!char.TryParse(Console.ReadLine(), out char gender))
+            Console.Write("Gender (man - 'm' or woman - 'f'): ");
+            var gender_ = Console.ReadLine();
+            while (!IsStringCorrect(gender_))
+            {
+                Console.WriteLine("The gender contains not only letters. Repeat the input.");
+                Console.Write("Gender (man - 'm' or woman - 'f'): ");
+                gender_ = Console.ReadLine();
+            }
+
+            if (!char.TryParse(gender_, out char gender))
             {
                 throw new ArgumentException("gender is entered in the wrong format.");
             }
 
-            Console.Write("Height ");
-            if (!short.TryParse(Console.ReadLine(), culture, out short height))
+            Console.Write("Height: ");
+            var height_ = Console.ReadLine();
+            while (!IsNumberCorrect(height_))
+            {
+                Console.WriteLine("Height contains not only numbers. Repeat the input.");
+                Console.Write("Height: ");
+                height_ = Console.ReadLine();
+            }
+
+            if (!short.TryParse(height_, culture, out short height))
             {
                 throw new ArgumentException("height is entered in the wrong format.");
             }
 
             Console.Write("Weight: ");
-            if (!decimal.TryParse(Console.ReadLine(), culture, out decimal weight))
+            var weight_ = Console.ReadLine();
+            while (!IsNumberCorrect(weight_))
+            {
+                Console.WriteLine("Weight contains not only numbers. Repeat the input.");
+                Console.Write("Height: ");
+                weight_ = Console.ReadLine();
+            }
+
+            if (!decimal.TryParse(weight_, culture, out decimal weight))
             {
                 throw new ArgumentException("weight is entered in the wrong format.");
             }
@@ -178,6 +210,34 @@ namespace FileCabinetApp
 
                 Console.WriteLine($"#{id}, {firstName}, {lastName}, {dateOfBirth}, {gender}, {height}, {weight}");
             }
+        }
+
+        private static bool IsStringCorrect(string name)
+        {
+            var result = true;
+            foreach (var letter in name)
+            {
+                if (!char.IsLetter(letter))
+                {
+                    result = false;
+                }
+            }
+
+            return result;
+        }
+
+        private static bool IsNumberCorrect(string number)
+        {
+            var result = true;
+            foreach (var digit in number)
+            {
+                if (!char.IsDigit(digit))
+                {
+                    result = false;
+                }
+            }
+
+            return result;
         }
     }
 }

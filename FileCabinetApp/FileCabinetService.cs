@@ -34,7 +34,7 @@ namespace FileCabinetApp
                 throw new ArgumentException("date of birth is less than 01-Jun-1950 or greater today's date");
             }
 
-            if (gender != 'f' || gender != 'm')
+            if (gender != 'f' && gender != 'm')
             {
                 throw new ArgumentException("gender must be 'f' or 'm'.");
             }

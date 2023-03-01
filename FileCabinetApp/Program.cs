@@ -168,12 +168,18 @@ namespace FileCabinetApp
             Console.Write("Enter search parameter: ");
             var input = Console.ReadLine().ToLowerInvariant().Split(' ');
 
+            var records = new FileCabinetRecord[1];
+
             if (input[0] == "firstname")
             {
-                var records = Program.fileCabinetService.FindByFirstName(input[1]);
-
-                OutputToTheConsoleDataFromTheList(records);
+                records = Program.fileCabinetService.FindByFirstName(input[1]);
             }
+            else if (input[0] == "lastname")
+            {
+                records = Program.fileCabinetService.FindByLastName(input[1]);
+            }
+
+            OutputToTheConsoleDataFromTheList(records);
         }
 
         private static bool IsStringCorrect(string name)

@@ -111,6 +111,21 @@ namespace FileCabinetApp
             return findFirstName.ToArray();
         }
 
+        public FileCabinetRecord[] FindByLastName(string lastName)
+        {
+            List<FileCabinetRecord> findLastName = new List<FileCabinetRecord>();
+
+            foreach (var record in this.list)
+            {
+                if (lastName.Trim('"') == record.LastName.ToLowerInvariant())
+                {
+                    findLastName.Add(record);
+                }
+            }
+
+            return findLastName.ToArray();
+        }
+
         public bool IsExist(int id)
         {
             return this.list.Any(x => x.Id == id);

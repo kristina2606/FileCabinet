@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Xml.Linq;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FileCabinetApp
@@ -24,6 +26,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("stat", Stat),
             new Tuple<string, Action<string>>("create", Create),
             new Tuple<string, Action<string>>("list", List),
+            new Tuple<string, Action<string>>("edit", Edit),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -31,8 +34,9 @@ namespace FileCabinetApp
             new string[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
             new string[] { "stat", "displays statistics on records", "The 'stat' displays statistics on records." },
-            new string[] { "create", "creat data", "The 'create' creat data." },
-            new string[] { "list", "returns a list of records added to the service.", "The 'list' returns a list of records added to the service.." },
+            new string[] { "create", "creat new record", "The 'create' creat new record." },
+            new string[] { "list", "returns a list of records added to the service.", "The 'list' returns a list of records added to the service." },
+            new string[] { "edit", "editing a record by id.", "The 'edit' editing a record by id." },
         };
 
         public static void Main(string[] args)
@@ -117,47 +121,9 @@ namespace FileCabinetApp
 
         private static void Create(string parameters)
         {
-            Console.Write("First name: ");
-            var name = Console.ReadLine();
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                throw new ArgumentNullException(name);
-            }
+            ReadInput(out string firstName, out string lastName, out DateTime dateOfBirth, out char gender, out short height, out decimal weight);
 
-            Console.Write("Last name: ");
-            var lastName = Console.ReadLine();
-            if (string.IsNullOrWhiteSpace(lastName))
-            {
-                throw new ArgumentNullException(lastName);
-            }
-
-            Console.Write("Date of birth: ");
-            var culture = CultureInfo.InvariantCulture;
-            var styles = DateTimeStyles.None;
-            if (!DateTime.TryParseExact(Console.ReadLine(), "dd/MM/yyyy", culture, styles, out DateTime dateOfBitrh))
-            {
-                throw new ArgumentException("date entered in wrong format.");
-            }
-
-            Console.Write("Gender (m or f): ");
-            if (!char.TryParse(Console.ReadLine(), out char gender))
-            {
-                throw new ArgumentException("gender is entered in the wrong format.");
-            }
-
-            Console.Write("Height ");
-            if (!short.TryParse(Console.ReadLine(), culture, out short height))
-            {
-                throw new ArgumentException("height is entered in the wrong format.");
-            }
-
-            Console.Write("Weight: ");
-            if (!decimal.TryParse(Console.ReadLine(), culture, out decimal weight))
-            {
-                throw new ArgumentException("weight is entered in the wrong format.");
-            }
-
-            var recordId = Program.fileCabinetService.CreateRecord(name, lastName, dateOfBitrh, gender, height, weight);
+            var recordId = Program.fileCabinetService.CreateRecord(firstName, lastName, dateOfBirth, gender, height, weight);
 
             Console.WriteLine($"Record #{recordId} is created.");
         }
@@ -177,6 +143,111 @@ namespace FileCabinetApp
                 var weight = record.Weight;
 
                 Console.WriteLine($"#{id}, {firstName}, {lastName}, {dateOfBirth}, {gender}, {height}, {weight}");
+            }
+        }
+
+        private static void Edit(string parameters)
+        {
+            Console.Write("Enter the record number for editing: ");
+            var inputId = Console.ReadLine();
+            int id;
+            while (!int.TryParse(inputId, out id))
+            {
+                Console.WriteLine("You introduced an incorrect ID. Repeat the input.");
+                Console.Write("Enter the record number for editing: ");
+                inputId = Console.ReadLine();
+            }
+
+            if (Program.fileCabinetService.IsExist(id))
+            {
+                ReadInput(out string firstName, out string lastName, out DateTime dateOfBirth, out char gender, out short height, out decimal weight);
+                Program.fileCabinetService.EditRecord(id, firstName, lastName, dateOfBirth, gender, height, weight);
+
+                Console.WriteLine($"Record #{id} is updated.");
+            }
+            else
+            {
+                Console.WriteLine($"#{id} record is not found.");
+            }
+        }
+
+        private static bool IsStringCorrect(string name)
+        {
+            var result = true;
+            foreach (var letter in name)
+            {
+                if (!char.IsLetter(letter))
+                {
+                    result = false;
+                }
+            }
+
+            return result;
+        }
+
+        private static void ReadInput(out string firstName, out string lastName, out DateTime dateOfBirth, out char gender, out short height, out decimal weight)
+        {
+            var culture = CultureInfo.InvariantCulture;
+
+            Console.Write("First name: ");
+            firstName = Console.ReadLine();
+            while (!IsStringCorrect(firstName))
+            {
+                Console.WriteLine("Your first name contains not only letters. Repeat the input.");
+                Console.Write("First name: ");
+                firstName = Console.ReadLine();
+            }
+
+            Console.Write("Last name: ");
+            lastName = Console.ReadLine();
+            while (!IsStringCorrect(lastName))
+            {
+                Console.WriteLine("Your last name contains not only letters. Repeat the input.");
+                Console.Write("Last name: ");
+                lastName = Console.ReadLine();
+            }
+
+            Console.Write("Date of birth: ");
+            var date = Console.ReadLine();
+            while (!DateTime.TryParseExact(date, "dd/MM/yyyy", culture, DateTimeStyles.None, out dateOfBirth))
+            {
+                Console.WriteLine("You introduced the date in the wrong format. Repeat the input of the date in the format 'dd/MM/yyyy'.");
+                Console.Write("Date of birth: ");
+                date = Console.ReadLine();
+            }
+
+            Console.Write("Gender (man - 'm' or woman - 'f'): ");
+            var inputGender = Console.ReadLine();
+            while (!IsStringCorrect(inputGender))
+            {
+                Console.WriteLine("The gender contains not only letters. Repeat the input.");
+                Console.Write("Gender (man - 'm' or woman - 'f'): ");
+                inputGender = Console.ReadLine();
+            }
+
+            while (!char.TryParse(inputGender, out gender))
+            {
+                Console.WriteLine("The gender length is not equal to one. Repeat the input.");
+                Console.Write("Gender (man - 'm' or woman - 'f'): ");
+                inputGender = Console.ReadLine();
+            }
+
+            Console.Write("Height: ");
+            var inputHeight = Console.ReadLine();
+            while (!short.TryParse(inputHeight, culture, out height))
+            {
+                Console.WriteLine("Height is entered in the wrong format. Repeat the input.");
+                Console.Write("Height: ");
+                inputHeight = Console.ReadLine();
+            }
+
+            Console.Write("Weight: ");
+            var inputWeight = Console.ReadLine();
+            while (!decimal.TryParse(inputWeight, culture, out weight))
+            {
+                Console.WriteLine("Weight is entered in the wrong format. Repeat the input.");
+                Console.Write("Weight: ");
+                inputWeight = Console.ReadLine();
             }
         }
     }

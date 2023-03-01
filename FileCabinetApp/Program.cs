@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
@@ -27,6 +28,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("create", Create),
             new Tuple<string, Action<string>>("list", List),
             new Tuple<string, Action<string>>("edit", Edit),
+            new Tuple<string, Action<string>>("find", Find),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -37,6 +39,7 @@ namespace FileCabinetApp
             new string[] { "create", "creat new record", "The 'create' creat new record." },
             new string[] { "list", "returns a list of records added to the service.", "The 'list' returns a list of records added to the service." },
             new string[] { "edit", "editing a record by id.", "The 'edit' editing a record by id." },
+            new string[] { "find", "finds all existing records by parameter.", "The 'find' finds all existing records by parameter." },
         };
 
         public static void Main(string[] args)
@@ -132,18 +135,7 @@ namespace FileCabinetApp
         {
             var list = Program.fileCabinetService.GetRecords();
 
-            foreach (var record in list)
-            {
-                var id = record.Id;
-                var firstName = record.FirstName;
-                var lastName = record.LastName;
-                var dateOfBirth = record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture);
-                var gender = record.Gender;
-                var height = record.Height;
-                var weight = record.Weight;
-
-                Console.WriteLine($"#{id}, {firstName}, {lastName}, {dateOfBirth}, {gender}, {height}, {weight}");
-            }
+            OutputToTheConsoleDataFromTheList(list);
         }
 
         private static void Edit(string parameters)
@@ -168,6 +160,19 @@ namespace FileCabinetApp
             else
             {
                 Console.WriteLine($"#{id} record is not found.");
+            }
+        }
+
+        private static void Find(string parameters)
+        {
+            Console.Write("Enter search parameter: ");
+            var input = Console.ReadLine().ToLowerInvariant().Split(' ');
+
+            if (input[0] == "firstname")
+            {
+                var records = Program.fileCabinetService.FindByFirstName(input[1]);
+
+                OutputToTheConsoleDataFromTheList(records);
             }
         }
 
@@ -248,6 +253,22 @@ namespace FileCabinetApp
                 Console.WriteLine("Weight is entered in the wrong format. Repeat the input.");
                 Console.Write("Weight: ");
                 inputWeight = Console.ReadLine();
+            }
+        }
+
+        private static void OutputToTheConsoleDataFromTheList(FileCabinetRecord[] list)
+        {
+            foreach (var record in list)
+            {
+                var id = record.Id;
+                var firstName = record.FirstName;
+                var lastName = record.LastName;
+                var dateOfBirth = record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture);
+                var gender = record.Gender;
+                var height = record.Height;
+                var weight = record.Weight;
+
+                Console.WriteLine($"#{id}, {firstName}, {lastName}, {dateOfBirth}, {gender}, {height}, {weight}");
             }
         }
     }

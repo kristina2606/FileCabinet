@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -93,6 +94,21 @@ namespace FileCabinetApp
             result.Gender = gender;
             result.Height = height;
             result.Weight = weight;
+        }
+
+        public FileCabinetRecord[] FindByFirstName(string firstName)
+        {
+            List<FileCabinetRecord> findFirstName = new List<FileCabinetRecord>();
+
+            foreach (var record in this.list)
+            {
+                if (firstName.Trim('"') == record.FirstName.ToLowerInvariant())
+                {
+                    findFirstName.Add(record);
+                }
+            }
+
+            return findFirstName.ToArray();
         }
 
         public bool IsExist(int id)

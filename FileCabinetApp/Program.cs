@@ -170,13 +170,17 @@ namespace FileCabinetApp
 
             var records = new FileCabinetRecord[1];
 
-            if (input[0] == "firstname")
+            switch (input[0])
             {
-                records = Program.fileCabinetService.FindByFirstName(input[1]);
-            }
-            else if (input[0] == "lastname")
-            {
-                records = Program.fileCabinetService.FindByLastName(input[1]);
+                case "firstname":
+                    records = Program.fileCabinetService.FindByFirstName(input[1]);
+                    break;
+                case "lastname":
+                    records = Program.fileCabinetService.FindByLastName(input[1]);
+                    break;
+                case "dateofbirth":
+                    records = Program.fileCabinetService.FindByDateOfBirth(input[1]);
+                    break;
             }
 
             OutputToTheConsoleDataFromTheList(records);

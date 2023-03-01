@@ -4,6 +4,8 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FileCabinetApp
 {
@@ -124,6 +126,28 @@ namespace FileCabinetApp
             }
 
             return findLastName.ToArray();
+        }
+
+        public FileCabinetRecord[] FindByDateOfBirth(string date)
+        {
+            List<FileCabinetRecord> findDateOfBirth = new List<FileCabinetRecord>();
+
+            if (DateTime.TryParseExact(date, "yyyy-MMM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateOfBirth))
+            {
+                foreach (var record in this.list)
+                {
+                    if (dateOfBirth == record.DateOfBirth)
+                    {
+                        findDateOfBirth.Add(record);
+                    }
+                }
+
+                return findDateOfBirth.ToArray();
+            }
+            else
+            {
+                throw new ArgumentException("Error. You introduced the date in the wrong format.");
+            }
         }
 
         public bool IsExist(int id)

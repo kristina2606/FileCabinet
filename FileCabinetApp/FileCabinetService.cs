@@ -20,6 +20,8 @@ namespace FileCabinetApp
 
         private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
 
+        private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
+
         public int CreateRecord(string firstName, string lastName, DateTime dateOfBirth, char gender, short height, decimal weight)
         {
             if (string.IsNullOrEmpty(firstName))
@@ -100,6 +102,17 @@ namespace FileCabinetApp
                 this.lastNameDictionary.Add(lastName, valueLastNameForDictionary);
             }
 
+            List<FileCabinetRecord> valueDateOfBirthForDictionary = new List<FileCabinetRecord>();
+            valueDateOfBirthForDictionary.Add(record);
+            if (this.dateOfBirthDictionary.TryGetValue(dateOfBirth, out List<FileCabinetRecord> dateOfBirthValue))
+            {
+                dateOfBirthValue.Add(record);
+            }
+            else
+            {
+                this.dateOfBirthDictionary.Add(dateOfBirth, valueDateOfBirthForDictionary);
+            }
+
             return record.Id;
         }
 
@@ -124,6 +137,39 @@ namespace FileCabinetApp
 
             EditDictionary(this.firstNameDictionary, result.FirstName.ToLowerInvariant(), id, firstName.ToLowerInvariant());
             EditDictionary(this.lastNameDictionary, result.LastName.ToLowerInvariant(), id, lastName.ToLowerInvariant());
+
+            if (this.dateOfBirthDictionary.Remove(result.DateOfBirth, out List<FileCabinetRecord> dateOfBirthValue))
+            {
+                for (var i = 0; i < dateOfBirthValue.Count; i++)
+                {
+                    if (dateOfBirthValue[i].Id == id)
+                    {
+                        List<FileCabinetRecord> immutablePartOfTheDictionary = new List<FileCabinetRecord>();
+                        List<FileCabinetRecord> mutablePartOfTheDictionary = new List<FileCabinetRecord>();
+
+                        immutablePartOfTheDictionary.AddRange(dateOfBirthValue);
+                        immutablePartOfTheDictionary.RemoveAt(i);
+
+                        mutablePartOfTheDictionary.Add(dateOfBirthValue[i]);
+
+                        if (immutablePartOfTheDictionary.Count > 0)
+                        {
+                            this.dateOfBirthDictionary.Add(result.DateOfBirth, immutablePartOfTheDictionary);
+                        }
+
+                        if (this.dateOfBirthDictionary.TryGetValue(dateOfBirth, out List<FileCabinetRecord> existingDictionary))
+                        {
+                            existingDictionary.Add(dateOfBirthValue[i]);
+                        }
+                        else
+                        {
+                            this.dateOfBirthDictionary.Add(dateOfBirth, mutablePartOfTheDictionary);
+                        }
+
+                        break;
+                    }
+                }
+            }
 
             result.FirstName = firstName;
             result.LastName = lastName;
@@ -159,19 +205,16 @@ namespace FileCabinetApp
 
         public FileCabinetRecord[] FindByDateOfBirth(string date)
         {
-            List<FileCabinetRecord> findDateOfBirth = new List<FileCabinetRecord>();
-
             if (DateTime.TryParseExact(date, "yyyy-MMM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateOfBirth))
             {
-                foreach (var record in this.list)
+                if (this.dateOfBirthDictionary.TryGetValue(dateOfBirth, out List<FileCabinetRecord> value))
                 {
-                    if (dateOfBirth == record.DateOfBirth)
-                    {
-                        findDateOfBirth.Add(record);
-                    }
+                    return value.ToArray();
                 }
-
-                return findDateOfBirth.ToArray();
+                else
+                {
+                    throw new ArgumentNullException(nameof(date));
+                }
             }
             else
             {

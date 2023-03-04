@@ -18,6 +18,8 @@ namespace FileCabinetApp
 
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
 
+        private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
+
         public int CreateRecord(string firstName, string lastName, DateTime dateOfBirth, char gender, short height, decimal weight)
         {
             if (string.IsNullOrEmpty(firstName))
@@ -86,6 +88,18 @@ namespace FileCabinetApp
                 this.firstNameDictionary.Add(firstName, valueFirstNameForDictionary);
             }
 
+            List<FileCabinetRecord> valueLastNameForDictionary = new List<FileCabinetRecord>();
+            valueLastNameForDictionary.Add(record);
+            lastName = lastName.ToLowerInvariant();
+            if (this.lastNameDictionary.TryGetValue(lastName, out List<FileCabinetRecord> lastNameValue))
+            {
+                lastNameValue.Add(record);
+            }
+            else
+            {
+                this.lastNameDictionary.Add(lastName, valueLastNameForDictionary);
+            }
+
             return record.Id;
         }
 
@@ -109,6 +123,7 @@ namespace FileCabinetApp
             }
 
             EditDictionary(this.firstNameDictionary, result.FirstName.ToLowerInvariant(), id, firstName.ToLowerInvariant());
+            EditDictionary(this.lastNameDictionary, result.LastName.ToLowerInvariant(), id, lastName.ToLowerInvariant());
 
             result.FirstName = firstName;
             result.LastName = lastName;
@@ -132,17 +147,14 @@ namespace FileCabinetApp
 
         public FileCabinetRecord[] FindByLastName(string lastName)
         {
-            List<FileCabinetRecord> findLastName = new List<FileCabinetRecord>();
-
-            foreach (var record in this.list)
+            if (this.lastNameDictionary.TryGetValue(lastName.ToLowerInvariant().Trim('"'), out List<FileCabinetRecord> value))
             {
-                if (lastName.Trim('"') == record.LastName.ToLowerInvariant())
-                {
-                    findLastName.Add(record);
-                }
+                return value.ToArray();
             }
-
-            return findLastName.ToArray();
+            else
+            {
+                throw new ArgumentNullException(nameof(lastName));
+            }
         }
 
         public FileCabinetRecord[] FindByDateOfBirth(string date)

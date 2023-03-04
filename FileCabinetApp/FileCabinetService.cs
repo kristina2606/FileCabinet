@@ -1,8 +1,11 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net.WebSockets;
 using System.Reflection;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Text.RegularExpressions;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -12,6 +15,8 @@ namespace FileCabinetApp
     public class FileCabinetService
     {
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
+
+        private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
 
         public int CreateRecord(string firstName, string lastName, DateTime dateOfBirth, char gender, short height, decimal weight)
         {
@@ -68,6 +73,19 @@ namespace FileCabinetApp
 
             this.list.Add(record);
 
+            List<FileCabinetRecord> valueFirstNameForDictionary = new List<FileCabinetRecord>();
+            valueFirstNameForDictionary.Add(record);
+
+            firstName = firstName.ToLowerInvariant();
+            if (this.firstNameDictionary.TryGetValue(firstName, out List<FileCabinetRecord> firstNameValue))
+            {
+                firstNameValue.Add(record);
+            }
+            else
+            {
+                this.firstNameDictionary.Add(firstName, valueFirstNameForDictionary);
+            }
+
             return record.Id;
         }
 
@@ -90,6 +108,8 @@ namespace FileCabinetApp
                 throw new ArgumentException("records with the specified ID do not exist.");
             }
 
+            EditDictionary(this.firstNameDictionary, result.FirstName.ToLowerInvariant(), id, firstName.ToLowerInvariant());
+
             result.FirstName = firstName;
             result.LastName = lastName;
             result.DateOfBirth = dateOfBirth;
@@ -100,17 +120,14 @@ namespace FileCabinetApp
 
         public FileCabinetRecord[] FindByFirstName(string firstName)
         {
-            List<FileCabinetRecord> findFirstName = new List<FileCabinetRecord>();
-
-            foreach (var record in this.list)
+            if (this.firstNameDictionary.TryGetValue(firstName.ToLowerInvariant().Trim('"'), out List<FileCabinetRecord> value))
             {
-                if (firstName.Trim('"') == record.FirstName.ToLowerInvariant())
-                {
-                    findFirstName.Add(record);
-                }
+                return value.ToArray();
             }
-
-            return findFirstName.ToArray();
+            else
+            {
+                throw new ArgumentNullException(nameof(firstName));
+            }
         }
 
         public FileCabinetRecord[] FindByLastName(string lastName)
@@ -153,6 +170,42 @@ namespace FileCabinetApp
         public bool IsExist(int id)
         {
             return this.list.Any(x => x.Id == id);
+        }
+
+        private static void EditDictionary(Dictionary<string, List<FileCabinetRecord>> dictionary, string parametr, int id, string newKey)
+        {
+            if (dictionary.Remove(parametr, out List<FileCabinetRecord> value))
+            {
+                for (var i = 0; i < value.Count; i++)
+                {
+                    if (value[i].Id == id)
+                    {
+                        List<FileCabinetRecord> immutablePartOfTheDictionary = new List<FileCabinetRecord>();
+                        List<FileCabinetRecord> mutablePartOfTheDictionary = new List<FileCabinetRecord>();
+
+                        immutablePartOfTheDictionary.AddRange(value);
+                        immutablePartOfTheDictionary.RemoveAt(i);
+
+                        mutablePartOfTheDictionary.Add(value[i]);
+
+                        if (immutablePartOfTheDictionary.Count > 0)
+                        {
+                            dictionary.Add(parametr, immutablePartOfTheDictionary);
+                        }
+
+                        if (dictionary.TryGetValue(newKey, out List<FileCabinetRecord> existingDictionary))
+                        {
+                            existingDictionary.Add(value[i]);
+                        }
+                        else
+                        {
+                            dictionary.Add(newKey, mutablePartOfTheDictionary);
+                        }
+
+                        break;
+                    }
+                }
+            }
         }
     }
 }

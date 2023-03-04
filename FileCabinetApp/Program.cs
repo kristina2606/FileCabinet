@@ -168,22 +168,38 @@ namespace FileCabinetApp
             Console.Write("Enter search parameter: ");
             var input = Console.ReadLine().ToLowerInvariant().Split(' ');
 
-            var records = new FileCabinetRecord[1];
-
-            switch (input[0])
+            while (input.Length != 2)
             {
-                case "firstname":
-                    records = Program.fileCabinetService.FindByFirstName(input[1]);
-                    break;
-                case "lastname":
-                    records = Program.fileCabinetService.FindByLastName(input[1]);
-                    break;
-                case "dateofbirth":
-                    records = Program.fileCabinetService.FindByDateOfBirth(input[1]);
-                    break;
+                Console.WriteLine("You have entered invalid search parameters. Enter two options.");
+                Console.Write("Enter search parameter: ");
+                input = Console.ReadLine().ToLowerInvariant().Split(' ');
             }
 
-            OutputToTheConsoleDataFromTheList(records);
+            var records = new FileCabinetRecord[1];
+            try
+            {
+                switch (input[0])
+                {
+                    case "firstname":
+                        records = Program.fileCabinetService.FindByFirstName(input[1]);
+                        break;
+                    case "lastname":
+                        records = Program.fileCabinetService.FindByLastName(input[1]);
+                        break;
+                    case "dateofbirth":
+                        records = Program.fileCabinetService.FindByDateOfBirth(input[1]);
+                        break;
+                    default:
+                        Console.WriteLine("You entered an invalid search parameter.");
+                        break;
+                }
+
+                OutputToTheConsoleDataFromTheList(records);
+            }
+            catch
+            {
+                Console.WriteLine($"The {input[1]} was not found.");
+            }
         }
 
         private static bool IsStringCorrect(string name)

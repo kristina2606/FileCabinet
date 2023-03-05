@@ -69,40 +69,9 @@ namespace FileCabinetApp
 
             this.list.Add(record);
 
-            firstName = firstName.ToLowerInvariant();
-            if (this.firstNameDictionary.TryGetValue(firstName, out List<FileCabinetRecord> firstNameValue))
-            {
-                firstNameValue.Add(record);
-            }
-            else
-            {
-                List<FileCabinetRecord> valueFirstNameForDictionary = new List<FileCabinetRecord>();
-                valueFirstNameForDictionary.Add(record);
-                this.firstNameDictionary.Add(firstName, valueFirstNameForDictionary);
-            }
-
-            lastName = lastName.ToLowerInvariant();
-            if (this.lastNameDictionary.TryGetValue(lastName, out List<FileCabinetRecord> lastNameValue))
-            {
-                lastNameValue.Add(record);
-            }
-            else
-            {
-                List<FileCabinetRecord> valueLastNameForDictionary = new List<FileCabinetRecord>();
-                valueLastNameForDictionary.Add(record);
-                this.lastNameDictionary.Add(lastName, valueLastNameForDictionary);
-            }
-
-            if (this.dateOfBirthDictionary.TryGetValue(dateOfBirth, out List<FileCabinetRecord> dateOfBirthValue))
-            {
-                dateOfBirthValue.Add(record);
-            }
-            else
-            {
-                List<FileCabinetRecord> valueDateOfBirthForDictionary = new List<FileCabinetRecord>();
-                valueDateOfBirthForDictionary.Add(record);
-                this.dateOfBirthDictionary.Add(dateOfBirth, valueDateOfBirthForDictionary);
-            }
+            AddToIndex(record, this.firstNameDictionary, firstName.ToLowerInvariant());
+            AddToIndex(record, this.lastNameDictionary, lastName.ToLowerInvariant());
+            AddToIndex(record, this.dateOfBirthDictionary, dateOfBirth);
 
             return record.Id;
         }
@@ -132,24 +101,14 @@ namespace FileCabinetApp
 
             if (this.dateOfBirthDictionary.TryGetValue(result.DateOfBirth, out List<FileCabinetRecord> value))
             {
-                List<FileCabinetRecord> records = value;
-                records.Remove(result);
-                if (records.Count == 0)
+                value.Remove(result);
+                if (value.Count == 0)
                 {
                     this.dateOfBirthDictionary.Remove(result.DateOfBirth);
                 }
             }
 
-            if (this.dateOfBirthDictionary.TryGetValue(dateOfBirth, out List<FileCabinetRecord> firstNameValue))
-            {
-                firstNameValue.Add(result);
-            }
-            else
-            {
-                List<FileCabinetRecord> valueFirstNameForDictionary = new List<FileCabinetRecord>();
-                valueFirstNameForDictionary.Add(result);
-                this.dateOfBirthDictionary.Add(dateOfBirth, valueFirstNameForDictionary);
-            }
+            AddToIndex(result, this.dateOfBirthDictionary, dateOfBirth);
 
             result.FirstName = firstName;
             result.LastName = lastName;
@@ -200,29 +159,46 @@ namespace FileCabinetApp
             return this.list.Any(x => x.Id == id);
         }
 
-        private static void EditDictionary(Dictionary<string, List<FileCabinetRecord>> dictionary, string parametr, FileCabinetRecord record, string newKey)
+        private static void EditDictionary(Dictionary<string, List<FileCabinetRecord>> dictionary, string existingKey, FileCabinetRecord record, string newKey)
         {
-            string oldFirstName = parametr.ToLowerInvariant();
-            if (dictionary.TryGetValue(oldFirstName, out List<FileCabinetRecord> value))
+            existingKey = existingKey.ToLowerInvariant();
+            if (dictionary.TryGetValue(existingKey, out List<FileCabinetRecord> value))
             {
-                List<FileCabinetRecord> records = value;
-                records.Remove(record);
-                if (records.Count == 0)
+                value.Remove(record);
+                if (value.Count == 0)
                 {
-                    dictionary.Remove(oldFirstName);
+                    dictionary.Remove(existingKey);
                 }
             }
 
-            newKey = newKey.ToLowerInvariant();
-            if (dictionary.TryGetValue(newKey, out List<FileCabinetRecord> firstNameValue))
+            AddToIndex(record, dictionary, newKey.ToLowerInvariant());
+        }
+
+        private static void AddToIndex(FileCabinetRecord record, Dictionary<string, List<FileCabinetRecord>> dictionary, string key)
+        {
+            if (dictionary.TryGetValue(key, out List<FileCabinetRecord> value))
             {
-                firstNameValue.Add(record);
+                value.Add(record);
             }
             else
             {
-                List<FileCabinetRecord> valueFirstNameForDictionary = new List<FileCabinetRecord>();
-                valueFirstNameForDictionary.Add(record);
-                dictionary.Add(newKey, valueFirstNameForDictionary);
+                List<FileCabinetRecord> valueForDictionary = new List<FileCabinetRecord>();
+                valueForDictionary.Add(record);
+                dictionary.Add(key, valueForDictionary);
+            }
+        }
+
+        private static void AddToIndex(FileCabinetRecord record, Dictionary<DateTime, List<FileCabinetRecord>> dictionary, DateTime key)
+        {
+            if (dictionary.TryGetValue(key, out List<FileCabinetRecord> value))
+            {
+                value.Add(record);
+            }
+            else
+            {
+                List<FileCabinetRecord> valueForDictionary = new List<FileCabinetRecord>();
+                valueForDictionary.Add(record);
+                dictionary.Add(key, valueForDictionary);
             }
         }
     }

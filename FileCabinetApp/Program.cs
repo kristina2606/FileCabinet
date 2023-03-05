@@ -174,39 +174,29 @@ namespace FileCabinetApp
                 return;
             }
 
-            var records = new FileCabinetRecord[1];
-            try
+            switch (input[0])
             {
-                switch (input[0])
-                {
-                    case "firstname":
-                        records = Program.fileCabinetService.FindByFirstName(input[1]);
+                case "firstname":
+                    OutputToTheConsoleDataFromTheList(Program.fileCabinetService.FindByFirstName(input[1]));
+                    break;
+                case "lastname":
+                    OutputToTheConsoleDataFromTheList(Program.fileCabinetService.FindByLastName(input[1]));
+                    break;
+                case "dateofbirth":
+                    if (DateTime.TryParseExact(input[1], "yyyy-MMM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateOfBirth))
+                    {
+                        OutputToTheConsoleDataFromTheList(Program.fileCabinetService.FindByDateOfBirth(dateOfBirth));
                         break;
-                    case "lastname":
-                        records = Program.fileCabinetService.FindByLastName(input[1]);
-                        break;
-                    case "dateofbirth":
-                        if (DateTime.TryParseExact(input[1], "yyyy-MMM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateOfBirth))
-                        {
-                            records = Program.fileCabinetService.FindByDateOfBirth(dateOfBirth);
-                            break;
-                        }
-                        else
-                        {
-                            Console.WriteLine("Error. You introduced the date in the wrong format. (correct format 2000-Jan-01)");
-                            throw new ArgumentException("Error. You introduced the date in the wrong format.");
-                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Error. You introduced the date in the wrong format. (correct format 2000-Jan-01)");
+                        throw new ArgumentException("Error. You introduced the date in the wrong format.");
+                    }
 
-                    default:
-                        Console.WriteLine("You entered an invalid search parameter.");
-                        break;
-                }
-
-                OutputToTheConsoleDataFromTheList(records);
-            }
-            catch
-            {
-                Console.WriteLine($"The {input[1]} was not found.");
+                default:
+                    Console.WriteLine("You entered an invalid search parameter.");
+                    break;
             }
         }
 

@@ -102,10 +102,6 @@ namespace FileCabinetApp
             if (this.dateOfBirthDictionary.TryGetValue(result.DateOfBirth, out List<FileCabinetRecord> value))
             {
                 value.Remove(result);
-                if (value.Count == 0)
-                {
-                    this.dateOfBirthDictionary.Remove(result.DateOfBirth);
-                }
             }
 
             AddToIndex(result, this.dateOfBirthDictionary, dateOfBirth);
@@ -120,7 +116,7 @@ namespace FileCabinetApp
 
         public FileCabinetRecord[] FindByFirstName(string firstName)
         {
-            if (this.firstNameDictionary.TryGetValue(firstName.ToLowerInvariant().Trim('"'), out List<FileCabinetRecord> value))
+            if (this.firstNameDictionary.TryGetValue(firstName.ToLowerInvariant(), out List<FileCabinetRecord> value))
             {
                 return value.ToArray();
             }
@@ -132,7 +128,7 @@ namespace FileCabinetApp
 
         public FileCabinetRecord[] FindByLastName(string lastName)
         {
-            if (this.lastNameDictionary.TryGetValue(lastName.ToLowerInvariant().Trim('"'), out List<FileCabinetRecord> value))
+            if (this.lastNameDictionary.TryGetValue(lastName.ToLowerInvariant(), out List<FileCabinetRecord> value))
             {
                 return value.ToArray();
             }
@@ -165,10 +161,6 @@ namespace FileCabinetApp
             if (dictionary.TryGetValue(existingKey, out List<FileCabinetRecord> value))
             {
                 value.Remove(record);
-                if (value.Count == 0)
-                {
-                    dictionary.Remove(existingKey);
-                }
             }
 
             AddToIndex(record, dictionary, newKey.ToLowerInvariant());

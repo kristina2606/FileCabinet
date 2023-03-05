@@ -177,13 +177,13 @@ namespace FileCabinetApp
             switch (input[0])
             {
                 case "firstname":
-                    OutputToTheConsoleDataFromTheList(Program.fileCabinetService.FindByFirstName(input[1]));
+                    OutputToTheConsoleDataFromTheList(Program.fileCabinetService.FindByFirstName(input[1].Trim('"')));
                     break;
                 case "lastname":
-                    OutputToTheConsoleDataFromTheList(Program.fileCabinetService.FindByLastName(input[1]));
+                    OutputToTheConsoleDataFromTheList(Program.fileCabinetService.FindByLastName(input[1].Trim('"')));
                     break;
                 case "dateofbirth":
-                    if (DateTime.TryParseExact(input[1], "yyyy-MMM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateOfBirth))
+                    if (DateTime.TryParseExact(input[1].Trim('"'), "yyyy-MMM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateOfBirth))
                     {
                         OutputToTheConsoleDataFromTheList(Program.fileCabinetService.FindByDateOfBirth(dateOfBirth));
                         break;

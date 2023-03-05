@@ -1,14 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Net.WebSockets;
-using System.Reflection;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Text.RegularExpressions;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FileCabinetApp
 {
@@ -77,9 +69,6 @@ namespace FileCabinetApp
 
             this.list.Add(record);
 
-            List<FileCabinetRecord> valueFirstNameForDictionary = new List<FileCabinetRecord>();
-            valueFirstNameForDictionary.Add(record);
-
             firstName = firstName.ToLowerInvariant();
             if (this.firstNameDictionary.TryGetValue(firstName, out List<FileCabinetRecord> firstNameValue))
             {
@@ -87,11 +76,11 @@ namespace FileCabinetApp
             }
             else
             {
+                List<FileCabinetRecord> valueFirstNameForDictionary = new List<FileCabinetRecord>();
+                valueFirstNameForDictionary.Add(record);
                 this.firstNameDictionary.Add(firstName, valueFirstNameForDictionary);
             }
 
-            List<FileCabinetRecord> valueLastNameForDictionary = new List<FileCabinetRecord>();
-            valueLastNameForDictionary.Add(record);
             lastName = lastName.ToLowerInvariant();
             if (this.lastNameDictionary.TryGetValue(lastName, out List<FileCabinetRecord> lastNameValue))
             {
@@ -99,17 +88,19 @@ namespace FileCabinetApp
             }
             else
             {
+                List<FileCabinetRecord> valueLastNameForDictionary = new List<FileCabinetRecord>();
+                valueLastNameForDictionary.Add(record);
                 this.lastNameDictionary.Add(lastName, valueLastNameForDictionary);
             }
 
-            List<FileCabinetRecord> valueDateOfBirthForDictionary = new List<FileCabinetRecord>();
-            valueDateOfBirthForDictionary.Add(record);
             if (this.dateOfBirthDictionary.TryGetValue(dateOfBirth, out List<FileCabinetRecord> dateOfBirthValue))
             {
                 dateOfBirthValue.Add(record);
             }
             else
             {
+                List<FileCabinetRecord> valueDateOfBirthForDictionary = new List<FileCabinetRecord>();
+                valueDateOfBirthForDictionary.Add(record);
                 this.dateOfBirthDictionary.Add(dateOfBirth, valueDateOfBirthForDictionary);
             }
 
@@ -135,40 +126,29 @@ namespace FileCabinetApp
                 throw new ArgumentException("records with the specified ID do not exist.");
             }
 
-            EditDictionary(this.firstNameDictionary, result.FirstName.ToLowerInvariant(), id, firstName.ToLowerInvariant());
-            EditDictionary(this.lastNameDictionary, result.LastName.ToLowerInvariant(), id, lastName.ToLowerInvariant());
+            EditDictionary(this.firstNameDictionary, result.FirstName, result, firstName);
 
-            if (this.dateOfBirthDictionary.Remove(result.DateOfBirth, out List<FileCabinetRecord> dateOfBirthValue))
+            EditDictionary(this.lastNameDictionary, result.LastName, result, lastName);
+
+            if (this.dateOfBirthDictionary.TryGetValue(result.DateOfBirth, out List<FileCabinetRecord> value))
             {
-                for (var i = 0; i < dateOfBirthValue.Count; i++)
+                List<FileCabinetRecord> records = value;
+                records.Remove(result);
+                if (records.Count == 0)
                 {
-                    if (dateOfBirthValue[i].Id == id)
-                    {
-                        List<FileCabinetRecord> immutablePartOfTheDictionary = new List<FileCabinetRecord>();
-                        List<FileCabinetRecord> mutablePartOfTheDictionary = new List<FileCabinetRecord>();
-
-                        immutablePartOfTheDictionary.AddRange(dateOfBirthValue);
-                        immutablePartOfTheDictionary.RemoveAt(i);
-
-                        mutablePartOfTheDictionary.Add(dateOfBirthValue[i]);
-
-                        if (immutablePartOfTheDictionary.Count > 0)
-                        {
-                            this.dateOfBirthDictionary.Add(result.DateOfBirth, immutablePartOfTheDictionary);
-                        }
-
-                        if (this.dateOfBirthDictionary.TryGetValue(dateOfBirth, out List<FileCabinetRecord> existingDictionary))
-                        {
-                            existingDictionary.Add(dateOfBirthValue[i]);
-                        }
-                        else
-                        {
-                            this.dateOfBirthDictionary.Add(dateOfBirth, mutablePartOfTheDictionary);
-                        }
-
-                        break;
-                    }
+                    this.dateOfBirthDictionary.Remove(result.DateOfBirth);
                 }
+            }
+
+            if (this.dateOfBirthDictionary.TryGetValue(dateOfBirth, out List<FileCabinetRecord> firstNameValue))
+            {
+                firstNameValue.Add(result);
+            }
+            else
+            {
+                List<FileCabinetRecord> valueFirstNameForDictionary = new List<FileCabinetRecord>();
+                valueFirstNameForDictionary.Add(result);
+                this.dateOfBirthDictionary.Add(dateOfBirth, valueFirstNameForDictionary);
             }
 
             result.FirstName = firstName;
@@ -187,7 +167,7 @@ namespace FileCabinetApp
             }
             else
             {
-                throw new ArgumentNullException(nameof(firstName));
+                return Array.Empty<FileCabinetRecord>();
             }
         }
 
@@ -199,26 +179,19 @@ namespace FileCabinetApp
             }
             else
             {
-                throw new ArgumentNullException(nameof(lastName));
+                return Array.Empty<FileCabinetRecord>();
             }
         }
 
-        public FileCabinetRecord[] FindByDateOfBirth(string date)
+        public FileCabinetRecord[] FindByDateOfBirth(DateTime date)
         {
-            if (DateTime.TryParseExact(date, "yyyy-MMM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateOfBirth))
+            if (this.dateOfBirthDictionary.TryGetValue(date, out List<FileCabinetRecord> value))
             {
-                if (this.dateOfBirthDictionary.TryGetValue(dateOfBirth, out List<FileCabinetRecord> value))
-                {
-                    return value.ToArray();
-                }
-                else
-                {
-                    throw new ArgumentNullException(nameof(date));
-                }
+                return value.ToArray();
             }
             else
             {
-                throw new ArgumentException("Error. You introduced the date in the wrong format.");
+                return Array.Empty<FileCabinetRecord>();
             }
         }
 
@@ -227,39 +200,29 @@ namespace FileCabinetApp
             return this.list.Any(x => x.Id == id);
         }
 
-        private static void EditDictionary(Dictionary<string, List<FileCabinetRecord>> dictionary, string parametr, int id, string newKey)
+        private static void EditDictionary(Dictionary<string, List<FileCabinetRecord>> dictionary, string parametr, FileCabinetRecord record, string newKey)
         {
-            if (dictionary.Remove(parametr, out List<FileCabinetRecord> value))
+            string oldFirstName = parametr.ToLowerInvariant();
+            if (dictionary.TryGetValue(oldFirstName, out List<FileCabinetRecord> value))
             {
-                for (var i = 0; i < value.Count; i++)
+                List<FileCabinetRecord> records = value;
+                records.Remove(record);
+                if (records.Count == 0)
                 {
-                    if (value[i].Id == id)
-                    {
-                        List<FileCabinetRecord> immutablePartOfTheDictionary = new List<FileCabinetRecord>();
-                        List<FileCabinetRecord> mutablePartOfTheDictionary = new List<FileCabinetRecord>();
-
-                        immutablePartOfTheDictionary.AddRange(value);
-                        immutablePartOfTheDictionary.RemoveAt(i);
-
-                        mutablePartOfTheDictionary.Add(value[i]);
-
-                        if (immutablePartOfTheDictionary.Count > 0)
-                        {
-                            dictionary.Add(parametr, immutablePartOfTheDictionary);
-                        }
-
-                        if (dictionary.TryGetValue(newKey, out List<FileCabinetRecord> existingDictionary))
-                        {
-                            existingDictionary.Add(value[i]);
-                        }
-                        else
-                        {
-                            dictionary.Add(newKey, mutablePartOfTheDictionary);
-                        }
-
-                        break;
-                    }
+                    dictionary.Remove(oldFirstName);
                 }
+            }
+
+            newKey = newKey.ToLowerInvariant();
+            if (dictionary.TryGetValue(newKey, out List<FileCabinetRecord> firstNameValue))
+            {
+                firstNameValue.Add(record);
+            }
+            else
+            {
+                List<FileCabinetRecord> valueFirstNameForDictionary = new List<FileCabinetRecord>();
+                valueFirstNameForDictionary.Add(record);
+                dictionary.Add(newKey, valueFirstNameForDictionary);
             }
         }
     }

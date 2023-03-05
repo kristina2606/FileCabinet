@@ -168,11 +168,10 @@ namespace FileCabinetApp
             Console.Write("Enter search parameter: ");
             var input = Console.ReadLine().ToLowerInvariant().Split(' ');
 
-            while (input.Length != 2)
+            if (input.Length != 2)
             {
-                Console.WriteLine("You have entered invalid search parameters. Enter two options.");
-                Console.Write("Enter search parameter: ");
-                input = Console.ReadLine().ToLowerInvariant().Split(' ');
+                Console.WriteLine("You have entered an invalid search parameter. Two are needed.");
+                return;
             }
 
             var records = new FileCabinetRecord[1];
@@ -187,8 +186,17 @@ namespace FileCabinetApp
                         records = Program.fileCabinetService.FindByLastName(input[1]);
                         break;
                     case "dateofbirth":
-                        records = Program.fileCabinetService.FindByDateOfBirth(input[1]);
-                        break;
+                        if (DateTime.TryParseExact(input[1], "yyyy-MMM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateOfBirth))
+                        {
+                            records = Program.fileCabinetService.FindByDateOfBirth(dateOfBirth);
+                            break;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Error. You introduced the date in the wrong format. (correct format 2000-Jan-01)");
+                            throw new ArgumentException("Error. You introduced the date in the wrong format.");
+                        }
+
                     default:
                         Console.WriteLine("You entered an invalid search parameter.");
                         break;

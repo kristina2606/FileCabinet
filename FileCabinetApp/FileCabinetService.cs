@@ -99,12 +99,7 @@ namespace FileCabinetApp
 
             EditDictionary(this.lastNameDictionary, result.LastName, result, lastName);
 
-            if (this.dateOfBirthDictionary.TryGetValue(result.DateOfBirth, out List<FileCabinetRecord> value))
-            {
-                value.Remove(result);
-            }
-
-            AddToIndex(result, this.dateOfBirthDictionary, dateOfBirth);
+            EditDictionary(this.dateOfBirthDictionary, result.DateOfBirth, result, dateOfBirth);
 
             result.FirstName = firstName;
             result.LastName = lastName;
@@ -138,9 +133,9 @@ namespace FileCabinetApp
             }
         }
 
-        public FileCabinetRecord[] FindByDateOfBirth(DateTime date)
+        public FileCabinetRecord[] FindByDateOfBirth(DateTime dateOfBirth)
         {
-            if (this.dateOfBirthDictionary.TryGetValue(date, out List<FileCabinetRecord> value))
+            if (this.dateOfBirthDictionary.TryGetValue(dateOfBirth, out List<FileCabinetRecord> value))
             {
                 return value.ToArray();
             }
@@ -164,6 +159,16 @@ namespace FileCabinetApp
             }
 
             AddToIndex(record, dictionary, newKey.ToLowerInvariant());
+        }
+
+        private static void EditDictionary(Dictionary<DateTime, List<FileCabinetRecord>> dictionary, DateTime existingKey, FileCabinetRecord record, DateTime newKey)
+        {
+            if (dictionary.TryGetValue(existingKey, out List<FileCabinetRecord> value))
+            {
+                value.Remove(record);
+            }
+
+            AddToIndex(record, dictionary, newKey);
         }
 
         private static void AddToIndex(FileCabinetRecord record, Dictionary<string, List<FileCabinetRecord>> dictionary, string key)

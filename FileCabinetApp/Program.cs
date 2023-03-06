@@ -37,7 +37,7 @@ namespace FileCabinetApp
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
             new string[] { "stat", "displays statistics on records", "The 'stat' displays statistics on records." },
             new string[] { "create", "creat new record", "The 'create' creat new record." },
-            new string[] { "list", "returns a list of records added to the service.", "The 'list' returns a list of records added to the service." },
+            new string[] { "list", "returns a list of records.", "The 'list' returns a list of records." },
             new string[] { "edit", "editing a record by id.", "The 'edit' editing a record by id." },
             new string[] { "find", "finds all existing records by parameter.", "The 'find' finds all existing records by parameter." },
         };
@@ -118,7 +118,7 @@ namespace FileCabinetApp
 
         private static void Stat(string parameters)
         {
-            var recordsCount = Program.fileCabinetService.GetStat();
+            int recordsCount = Program.fileCabinetService.GetStat();
             Console.WriteLine($"{recordsCount} record(s).");
         }
 
@@ -126,14 +126,14 @@ namespace FileCabinetApp
         {
             ReadInput(out string firstName, out string lastName, out DateTime dateOfBirth, out char gender, out short height, out decimal weight);
 
-            var recordId = Program.fileCabinetService.CreateRecord(firstName, lastName, dateOfBirth, gender, height, weight);
+            int recordId = Program.fileCabinetService.CreateRecord(firstName, lastName, dateOfBirth, gender, height, weight);
 
             Console.WriteLine($"Record #{recordId} is created.");
         }
 
         private static void List(string parameters)
         {
-            var list = Program.fileCabinetService.GetRecords();
+            FileCabinetRecord[] list = Program.fileCabinetService.GetRecords();
 
             OutputToTheConsoleDataFromTheList(list);
         }
@@ -166,24 +166,25 @@ namespace FileCabinetApp
         private static void Find(string parameters)
         {
             Console.Write("Enter search parameter: ");
-            var input = Console.ReadLine().ToLowerInvariant().Split(' ');
+            var searchOptions = Console.ReadLine().ToLowerInvariant().Split(' ');
 
-            if (input.Length != 2)
+            if (searchOptions.Length != 2)
             {
                 Console.WriteLine("You have entered an invalid search parameter. Two are needed.");
                 return;
             }
 
-            switch (input[0])
+            var searchParameter = searchOptions[1].Trim('"');
+            switch (searchOptions[0])
             {
                 case "firstname":
-                    OutputToTheConsoleDataFromTheList(Program.fileCabinetService.FindByFirstName(input[1].Trim('"')));
+                    OutputToTheConsoleDataFromTheList(Program.fileCabinetService.FindByFirstName(searchParameter));
                     break;
                 case "lastname":
-                    OutputToTheConsoleDataFromTheList(Program.fileCabinetService.FindByLastName(input[1].Trim('"')));
+                    OutputToTheConsoleDataFromTheList(Program.fileCabinetService.FindByLastName(searchParameter));
                     break;
                 case "dateofbirth":
-                    if (DateTime.TryParseExact(input[1].Trim('"'), "yyyy-MMM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateOfBirth))
+                    if (DateTime.TryParseExact(searchParameter, "yyyy-MMM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateOfBirth))
                     {
                         OutputToTheConsoleDataFromTheList(Program.fileCabinetService.FindByDateOfBirth(dateOfBirth));
                         break;
@@ -191,7 +192,7 @@ namespace FileCabinetApp
                     else
                     {
                         Console.WriteLine("Error. You introduced the date in the wrong format. (correct format 2000-Jan-01)");
-                        throw new ArgumentException("Error. You introduced the date in the wrong format.");
+                        return;
                     }
 
                 default:

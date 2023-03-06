@@ -4,6 +4,9 @@ using System.Linq;
 
 namespace FileCabinetApp
 {
+    /// <summary>
+    /// Creates, edits and checks in entries. Finds records by parameters.
+    /// </summary>
     public class FileCabinetService
     {
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
@@ -14,6 +17,19 @@ namespace FileCabinetApp
 
         private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
 
+        /// <summary>
+        /// Creates a new record from user input.
+        /// </summary>
+        /// <param name="firstName">The first name entered by the user.</param>
+        /// <param name="lastName">The last name entered by the user.</param>
+        /// <param name="dateOfBirth">The date of birth entered by the user.</param>
+        /// <param name="gender">The gender entered by the user.</param>
+        /// <param name="height">The height entered by the user.</param>
+        /// <param name="weight">The weight entered by the user.</param>
+        /// <returns>Returns the id of the created record.</returns>
+        /// <exception cref="ArgumentNullException">If the firstName or lastName is equal null.</exception>
+        /// <exception cref="ArgumentException">The firstName or lastName length is less than 2 or greater than 60.The dateOfBirth is less than 01-Jun-1950 or greater today's date.
+        /// The gender isn't equal 'f' or 'm'. The height is less than 0 or greater than 250. The weight is less than 0.</exception>
         public int CreateRecord(string firstName, string lastName, DateTime dateOfBirth, char gender, short height, decimal weight)
         {
             if (string.IsNullOrEmpty(firstName))
@@ -76,16 +92,35 @@ namespace FileCabinetApp
             return record.Id;
         }
 
+        /// <summary>
+        /// Gets all existing records.
+        /// </summary>
+        /// <returns>Returns all existing records.</returns>
         public FileCabinetRecord[] GetRecords()
         {
             return this.list.ToArray();
         }
 
+        /// <summary>
+        /// Gets the count of all existing records.
+        /// </summary>
+        /// <returns>Returns the count of all existing records.</returns>
         public int GetStat()
         {
             return this.list.Count;
         }
 
+        /// <summary>
+        /// Edits an already existing entry by id.
+        /// </summary>
+        /// <param name="id">The id of the record to be modified.</param>
+        /// <param name="firstName">The new first name in the record.</param>
+        /// <param name="lastName">The new last name in the record.</param>
+        /// <param name="dateOfBirth">The new date of birth in the record.</param>
+        /// <param name="gender">The new gender in the record.</param>
+        /// <param name="height">The new height in the record.</param>
+        /// <param name="weight">The new weight in the record.</param>
+        /// <exception cref="ArgumentException">if records with the specified ID do not exist.</exception>
         public void EditRecord(int id, string firstName, string lastName, DateTime dateOfBirth, char gender, short height, decimal weight)
         {
             var result = this.list.FirstOrDefault(x => x.Id == id);
@@ -109,6 +144,11 @@ namespace FileCabinetApp
             result.Weight = weight;
         }
 
+        /// <summary>
+        /// Finds all records by first name.
+        /// </summary>
+        /// <param name="firstName">The parameter by which you want to find all existing records.</param>
+        /// <returns>Returns  all records by first name.</returns>
         public FileCabinetRecord[] FindByFirstName(string firstName)
         {
             if (this.firstNameDictionary.TryGetValue(firstName.ToLowerInvariant(), out List<FileCabinetRecord> value))
@@ -121,6 +161,11 @@ namespace FileCabinetApp
             }
         }
 
+        /// <summary>
+        /// Finds all records by last name.
+        /// </summary>
+        /// <param name="lastName">The parameter by which you want to find all existing records.</param>
+        /// <returns>Returns all records by last name.</returns>
         public FileCabinetRecord[] FindByLastName(string lastName)
         {
             if (this.lastNameDictionary.TryGetValue(lastName.ToLowerInvariant(), out List<FileCabinetRecord> value))
@@ -133,6 +178,11 @@ namespace FileCabinetApp
             }
         }
 
+        /// <summary>
+        /// Finds all records by date of birth.
+        /// </summary>
+        /// <param name="dateOfBirth">The parameter by which you want to find all existing records.</param>
+        /// <returns>Returns all records by date of birth.</returns>
         public FileCabinetRecord[] FindByDateOfBirth(DateTime dateOfBirth)
         {
             if (this.dateOfBirthDictionary.TryGetValue(dateOfBirth, out List<FileCabinetRecord> value))
@@ -145,6 +195,11 @@ namespace FileCabinetApp
             }
         }
 
+        /// <summary>
+        /// Checks if records with the specified id exists.
+        /// </summary>
+        /// <param name="id">The id entered by the user.</param>
+        /// <returns>True if records exists and false if records don't exist.</returns>
         public bool IsExist(int id)
         {
             return this.list.Any(x => x.Id == id);

@@ -9,6 +9,9 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FileCabinetApp
 {
+    /// <summary>
+    /// Works with user input when working with records.
+    /// </summary>
     public static class Program
     {
         private const string DeveloperName = "Krystsina Labada";
@@ -42,6 +45,10 @@ namespace FileCabinetApp
             new string[] { "find", "finds all existing records by parameter.", "The 'find' finds all existing records by parameter." },
         };
 
+        /// <summary>
+        /// Receives a command from the user.
+        /// </summary>
+        /// <param name="args">Arguments of the appropriate type.</param>
         public static void Main(string[] args)
         {
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");

@@ -132,8 +132,8 @@ namespace FileCabinetApp
         private static void Create(string parameters)
         {
             ReadInput(out string firstName, out string lastName, out DateTime dateOfBirth, out char gender, out short height, out decimal weight);
-
-            int recordId = Program.fileCabinetService.CreateRecord(firstName, lastName, dateOfBirth, gender, height, weight);
+            FileCabinetRecordNewData fileCabinetRecordNewData = new FileCabinetRecordNewData(firstName, lastName, dateOfBirth, gender, height, weight);
+            int recordId = Program.fileCabinetService.CreateRecord(fileCabinetRecordNewData);
 
             Console.WriteLine($"Record #{recordId} is created.");
         }
@@ -160,7 +160,8 @@ namespace FileCabinetApp
             if (Program.fileCabinetService.IsExist(id))
             {
                 ReadInput(out string firstName, out string lastName, out DateTime dateOfBirth, out char gender, out short height, out decimal weight);
-                Program.fileCabinetService.EditRecord(id, firstName, lastName, dateOfBirth, gender, height, weight);
+                FileCabinetRecordNewData fileCabinetRecordNewData = new FileCabinetRecordNewData(firstName, lastName, dateOfBirth, gender, height, weight);
+                Program.fileCabinetService.EditRecord(id, fileCabinetRecordNewData);
 
                 Console.WriteLine($"Record #{id} is updated.");
             }

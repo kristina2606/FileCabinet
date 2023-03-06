@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+[assembly: CLSCompliant(true)]
+
 namespace FileCabinetApp
 {
     /// <summary>
@@ -20,54 +22,49 @@ namespace FileCabinetApp
         /// <summary>
         /// Creates a new record from user input.
         /// </summary>
-        /// <param name="firstName">The first name entered by the user.</param>
-        /// <param name="lastName">The last name entered by the user.</param>
-        /// <param name="dateOfBirth">The date of birth entered by the user.</param>
-        /// <param name="gender">The gender entered by the user.</param>
-        /// <param name="height">The height entered by the user.</param>
-        /// <param name="weight">The weight entered by the user.</param>
+        /// <param name="fileCabinetRecordNewData">The new date in the record.</param>
         /// <returns>Returns the id of the created record.</returns>
         /// <exception cref="ArgumentNullException">If the firstName or lastName is equal null.</exception>
         /// <exception cref="ArgumentException">The firstName or lastName length is less than 2 or greater than 60.The dateOfBirth is less than 01-Jun-1950 or greater today's date.
         /// The gender isn't equal 'f' or 'm'. The height is less than 0 or greater than 250. The weight is less than 0.</exception>
-        public int CreateRecord(string firstName, string lastName, DateTime dateOfBirth, char gender, short height, decimal weight)
+        public int CreateRecord(FileCabinetRecordNewData fileCabinetRecordNewData)
         {
-            if (string.IsNullOrEmpty(firstName))
+            if (string.IsNullOrEmpty(fileCabinetRecordNewData.FirstName))
             {
-                throw new ArgumentNullException(nameof(firstName));
+                throw new ArgumentNullException(nameof(fileCabinetRecordNewData));
             }
 
-            if (firstName.Length < 2 || firstName.Length > 60)
+            if (fileCabinetRecordNewData.FirstName.Length < 2 || fileCabinetRecordNewData.FirstName.Length > 60)
             {
                 throw new ArgumentException("first name length is less than 2 or greater than 60");
             }
 
-            if (string.IsNullOrEmpty(lastName))
+            if (string.IsNullOrEmpty(fileCabinetRecordNewData.LastName))
             {
-                throw new ArgumentNullException(nameof(lastName));
+                throw new ArgumentNullException(nameof(fileCabinetRecordNewData));
             }
 
-            if (lastName.Length < 2 || lastName.Length > 60)
+            if (fileCabinetRecordNewData.LastName.Length < 2 || fileCabinetRecordNewData.LastName.Length > 60)
             {
                 throw new ArgumentException("last name length is less than 2 or greater than 60");
             }
 
-            if (dateOfBirth > DateTime.Now || dateOfBirth < new DateTime(1950, 1, 1))
+            if (fileCabinetRecordNewData.DateOfBirth > DateTime.Now || fileCabinetRecordNewData.DateOfBirth < new DateTime(1950, 1, 1))
             {
                 throw new ArgumentException("date of birth is less than 01-Jun-1950 or greater today's date");
             }
 
-            if (gender != 'f' && gender != 'm')
+            if (fileCabinetRecordNewData.Gender != 'f' && fileCabinetRecordNewData.Gender != 'm')
             {
                 throw new ArgumentException("gender must be 'f' or 'm'.");
             }
 
-            if (height <= 0 || height > 250)
+            if (fileCabinetRecordNewData.Height <= 0 || fileCabinetRecordNewData.Height > 250)
             {
                 throw new ArgumentException("height very small or very large.");
             }
 
-            if (weight <= 0)
+            if (fileCabinetRecordNewData.Weight <= 0)
             {
                 throw new ArgumentException("weight very small or very large.");
             }
@@ -75,19 +72,19 @@ namespace FileCabinetApp
             var record = new FileCabinetRecord
             {
                 Id = this.list.Count + 1,
-                FirstName = firstName,
-                LastName = lastName,
-                DateOfBirth = dateOfBirth,
-                Gender = gender,
-                Height = height,
-                Weight = weight,
+                FirstName = fileCabinetRecordNewData.FirstName,
+                LastName = fileCabinetRecordNewData.LastName,
+                DateOfBirth = fileCabinetRecordNewData.DateOfBirth,
+                Gender = fileCabinetRecordNewData.Gender,
+                Height = fileCabinetRecordNewData.Height,
+                Weight = fileCabinetRecordNewData.Weight,
             };
 
             this.list.Add(record);
 
-            AddToIndex(record, this.firstNameDictionary, firstName.ToLowerInvariant());
-            AddToIndex(record, this.lastNameDictionary, lastName.ToLowerInvariant());
-            AddToIndex(record, this.dateOfBirthDictionary, dateOfBirth);
+            AddToIndex(record, this.firstNameDictionary, fileCabinetRecordNewData.FirstName.ToLowerInvariant());
+            AddToIndex(record, this.lastNameDictionary, fileCabinetRecordNewData.LastName.ToLowerInvariant());
+            AddToIndex(record, this.dateOfBirthDictionary, fileCabinetRecordNewData.DateOfBirth);
 
             return record.Id;
         }
@@ -114,14 +111,9 @@ namespace FileCabinetApp
         /// Edits an already existing entry by id.
         /// </summary>
         /// <param name="id">The id of the record to be modified.</param>
-        /// <param name="firstName">The new first name in the record.</param>
-        /// <param name="lastName">The new last name in the record.</param>
-        /// <param name="dateOfBirth">The new date of birth in the record.</param>
-        /// <param name="gender">The new gender in the record.</param>
-        /// <param name="height">The new height in the record.</param>
-        /// <param name="weight">The new weight in the record.</param>
+        /// <param name="fileCabinetRecordNewData">The new date in the record.</param>
         /// <exception cref="ArgumentException">if records with the specified ID do not exist.</exception>
-        public void EditRecord(int id, string firstName, string lastName, DateTime dateOfBirth, char gender, short height, decimal weight)
+        public void EditRecord(int id, FileCabinetRecordNewData fileCabinetRecordNewData)
         {
             var result = this.list.FirstOrDefault(x => x.Id == id);
 
@@ -130,18 +122,18 @@ namespace FileCabinetApp
                 throw new ArgumentException("records with the specified ID do not exist.");
             }
 
-            EditDictionary(this.firstNameDictionary, result.FirstName, result, firstName);
+            EditDictionary(this.firstNameDictionary, result.FirstName, result, fileCabinetRecordNewData.FirstName);
 
-            EditDictionary(this.lastNameDictionary, result.LastName, result, lastName);
+            EditDictionary(this.lastNameDictionary, result.LastName, result, fileCabinetRecordNewData.LastName);
 
-            EditDictionary(this.dateOfBirthDictionary, result.DateOfBirth, result, dateOfBirth);
+            EditDictionary(this.dateOfBirthDictionary, result.DateOfBirth, result, fileCabinetRecordNewData.DateOfBirth);
 
-            result.FirstName = firstName;
-            result.LastName = lastName;
-            result.DateOfBirth = dateOfBirth;
-            result.Gender = gender;
-            result.Height = height;
-            result.Weight = weight;
+            result.FirstName = fileCabinetRecordNewData.FirstName;
+            result.LastName = fileCabinetRecordNewData.LastName;
+            result.DateOfBirth = fileCabinetRecordNewData.DateOfBirth;
+            result.Gender = fileCabinetRecordNewData.Gender;
+            result.Height = fileCabinetRecordNewData.Height;
+            result.Weight = fileCabinetRecordNewData.Weight;
         }
 
         /// <summary>
@@ -151,9 +143,9 @@ namespace FileCabinetApp
         /// <returns>Returns  all records by first name.</returns>
         public FileCabinetRecord[] FindByFirstName(string firstName)
         {
-            if (this.firstNameDictionary.TryGetValue(firstName.ToLowerInvariant(), out List<FileCabinetRecord> value))
+            if (this.firstNameDictionary.TryGetValue(firstName.ToLowerInvariant(), out List<FileCabinetRecord> allValueOfKey))
             {
-                return value.ToArray();
+                return allValueOfKey.ToArray();
             }
             else
             {
@@ -168,9 +160,9 @@ namespace FileCabinetApp
         /// <returns>Returns all records by last name.</returns>
         public FileCabinetRecord[] FindByLastName(string lastName)
         {
-            if (this.lastNameDictionary.TryGetValue(lastName.ToLowerInvariant(), out List<FileCabinetRecord> value))
+            if (this.lastNameDictionary.TryGetValue(lastName.ToLowerInvariant(), out List<FileCabinetRecord> allValueOfKey))
             {
-                return value.ToArray();
+                return allValueOfKey.ToArray();
             }
             else
             {
@@ -185,9 +177,9 @@ namespace FileCabinetApp
         /// <returns>Returns all records by date of birth.</returns>
         public FileCabinetRecord[] FindByDateOfBirth(DateTime dateOfBirth)
         {
-            if (this.dateOfBirthDictionary.TryGetValue(dateOfBirth, out List<FileCabinetRecord> value))
+            if (this.dateOfBirthDictionary.TryGetValue(dateOfBirth, out List<FileCabinetRecord> allValueOfKey))
             {
-                return value.ToArray();
+                return allValueOfKey.ToArray();
             }
             else
             {
@@ -208,9 +200,9 @@ namespace FileCabinetApp
         private static void EditDictionary(Dictionary<string, List<FileCabinetRecord>> dictionary, string existingKey, FileCabinetRecord record, string newKey)
         {
             existingKey = existingKey.ToLowerInvariant();
-            if (dictionary.TryGetValue(existingKey, out List<FileCabinetRecord> value))
+            if (dictionary.TryGetValue(existingKey, out List<FileCabinetRecord> allValueOfExistingKey))
             {
-                value.Remove(record);
+                allValueOfExistingKey.Remove(record);
             }
 
             AddToIndex(record, dictionary, newKey.ToLowerInvariant());
@@ -218,9 +210,9 @@ namespace FileCabinetApp
 
         private static void EditDictionary(Dictionary<DateTime, List<FileCabinetRecord>> dictionary, DateTime existingKey, FileCabinetRecord record, DateTime newKey)
         {
-            if (dictionary.TryGetValue(existingKey, out List<FileCabinetRecord> value))
+            if (dictionary.TryGetValue(existingKey, out List<FileCabinetRecord> allValueOfExistingKey))
             {
-                value.Remove(record);
+                allValueOfExistingKey.Remove(record);
             }
 
             AddToIndex(record, dictionary, newKey);
@@ -228,28 +220,26 @@ namespace FileCabinetApp
 
         private static void AddToIndex(FileCabinetRecord record, Dictionary<string, List<FileCabinetRecord>> dictionary, string key)
         {
-            if (dictionary.TryGetValue(key, out List<FileCabinetRecord> value))
+            if (dictionary.TryGetValue(key, out List<FileCabinetRecord> allValueOfKey))
             {
-                value.Add(record);
+                allValueOfKey.Add(record);
             }
             else
             {
-                List<FileCabinetRecord> valueForDictionary = new List<FileCabinetRecord>();
-                valueForDictionary.Add(record);
+                List<FileCabinetRecord> valueForDictionary = new List<FileCabinetRecord>() { record };
                 dictionary.Add(key, valueForDictionary);
             }
         }
 
         private static void AddToIndex(FileCabinetRecord record, Dictionary<DateTime, List<FileCabinetRecord>> dictionary, DateTime key)
         {
-            if (dictionary.TryGetValue(key, out List<FileCabinetRecord> value))
+            if (dictionary.TryGetValue(key, out List<FileCabinetRecord> allValueOfKey))
             {
-                value.Add(record);
+                allValueOfKey.Add(record);
             }
             else
             {
-                List<FileCabinetRecord> valueForDictionary = new List<FileCabinetRecord>();
-                valueForDictionary.Add(record);
+                List<FileCabinetRecord> valueForDictionary = new List<FileCabinetRecord>() { record };
                 dictionary.Add(key, valueForDictionary);
             }
         }

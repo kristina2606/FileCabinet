@@ -4,21 +4,115 @@
         <name>FileCabinetApp</name>
     </assembly>
     <members>
+        <member name="T:FileCabinetApp.FileCabinetRecord">
+            <summary>
+            Fields for creating a record.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.Id">
+            <summary>
+            Gets or sets record id.
+            </summary>
+            <value>Record id of a person.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.FirstName">
+            <summary>
+            Gets or sets the first name.
+            </summary>
+            <value>The first name of a person.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.LastName">
+            <summary>
+            Gets or sets the last name of a person.
+            </summary>
+            <value>The last name of a person.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.DateOfBirth">
+            <summary>
+            Gets or sets the date of birth of a person.
+            </summary>
+            <value>The date of birth of a person.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.Gender">
+            <summary>
+            Gets or sets the gender of a person.
+            </summary>
+            <value>The gender of a person.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.Height">
+            <summary>
+            Gets or sets the height of a person.
+            </summary>
+            <value>The height of a person.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.Weight">
+            <summary>
+            Gets or sets the weight of a person.
+            </summary>
+            <value>The weight of a person.</value>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetRecordNewData">
+            <summary>
+            Gets new data from user input.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordNewData.#ctor(System.String,System.String,System.DateTime,System.Char,System.Int16,System.Decimal)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordNewData"/> class.
+            </summary>
+            <param name="firstName">Gets first name from user input.</param>
+            <param name="lastName">Gets last name from user input.</param>
+            <param name="dateOfBirth">Gets date of birth from user input.</param>
+            <param name="gender">Gets gender from user input.</param>
+            <param name="height">Gets height from user input.</param>
+            <param name="weight">Gets weight from user input.</param>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecordNewData.FirstName">
+            <summary>
+             Gets first name from user input.
+            </summary>
+            <value> New first name of a person. </value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecordNewData.LastName">
+            <summary>
+            Gets last name from user input.
+            </summary>
+            <value> New last name of a person. </value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecordNewData.DateOfBirth">
+            <summary>
+            Gets date of birth from user input.
+            </summary>
+            <value> New date of birth of a person. </value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecordNewData.Gender">
+            <summary>
+            Gets gender from user input.
+            </summary>
+            <value> New gender of a person. </value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecordNewData.Height">
+            <summary>
+            Gets height from user input.
+            </summary>
+            <value> New height of a person. </value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecordNewData.Weight">
+            <summary>
+            Gets weight from user input.
+            </summary>
+            <value> New weight of a person. </value>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetService">
             <summary>
             Creates, edits and checks in entries. Finds records by parameters.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetService.CreateRecord(System.String,System.String,System.DateTime,System.Char,System.Int16,System.Decimal)">
+        <member name="M:FileCabinetApp.FileCabinetService.CreateRecord(FileCabinetApp.FileCabinetRecordNewData)">
             <summary>
             Creates a new record from user input.
             </summary>
-            <param name="firstName">The first name entered by the user.</param>
-            <param name="lastName">The last name entered by the user.</param>
-            <param name="dateOfBirth">The date of birth entered by the user.</param>
-            <param name="gender">The gender entered by the user.</param>
-            <param name="height">The height entered by the user.</param>
-            <param name="weight">The weight entered by the user.</param>
+            <param name="fileCabinetRecordNewData">The new date in the record.</param>
             <returns>Returns the id of the created record.</returns>
             <exception cref="T:System.ArgumentNullException">If the firstName or lastName is equal null.</exception>
             <exception cref="T:System.ArgumentException">The firstName or lastName length is less than 2 or greater than 60.The dateOfBirth is less than 01-Jun-1950 or greater today's date.
@@ -36,17 +130,12 @@
             </summary>
             <returns>Returns the count of all existing records.</returns>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetService.EditRecord(System.Int32,System.String,System.String,System.DateTime,System.Char,System.Int16,System.Decimal)">
+        <member name="M:FileCabinetApp.FileCabinetService.EditRecord(System.Int32,FileCabinetApp.FileCabinetRecordNewData)">
             <summary>
             Edits an already existing entry by id.
             </summary>
             <param name="id">The id of the record to be modified.</param>
-            <param name="firstName">The new first name in the record.</param>
-            <param name="lastName">The new last name in the record.</param>
-            <param name="dateOfBirth">The new date of birth in the record.</param>
-            <param name="gender">The new gender in the record.</param>
-            <param name="height">The new height in the record.</param>
-            <param name="weight">The new weight in the record.</param>
+            <param name="fileCabinetRecordNewData">The new date in the record.</param>
             <exception cref="T:System.ArgumentException">if records with the specified ID do not exist.</exception>
         </member>
         <member name="M:FileCabinetApp.FileCabinetService.FindByFirstName(System.String)">

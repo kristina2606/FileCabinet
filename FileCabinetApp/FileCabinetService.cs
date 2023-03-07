@@ -9,7 +9,7 @@ namespace FileCabinetApp
     /// <summary>
     /// Creates, edits and checks in entries. Finds records by parameters.
     /// </summary>
-    public class FileCabinetService
+    public abstract class FileCabinetService
     {
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
 
@@ -18,6 +18,12 @@ namespace FileCabinetApp
         private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
 
         private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
+
+        /// <summary>
+        /// Validate a new record from user input.
+        /// </summary>
+        /// <param name="fileCabinetRecordNewData">The new date in the record.</param>
+        public abstract void ValidateParametrs(FileCabinetRecordNewData fileCabinetRecordNewData);
 
         /// <summary>
         /// Creates a new record from user input.
@@ -29,45 +35,7 @@ namespace FileCabinetApp
         /// The gender isn't equal 'f' or 'm'. The height is less than 0 or greater than 250. The weight is less than 0.</exception>
         public int CreateRecord(FileCabinetRecordNewData fileCabinetRecordNewData)
         {
-            if (string.IsNullOrEmpty(fileCabinetRecordNewData.FirstName))
-            {
-                throw new ArgumentNullException(nameof(fileCabinetRecordNewData));
-            }
-
-            if (fileCabinetRecordNewData.FirstName.Length < 2 || fileCabinetRecordNewData.FirstName.Length > 60)
-            {
-                throw new ArgumentException("first name length is less than 2 or greater than 60");
-            }
-
-            if (string.IsNullOrEmpty(fileCabinetRecordNewData.LastName))
-            {
-                throw new ArgumentNullException(nameof(fileCabinetRecordNewData));
-            }
-
-            if (fileCabinetRecordNewData.LastName.Length < 2 || fileCabinetRecordNewData.LastName.Length > 60)
-            {
-                throw new ArgumentException("last name length is less than 2 or greater than 60");
-            }
-
-            if (fileCabinetRecordNewData.DateOfBirth > DateTime.Now || fileCabinetRecordNewData.DateOfBirth < new DateTime(1950, 1, 1))
-            {
-                throw new ArgumentException("date of birth is less than 01-Jun-1950 or greater today's date");
-            }
-
-            if (fileCabinetRecordNewData.Gender != 'f' && fileCabinetRecordNewData.Gender != 'm')
-            {
-                throw new ArgumentException("gender must be 'f' or 'm'.");
-            }
-
-            if (fileCabinetRecordNewData.Height <= 0 || fileCabinetRecordNewData.Height > 250)
-            {
-                throw new ArgumentException("height very small or very large.");
-            }
-
-            if (fileCabinetRecordNewData.Weight <= 0)
-            {
-                throw new ArgumentException("weight very small or very large.");
-            }
+            this.ValidateParametrs(fileCabinetRecordNewData);
 
             var record = new FileCabinetRecord
             {
@@ -115,6 +83,8 @@ namespace FileCabinetApp
         /// <exception cref="ArgumentException">if records with the specified ID do not exist.</exception>
         public void EditRecord(int id, FileCabinetRecordNewData fileCabinetRecordNewData)
         {
+            this.ValidateParametrs(fileCabinetRecordNewData);
+
             var result = this.list.FirstOrDefault(x => x.Id == id);
 
             if (result is null)

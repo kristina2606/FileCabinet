@@ -42,54 +42,36 @@ namespace FileCabinetApp
         ///  Gets first name from user input.
         /// </summary>
         /// <value> New first name of a person. </value>
-        public string FirstName
-        {
-            get { return this.firstName; }
-        }
+        public string FirstName => this.firstName;
 
         /// <summary>
         /// Gets last name from user input.
         /// </summary>
         /// <value> New last name of a person. </value>
-        public string LastName
-        {
-            get { return this.lastName; }
-        }
+        public string LastName => this.lastName;
 
         /// <summary>
         /// Gets date of birth from user input.
         /// </summary>
         /// <value> New date of birth of a person. </value>
-        public DateTime DateOfBirth
-        {
-            get { return this.dateOfBirth; }
-        }
+        public DateTime DateOfBirth => this.dateOfBirth;
 
         /// <summary>
         /// Gets gender from user input.
         /// </summary>
         /// <value> New gender of a person. </value>
-        public char Gender
-        {
-            get { return this.gender; }
-        }
+        public char Gender => this.gender;
 
         /// <summary>
         /// Gets height from user input.
         /// </summary>
         /// <value> New height of a person. </value>
-        public short Height
-        {
-            get { return this.height; }
-        }
+        public short Height => this.height;
 
         /// <summary>
         /// Gets weight from user input.
         /// </summary>
         /// <value> New weight of a person. </value>
-        public decimal Weight
-        {
-            get { return this.weight; }
-        }
+        public decimal Weight => this.weight;
     }
 }

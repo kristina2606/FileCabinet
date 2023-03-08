@@ -32,30 +32,6 @@
             <exception cref="T:System.ArgumentException">The firstName or lastName length is less than 2 or greater than 60.The dateOfBirth is less than 01-Jun-1950 or greater today's date.
             The gender isn't equal 'f' or 'm'. The height is less than 0 or greater than 250. The weight is less than 0.</exception>
         </member>
-        <member name="T:FileCabinetApp.FileCabinetCustomService">
-            <summary>
-            Validate a new record from user input with settings for adults.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetCustomService.#ctor(FileCabinetApp.IRecordValidator)">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetCustomService"/> class.
-            Validate a new record from user input with settings for adults.
-            </summary>
-            <param name="validator">Returns validator parameters for adult.</param>
-        </member>
-        <member name="T:FileCabinetApp.FileCabinetDefaultService">
-            <summary>
-            Сhecking the values of the input parameters of the FileCabinetService class.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetDefaultService.#ctor(FileCabinetApp.IRecordValidator)">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetDefaultService"/> class.
-            Validate a new record from user input.
-            </summary>
-            <param name="validator">Returns validator parameters.</param>
-        </member>
         <member name="T:FileCabinetApp.FileCabinetRecord">
             <summary>
             Fields for creating a record.

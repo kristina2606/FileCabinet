@@ -21,7 +21,7 @@ namespace FileCabinetApp
         private const int ExplanationHelpIndex = 2;
 
         private static bool isRunning = true;
-        private static FileCabinetService fileCabinetService = new FileCabinetDefaultService(new DefaultValidator());
+        private static FileCabinetService fileCabinetService = new FileCabinetService(new DefaultValidator());
         private static string validationRules = "Using default validation rules.";
 
         private static Tuple<string, Action<string>>[] commands = new Tuple<string, Action<string>>[]
@@ -60,13 +60,13 @@ namespace FileCabinetApp
 
                 if (comand[0] == "--validation-rules" && comand[1].ToLowerInvariant() == "custom")
                 {
-                    fileCabinetService = new FileCabinetCustomService(new CustomValidator());
+                    fileCabinetService = new FileCabinetService(new CustomValidator());
                     validationRules = "Using custom validation rules.";
                 }
             }
             else if (args.Length == 2 && args[0] == "-v" && args[1].ToLowerInvariant() == "custom")
             {
-                fileCabinetService = new FileCabinetCustomService(new CustomValidator());
+                fileCabinetService = new FileCabinetService(new CustomValidator());
                 validationRules = "Using custom validation rules.";
             }
 

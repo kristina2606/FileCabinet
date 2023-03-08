@@ -9,7 +9,7 @@ namespace FileCabinetApp
     /// <summary>
     /// Creates, edits and checks in entries. Finds records by parameters.
     /// </summary>
-    public abstract class FileCabinetService
+    public class FileCabinetService
     {
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
 
@@ -26,7 +26,7 @@ namespace FileCabinetApp
         /// The class constructor takes a validation parameter.
         /// </summary>
         /// <param name="validator">Validation parameter.</param>
-        protected FileCabinetService(IRecordValidator validator)
+        public FileCabinetService(IRecordValidator validator)
         {
             this.validator = validator;
         }
@@ -41,6 +41,7 @@ namespace FileCabinetApp
         /// The gender isn't equal 'f' or 'm'. The height is less than 0 or greater than 250. The weight is less than 0.</exception>
         public int CreateRecord(FileCabinetRecordNewData fileCabinetRecordNewData)
         {
+            this.validator.ValidateParametrs(fileCabinetRecordNewData);
             var record = new FileCabinetRecord
             {
                 Id = this.list.Count + 1,

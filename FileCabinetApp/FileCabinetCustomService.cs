@@ -8,12 +8,13 @@ namespace FileCabinetApp
     public class FileCabinetCustomService : FileCabinetService
     {
         /// <summary>
+        /// Initializes a new instance of the <see cref="FileCabinetCustomService"/> class.
         /// Validate a new record from user input with settings for adults.
         /// </summary>
-        /// <returns>Returns validator parameters for adult.</returns>
-        protected override IRecordValidator CreateValidator()
+        /// <param name="validator">Returns validator parameters for adult.</param>
+        public FileCabinetCustomService(IRecordValidator validator)
+            : base(new CustomValidator())
         {
-            return new CustomValidator();
         }
     }
 }

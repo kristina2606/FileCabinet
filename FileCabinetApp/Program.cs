@@ -21,7 +21,7 @@ namespace FileCabinetApp
         private const int ExplanationHelpIndex = 2;
 
         private static bool isRunning = true;
-        private static FileCabinetService fileCabinetService = new FileCabinetDefaultService();
+        private static FileCabinetService fileCabinetService = new FileCabinetDefaultService(new DefaultValidator());
         private static string validationRules = "Using default validation rules.";
 
         private static Tuple<string, Action<string>>[] commands = new Tuple<string, Action<string>>[]
@@ -53,19 +53,20 @@ namespace FileCabinetApp
         public static void Main(string[] args)
         {
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
+
             if (args.Length == 1)
             {
                 var comand = args[0].Split('=');
 
                 if (comand[0] == "--validation-rules" && comand[1].ToLowerInvariant() == "custom")
                 {
-                    fileCabinetService = new FileCabinetCustomService();
+                    fileCabinetService = new FileCabinetCustomService(new CustomValidator());
                     validationRules = "Using custom validation rules.";
                 }
             }
             else if (args.Length == 2 && args[0] == "-v" && args[1].ToLowerInvariant() == "custom")
             {
-                fileCabinetService = new FileCabinetCustomService();
+                fileCabinetService = new FileCabinetCustomService(new CustomValidator());
                 validationRules = "Using custom validation rules.";
             }
 

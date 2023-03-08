@@ -19,6 +19,18 @@ namespace FileCabinetApp
 
         private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
 
+        private readonly IRecordValidator validator;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileCabinetService"/> class.
+        /// The class constructor takes a validation parameter.
+        /// </summary>
+        /// <param name="validator">Validation parameter.</param>
+        protected FileCabinetService(IRecordValidator validator)
+        {
+            this.validator = validator;
+        }
+
         /// <summary>
         /// Creates a new record from user input.
         /// </summary>
@@ -29,8 +41,6 @@ namespace FileCabinetApp
         /// The gender isn't equal 'f' or 'm'. The height is less than 0 or greater than 250. The weight is less than 0.</exception>
         public int CreateRecord(FileCabinetRecordNewData fileCabinetRecordNewData)
         {
-            this.CreateValidator().ValidateParametrs(fileCabinetRecordNewData);
-
             var record = new FileCabinetRecord
             {
                 Id = this.list.Count + 1,
@@ -158,12 +168,6 @@ namespace FileCabinetApp
         {
             return this.list.Any(x => x.Id == id);
         }
-
-        /// <summary>
-        /// Creates a new validator.
-        /// </summary>
-        /// <returns>Returns validator parameters.</returns>
-        protected abstract IRecordValidator CreateValidator();
 
         private static void EditDictionary(Dictionary<string, List<FileCabinetRecord>> dictionary, string existingKey, FileCabinetRecord record, string newKey)
         {

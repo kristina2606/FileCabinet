@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -159,7 +160,7 @@ namespace FileCabinetApp
 
         private static void List(string parameters)
         {
-            FileCabinetRecord[] list = Program.fileCabinetService.GetRecords();
+            ReadOnlyCollection<FileCabinetRecord> list = Program.fileCabinetService.GetRecords();
 
             OutputToTheConsoleDataFromTheList(list);
         }
@@ -308,7 +309,7 @@ namespace FileCabinetApp
             }
         }
 
-        private static void OutputToTheConsoleDataFromTheList(FileCabinetRecord[] list)
+        private static void OutputToTheConsoleDataFromTheList(ReadOnlyCollection<FileCabinetRecord> list)
         {
             foreach (var record in list)
             {

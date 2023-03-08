@@ -37,28 +37,22 @@
             Validate a new record from user input with settings for adults.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetCustomService.ValidateParametrs(FileCabinetApp.FileCabinetRecordNewData)">
+        <member name="M:FileCabinetApp.FileCabinetCustomService.CreateValidator">
             <summary>
-            VValidate a new record from user input with settings for adults.
+            Validate a new record from user input with settings for adults.
             </summary>
-            <param name="fileCabinetRecordNewData">The new date in the recocrd.</param>
-            <exception cref="T:System.ArgumentNullException">If the firstName or lastName is equal null.</exception>
-            <exception cref="T:System.ArgumentException">The firstName or lastName length is less than 2 or greater than 15.The age is less than 18 or greater 150.
-            The gender isn't equal 'f','F' or 'm','M'. The height is less than 145 or greater than 250. The weight is less than 40.</exception>
+            <returns>Returns validator parameters for adult.</returns>
         </member>
         <member name="T:FileCabinetApp.FileCabinetDefaultService">
             <summary>
             Сhecking the values of the input parameters of the FileCabinetService class.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetDefaultService.ValidateParametrs(FileCabinetApp.FileCabinetRecordNewData)">
+        <member name="M:FileCabinetApp.FileCabinetDefaultService.CreateValidator">
             <summary>
             Validate a new record from user input.
             </summary>
-            <param name="fileCabinetRecordNewData">The new date in the record.</param>
-            <exception cref="T:System.ArgumentNullException">If the firstName or lastName is equal null.</exception>
-            <exception cref="T:System.ArgumentException">The firstName or lastName length is less than 2 or greater than 60.The dateOfBirth is less than 01-Jun-1950 or greater today's date.
-            The gender isn't equal 'f' or 'm'. The height is less than 0 or greater than 250. The weight is less than 0.</exception>
+            <returns>Returns validator parameters.</returns>
         </member>
         <member name="T:FileCabinetApp.FileCabinetRecord">
             <summary>
@@ -164,12 +158,6 @@
             Creates, edits and checks in entries. Finds records by parameters.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetService.ValidateParametrs(FileCabinetApp.FileCabinetRecordNewData)">
-            <summary>
-            Validate a new record from user input.
-            </summary>
-            <param name="fileCabinetRecordNewData">The new date in the record.</param>
-        </member>
         <member name="M:FileCabinetApp.FileCabinetService.CreateRecord(FileCabinetApp.FileCabinetRecordNewData)">
             <summary>
             Creates a new record from user input.
@@ -227,6 +215,12 @@
             </summary>
             <param name="id">The id entered by the user.</param>
             <returns>True if records exists and false if records don't exist.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.CreateValidator">
+            <summary>
+            Creates a new validator.
+            </summary>
+            <returns>Returns validator parameters.</returns>
         </member>
         <member name="T:FileCabinetApp.IRecordValidator">
             <summary>

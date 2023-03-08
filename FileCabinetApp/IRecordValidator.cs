@@ -9,7 +9,7 @@ namespace FileCabinetApp
     /// <summary>
     /// Validate a new record from user input with new validate parametrs.
     /// </summary>
-    internal interface IRecordValidator
+    public interface IRecordValidator
     {
         /// <summary>
         /// Validate a new record from user input with new validate parametrs.

@@ -20,12 +20,6 @@ namespace FileCabinetApp
         private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
 
         /// <summary>
-        /// Validate a new record from user input.
-        /// </summary>
-        /// <param name="fileCabinetRecordNewData">The new date in the record.</param>
-        public abstract void ValidateParametrs(FileCabinetRecordNewData fileCabinetRecordNewData);
-
-        /// <summary>
         /// Creates a new record from user input.
         /// </summary>
         /// <param name="fileCabinetRecordNewData">The new date in the record.</param>
@@ -35,7 +29,7 @@ namespace FileCabinetApp
         /// The gender isn't equal 'f' or 'm'. The height is less than 0 or greater than 250. The weight is less than 0.</exception>
         public int CreateRecord(FileCabinetRecordNewData fileCabinetRecordNewData)
         {
-            this.ValidateParametrs(fileCabinetRecordNewData);
+            this.CreateValidator().ValidateParametrs(fileCabinetRecordNewData);
 
             var record = new FileCabinetRecord
             {
@@ -83,8 +77,6 @@ namespace FileCabinetApp
         /// <exception cref="ArgumentException">if records with the specified ID do not exist.</exception>
         public void EditRecord(int id, FileCabinetRecordNewData fileCabinetRecordNewData)
         {
-            this.ValidateParametrs(fileCabinetRecordNewData);
-
             var result = this.list.FirstOrDefault(x => x.Id == id);
 
             if (result is null)
@@ -166,6 +158,12 @@ namespace FileCabinetApp
         {
             return this.list.Any(x => x.Id == id);
         }
+
+        /// <summary>
+        /// Creates a new validator.
+        /// </summary>
+        /// <returns>Returns validator parameters.</returns>
+        protected abstract IRecordValidator CreateValidator();
 
         private static void EditDictionary(Dictionary<string, List<FileCabinetRecord>> dictionary, string existingKey, FileCabinetRecord record, string newKey)
         {

@@ -192,21 +192,14 @@ namespace FileCabinetApp
         private static void Find(string parameters)
         {
             Console.Write("Enter search parameter: ");
-<<<<<<< HEAD
             var searchOptions = Console.ReadLine().ToLowerInvariant().Split(' ');
 
             if (searchOptions.Length != 2)
-=======
-            var input = Console.ReadLine().ToLowerInvariant().Split(' ');
-
-            if (input.Length != 2)
->>>>>>> main
             {
                 Console.WriteLine("You have entered an invalid search parameter. Two are needed.");
                 return;
             }
 
-<<<<<<< HEAD
             var searchParameter = searchOptions[1].Trim('"');
             switch (searchOptions[0])
             {
@@ -218,18 +211,6 @@ namespace FileCabinetApp
                     break;
                 case "dateofbirth":
                     if (DateTime.TryParseExact(searchParameter, "yyyy-MMM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateOfBirth))
-=======
-            switch (input[0])
-            {
-                case "firstname":
-                    OutputToTheConsoleDataFromTheList(Program.fileCabinetService.FindByFirstName(input[1].Trim('"')));
-                    break;
-                case "lastname":
-                    OutputToTheConsoleDataFromTheList(Program.fileCabinetService.FindByLastName(input[1].Trim('"')));
-                    break;
-                case "dateofbirth":
-                    if (DateTime.TryParseExact(input[1].Trim('"'), "yyyy-MMM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateOfBirth))
->>>>>>> main
                     {
                         OutputToTheConsoleDataFromTheList(Program.fileCabinetService.FindByDateOfBirth(dateOfBirth));
                         break;
@@ -237,11 +218,7 @@ namespace FileCabinetApp
                     else
                     {
                         Console.WriteLine("Error. You introduced the date in the wrong format. (correct format 2000-Jan-01)");
-<<<<<<< HEAD
                         return;
-=======
-                        throw new ArgumentException("Error. You introduced the date in the wrong format.");
->>>>>>> main
                     }
 
                 default:

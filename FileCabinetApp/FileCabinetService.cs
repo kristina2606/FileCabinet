@@ -10,7 +10,7 @@ namespace FileCabinetApp
     /// <summary>
     /// Creates, edits and checks in entries. Finds records by parameters.
     /// </summary>
-    public class FileCabinetService
+    public class FileCabinetService : IFileCabinetService
     {
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
 

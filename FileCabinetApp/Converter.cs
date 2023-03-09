@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Linq;
 
 namespace FileCabinetApp
 {
@@ -70,14 +71,7 @@ namespace FileCabinetApp
 
         private static bool IsStringCorrect(string name)
         {
-            var result = true;
-            foreach (var letter in name)
-            {
-                if (!char.IsLetter(letter))
-                {
-                    result = false;
-                }
-            }
+            bool result = name.All(letter => char.IsLetter(letter));
 
             return result;
         }

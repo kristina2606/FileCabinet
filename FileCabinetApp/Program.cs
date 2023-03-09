@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -23,6 +24,7 @@ namespace FileCabinetApp
 
         private static bool isRunning = true;
         private static IFileCabinetService fileCabinetService = new FileCabinetService(new DefaultValidator());
+        private static IUserInputValidation inputValidation = new UserInputValidationDafault();
         private static string validationRules = "Using default validation rules.";
 
         private static Tuple<string, Action<string>>[] commands = new Tuple<string, Action<string>>[]
@@ -62,12 +64,14 @@ namespace FileCabinetApp
                 if (comand[0] == "--validation-rules" && comand[1].ToLowerInvariant() == "custom")
                 {
                     fileCabinetService = new FileCabinetService(new CustomValidator());
+                    inputValidation = new UserInputValidationCustom();
                     validationRules = "Using custom validation rules.";
                 }
             }
             else if (args.Length == 2 && args[0] == "-v" && args[1].ToLowerInvariant() == "custom")
             {
                 fileCabinetService = new FileCabinetService(new CustomValidator());
+                inputValidation = new UserInputValidationCustom();
                 validationRules = "Using custom validation rules.";
             }
 
@@ -151,7 +155,24 @@ namespace FileCabinetApp
 
         private static void Create(string parameters)
         {
-            ReadInput(out string firstName, out string lastName, out DateTime dateOfBirth, out char gender, out short height, out decimal weight);
+            Console.Write("First name: ");
+            var firstName = ReadInput(StringConverter, inputValidation.FirstNameValidator);
+
+            Console.Write("Last name: ");
+            var lastName = ReadInput(StringConverter, inputValidation.LastNameValidator);
+
+            Console.Write("Date of birth: ");
+            var dateOfBirth = ReadInput(DateConverter, inputValidation.DateOfBirthValidator);
+
+            Console.Write("Gender (man - 'm' or woman - 'f'): ");
+            var gender = ReadInput(CharConverter, inputValidation.GenderValidator);
+
+            Console.Write("Height: ");
+            var height = ReadInput(ShortConverter, inputValidation.HeightValidator);
+
+            Console.Write("Weight: ");
+            var weight = ReadInput(DecimalConverter, inputValidation.WeightValidator);
+
             FileCabinetRecordNewData fileCabinetRecordNewData = new FileCabinetRecordNewData(firstName, lastName, dateOfBirth, gender, height, weight);
             int recordId = Program.fileCabinetService.CreateRecord(fileCabinetRecordNewData);
 
@@ -179,7 +200,24 @@ namespace FileCabinetApp
 
             if (Program.fileCabinetService.IsExist(id))
             {
-                ReadInput(out string firstName, out string lastName, out DateTime dateOfBirth, out char gender, out short height, out decimal weight);
+                Console.Write("First name: ");
+                var firstName = ReadInput(StringConverter, inputValidation.FirstNameValidator);
+
+                Console.Write("Last name: ");
+                var lastName = ReadInput(StringConverter, inputValidation.LastNameValidator);
+
+                Console.Write("Date of birth: ");
+                var dateOfBirth = ReadInput(DateConverter, inputValidation.DateOfBirthValidator);
+
+                Console.Write("Gender (man - 'm' or woman - 'f'): ");
+                var gender = ReadInput(CharConverter, inputValidation.GenderValidator);
+
+                Console.Write("Height: ");
+                var height = ReadInput(ShortConverter, inputValidation.HeightValidator);
+
+                Console.Write("Weight: ");
+                var weight = ReadInput(DecimalConverter, inputValidation.WeightValidator);
+
                 FileCabinetRecordNewData fileCabinetRecordNewData = new FileCabinetRecordNewData(firstName, lastName, dateOfBirth, gender, height, weight);
                 Program.fileCabinetService.EditRecord(id, fileCabinetRecordNewData);
 
@@ -243,72 +281,6 @@ namespace FileCabinetApp
             return result;
         }
 
-        private static void ReadInput(out string firstName, out string lastName, out DateTime dateOfBirth, out char gender, out short height, out decimal weight)
-        {
-            var culture = CultureInfo.InvariantCulture;
-
-            Console.Write("First name: ");
-            firstName = Console.ReadLine();
-            while (!IsStringCorrect(firstName))
-            {
-                Console.WriteLine("Your first name contains not only letters. Repeat the input.");
-                Console.Write("First name: ");
-                firstName = Console.ReadLine();
-            }
-
-            Console.Write("Last name: ");
-            lastName = Console.ReadLine();
-            while (!IsStringCorrect(lastName))
-            {
-                Console.WriteLine("Your last name contains not only letters. Repeat the input.");
-                Console.Write("Last name: ");
-                lastName = Console.ReadLine();
-            }
-
-            Console.Write("Date of birth: ");
-            var date = Console.ReadLine();
-            while (!DateTime.TryParseExact(date, "dd/MM/yyyy", culture, DateTimeStyles.None, out dateOfBirth))
-            {
-                Console.WriteLine("You introduced the date in the wrong format. Repeat the input of the date in the format 'dd/MM/yyyy'.");
-                Console.Write("Date of birth: ");
-                date = Console.ReadLine();
-            }
-
-            Console.Write("Gender (man - 'm' or woman - 'f'): ");
-            var inputGender = Console.ReadLine();
-            while (!IsStringCorrect(inputGender))
-            {
-                Console.WriteLine("The gender contains not only letters. Repeat the input.");
-                Console.Write("Gender (man - 'm' or woman - 'f'): ");
-                inputGender = Console.ReadLine();
-            }
-
-            while (!char.TryParse(inputGender, out gender))
-            {
-                Console.WriteLine("The gender length is not equal to one. Repeat the input.");
-                Console.Write("Gender (man - 'm' or woman - 'f'): ");
-                inputGender = Console.ReadLine();
-            }
-
-            Console.Write("Height: ");
-            var inputHeight = Console.ReadLine();
-            while (!short.TryParse(inputHeight, culture, out height))
-            {
-                Console.WriteLine("Height is entered in the wrong format. Repeat the input.");
-                Console.Write("Height: ");
-                inputHeight = Console.ReadLine();
-            }
-
-            Console.Write("Weight: ");
-            var inputWeight = Console.ReadLine();
-            while (!decimal.TryParse(inputWeight, culture, out weight))
-            {
-                Console.WriteLine("Weight is entered in the wrong format. Repeat the input.");
-                Console.Write("Weight: ");
-                inputWeight = Console.ReadLine();
-            }
-        }
-
         private static void OutputToTheConsoleDataFromTheList(ReadOnlyCollection<FileCabinetRecord> list)
         {
             foreach (var record in list)
@@ -323,6 +295,70 @@ namespace FileCabinetApp
 
                 Console.WriteLine($"#{id}, {firstName}, {lastName}, {dateOfBirth}, {gender}, {height}, {weight}");
             }
+        }
+
+        private static T ReadInput<T>(Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator)
+        {
+            do
+            {
+                T value;
+
+                var input = Console.ReadLine();
+                var conversionResult = converter(input);
+
+                if (!conversionResult.Item1)
+                {
+                    Console.WriteLine($"Conversion failed: {conversionResult.Item2}. Please, correct your input.");
+                    continue;
+                }
+
+                value = conversionResult.Item3;
+
+                var validationResult = validator(value);
+                if (!validationResult.Item1)
+                {
+                    Console.WriteLine($"Validation failed: {validationResult.Item2}. Please, correct your input.");
+                    continue;
+                }
+
+                return value;
+            }
+            while (true);
+        }
+
+        private static Tuple<bool, string, string> StringConverter(string name)
+        {
+            bool a = IsStringCorrect(name);
+
+            return new Tuple<bool, string, string>(a, name, name);
+        }
+
+        private static Tuple<bool, string, DateTime> DateConverter(string date)
+        {
+            bool a = DateTime.TryParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var day);
+
+            return new Tuple<bool, string, DateTime>(a, date, day);
+        }
+
+        private static Tuple<bool, string, char> CharConverter(string inputGender)
+        {
+            bool a = char.TryParse(inputGender, out var gender);
+
+            return new Tuple<bool, string, char>(a, inputGender, gender);
+        }
+
+        private static Tuple<bool, string, short> ShortConverter(string inputHeight)
+        {
+            bool a = short.TryParse(inputHeight, CultureInfo.InvariantCulture, out var height);
+
+            return new Tuple<bool, string, short>(a, inputHeight, height);
+        }
+
+        private static Tuple<bool, string, decimal> DecimalConverter(string inputWeight)
+        {
+            bool a = short.TryParse(inputWeight, CultureInfo.InvariantCulture, out var weight);
+
+            return new Tuple<bool, string, decimal>(a, inputWeight, weight);
         }
     }
 }

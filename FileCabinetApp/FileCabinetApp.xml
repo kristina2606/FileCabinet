@@ -4,5 +4,468 @@
         <name>FileCabinetApp</name>
     </assembly>
     <members>
+        <member name="T:FileCabinetApp.Converter">
+            <summary>
+            Converts a string to a value of the desired type.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Converter.StringConverter(System.String)">
+            <summary>
+            Checks a string for characters.
+            </summary>
+            <param name="name">Get string from user input.</param>
+            <returns>Returns information about how the validation went, the string to convert, and the converted data type.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Converter.DateConverter(System.String)">
+            <summary>
+            Converts a string to a DateTime type.
+            </summary>
+            <param name="date">Get string from user input.</param>
+            <returns>Returns information about how the validation went, the string to convert, and the converted data type.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Converter.CharConverter(System.String)">
+            <summary>
+            Converts a string to a char type.
+            </summary>
+            <param name="inputGender">Get string from user input.</param>
+            <returns>Returns information about how the validation went, the string to convert, and the converted data type.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Converter.ShortConverter(System.String)">
+            <summary>
+            Converts a string to a short type.
+            </summary>
+            <param name="inputHeight">Get string from user input.</param>
+            <returns>Returns information about how the validation went, the string to convert, and the converted data type.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Converter.DecimalConverter(System.String)">
+            <summary>
+            Converts a string to a decimal type.
+            </summary>
+            <param name="inputWeight">Get string from user input.</param>
+            <returns>Returns information about how the validation went, the string to convert, and the converted data type.</returns>
+        </member>
+        <member name="T:FileCabinetApp.CustomValidator">
+            <summary>
+             Validate a new record from user input with settings for adults.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CustomValidator.Validate(FileCabinetApp.FileCabinetRecordNewData)">
+            <summary>
+            Validate a new record from user input withsettings for adults.
+            </summary>
+            <param name="fileCabinetRecordNewData">The new date in the recocrd.</param>
+            <exception cref="T:System.ArgumentNullException">If the firstName or lastName is equal null.</exception>
+            <exception cref="T:System.ArgumentException">The firstName or lastName length is less than 2 or greater than 15.The age is less than 18 or greater 150.
+            The gender isn't equal 'f','F' or 'm','M'. The height is less than 145 or greater than 250. The weight is less than 40.</exception>
+        </member>
+        <member name="T:FileCabinetApp.DefaultValidator">
+            <summary>
+            Validate a new record from user input.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.DefaultValidator.Validate(FileCabinetApp.FileCabinetRecordNewData)">
+            <summary>
+            Validate a new record from user input.
+            </summary>
+            <param name="fileCabinetRecordNewData">The new date in the record.</param>
+            <exception cref="T:System.ArgumentNullException">If the firstName or lastName is equal null.</exception>
+            <exception cref="T:System.ArgumentException">The firstName or lastName length is less than 2 or greater than 60.The dateOfBirth is less than 01-Jun-1950 or greater today's date.
+            The gender isn't equal 'f' or 'm'. The height is less than 0 or greater than 250. The weight is less than 0.</exception>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetRecord">
+            <summary>
+            Fields for creating a record.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.Id">
+            <summary>
+            Gets or sets record id.
+            </summary>
+            <value>Record id of a person.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.FirstName">
+            <summary>
+            Gets or sets the first name.
+            </summary>
+            <value>The first name of a person.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.LastName">
+            <summary>
+            Gets or sets the last name of a person.
+            </summary>
+            <value>The last name of a person.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.DateOfBirth">
+            <summary>
+            Gets or sets the date of birth of a person.
+            </summary>
+            <value>The date of birth of a person.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.Gender">
+            <summary>
+            Gets or sets the gender of a person.
+            </summary>
+            <value>The gender of a person.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.Height">
+            <summary>
+            Gets or sets the height of a person.
+            </summary>
+            <value>The height of a person.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.Weight">
+            <summary>
+            Gets or sets the weight of a person.
+            </summary>
+            <value>The weight of a person.</value>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetRecordNewData">
+            <summary>
+            Gets new data from user input.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordNewData.#ctor(System.String,System.String,System.DateTime,System.Char,System.Int16,System.Decimal)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordNewData"/> class.
+            </summary>
+            <param name="firstName">Gets first name from user input.</param>
+            <param name="lastName">Gets last name from user input.</param>
+            <param name="dateOfBirth">Gets date of birth from user input.</param>
+            <param name="gender">Gets gender from user input.</param>
+            <param name="height">Gets height from user input.</param>
+            <param name="weight">Gets weight from user input.</param>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecordNewData.FirstName">
+            <summary>
+             Gets first name from user input.
+            </summary>
+            <value> New first name of a person. </value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecordNewData.LastName">
+            <summary>
+            Gets last name from user input.
+            </summary>
+            <value> New last name of a person. </value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecordNewData.DateOfBirth">
+            <summary>
+            Gets date of birth from user input.
+            </summary>
+            <value> New date of birth of a person. </value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecordNewData.Gender">
+            <summary>
+            Gets gender from user input.
+            </summary>
+            <value> New gender of a person. </value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecordNewData.Height">
+            <summary>
+            Gets height from user input.
+            </summary>
+            <value> New height of a person. </value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecordNewData.Weight">
+            <summary>
+            Gets weight from user input.
+            </summary>
+            <value> New weight of a person. </value>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetService">
+            <summary>
+            Creates, edits and checks in entries. Finds records by parameters.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.#ctor(FileCabinetApp.IRecordValidator)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetService"/> class.
+            The class constructor takes a validation parameter.
+            </summary>
+            <param name="validator">Validation parameter.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.CreateRecord(FileCabinetApp.FileCabinetRecordNewData)">
+            <summary>
+            Creates a new record from user input.
+            </summary>
+            <param name="fileCabinetRecordNewData">The new date in the record.</param>
+            <returns>Returns the id of the created record.</returns>
+            <exception cref="T:System.ArgumentNullException">If the firstName or lastName is equal null.</exception>
+            <exception cref="T:System.ArgumentException">The firstName or lastName length is less than 2 or greater than 60.The dateOfBirth is less than 01-Jun-1950 or greater today's date.
+            The gender isn't equal 'f' or 'm'. The height is less than 0 or greater than 250. The weight is less than 0.</exception>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.GetRecords">
+            <summary>
+            Gets all existing records.
+            </summary>
+            <returns>Returns all existing records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.GetStat">
+            <summary>
+            Gets the count of all existing records.
+            </summary>
+            <returns>Returns the count of all existing records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.EditRecord(System.Int32,FileCabinetApp.FileCabinetRecordNewData)">
+            <summary>
+            Edits an already existing entry by id.
+            </summary>
+            <param name="id">The id of the record to be modified.</param>
+            <param name="fileCabinetRecordNewData">The new date in the record.</param>
+            <exception cref="T:System.ArgumentException">if records with the specified ID do not exist.</exception>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.FindByFirstName(System.String)">
+            <summary>
+            Finds all records by first name.
+            </summary>
+            <param name="firstName">The parameter by which you want to find all existing records.</param>
+            <returns>Returns  all records by first name.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.FindByLastName(System.String)">
+            <summary>
+            Finds all records by last name.
+            </summary>
+            <param name="lastName">The parameter by which you want to find all existing records.</param>
+            <returns>Returns all records by last name.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.FindByDateOfBirth(System.DateTime)">
+            <summary>
+            Finds all records by date of birth.
+            </summary>
+            <param name="dateOfBirth">The parameter by which you want to find all existing records.</param>
+            <returns>Returns all records by date of birth.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.IsExist(System.Int32)">
+            <summary>
+            Checks if records with the specified id exists.
+            </summary>
+            <param name="id">The id entered by the user.</param>
+            <returns>True if records exists and false if records don't exist.</returns>
+        </member>
+        <member name="T:FileCabinetApp.IFileCabinetService">
+            <summary>
+            Creates, edits and checks in entries. Finds records by parameters.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.CreateRecord(FileCabinetApp.FileCabinetRecordNewData)">
+            <summary>
+            Creates a new record from user input.
+            </summary>
+            <param name="fileCabinetRecordNewData">The new date in the record.</param>
+            <returns>Returns the id of the created record.</returns>
+            <exception cref="T:System.ArgumentNullException">If the firstName or lastName is equal null.</exception>
+            <exception cref="T:System.ArgumentException">The firstName or lastName length is less than 2 or greater than 60.The dateOfBirth is less than 01-Jun-1950 or greater today's date.
+            The gender isn't equal 'f' or 'm'. The height is less than 0 or greater than 250. The weight is less than 0.</exception>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.GetRecords">
+            <summary>
+            Gets all existing records.
+            </summary>
+            <returns>Returns all existing records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.GetStat">
+            <summary>
+            Gets the count of all existing records.
+            </summary>
+            <returns>Returns the count of all existing records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.EditRecord(System.Int32,FileCabinetApp.FileCabinetRecordNewData)">
+            <summary>
+            Edits an already existing entry by id.
+            </summary>
+            <param name="id">The id of the record to be modified.</param>
+            <param name="fileCabinetRecordNewData">The new date in the record.</param>
+            <exception cref="T:System.ArgumentException">if records with the specified ID do not exist.</exception>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.FindByFirstName(System.String)">
+            <summary>
+            Finds all records by first name.
+            </summary>
+            <param name="firstName">The parameter by which you want to find all existing records.</param>
+            <returns>Returns  all records by first name.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.FindByLastName(System.String)">
+            <summary>
+            Finds all records by last name.
+            </summary>
+            <param name="lastName">The parameter by which you want to find all existing records.</param>
+            <returns>Returns all records by last name.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.FindByDateOfBirth(System.DateTime)">
+            <summary>
+            Finds all records by date of birth.
+            </summary>
+            <param name="dateOfBirth">The parameter by which you want to find all existing records.</param>
+            <returns>Returns all records by date of birth.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.IsExist(System.Int32)">
+            <summary>
+            Checks if records with the specified id exists.
+            </summary>
+            <param name="id">The id entered by the user.</param>
+            <returns>True if records exists and false if records don't exist.</returns>
+        </member>
+        <member name="T:FileCabinetApp.IRecordValidator">
+            <summary>
+            Validate a new record from user input with new validate parametrs.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.IRecordValidator.Validate(FileCabinetApp.FileCabinetRecordNewData)">
+            <summary>
+            Validate a new record from user input with new validate parametrs.
+            </summary>
+            <param name="fileCabinetRecordNewData">The new date in the record.</param>
+        </member>
+        <member name="T:FileCabinetApp.IUserInputValidation">
+            <summary>
+             Validate a new record from user input.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.IUserInputValidation.ValidateFirstName(System.String)">
+            <summary>
+            Gets first name from user input.
+            </summary>
+            <param name="firstName">First name of a person.</param>
+            <returns>Returns information about how the validation went and the value being validated.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IUserInputValidation.ValidateLastName(System.String)">
+            <summary>
+            Gets last name from user input.
+            </summary>
+            <param name="lastName">Last name of a person.</param>
+            <returns>Returns information about how the validation went and the value being validated.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IUserInputValidation.ValidateDateOfBirth(System.DateTime)">
+            <summary>
+            Gets date of birth from user input.
+            </summary>
+            <param name="dateOfBirth">Date of birth of a person.</param>
+            <returns>Returns information about how the validation went and the value being validated.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IUserInputValidation.ValidateGender(System.Char)">
+            <summary>
+            Gets gender from user input.
+            </summary>
+            <param name="gender">Gender of a person.</param>
+            <returns>Returns information about how the validation went and the value being validated.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IUserInputValidation.ValidateHeight(System.Int16)">
+            <summary>
+            Gets height from user input.
+            </summary>
+            <param name="height">Height of a person.</param>
+            <returns>Returns information about how the validation went and the value being validated.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IUserInputValidation.ValidateWeight(System.Decimal)">
+            <summary>
+            Gets weight from user input.
+            </summary>
+            <param name="weight">Weight of a person.</param>
+            <returns>Returns information about how the validation went and the value being validated.</returns>
+        </member>
+        <member name="T:FileCabinetApp.Program">
+            <summary>
+            Works with user input when working with records.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Program.Main(System.String[])">
+            <summary>
+            Receives a command from the user.
+            </summary>
+            <param name="args">Arguments of the appropriate type.</param>
+        </member>
+        <member name="T:FileCabinetApp.UserInputValidationCustom">
+            <summary>
+            Validate a new record from user input with settings for adults.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.UserInputValidationCustom.ValidateFirstName(System.String)">
+            <summary>
+            Gets first name from user input.
+            </summary>
+            <param name="firstName">First name of a person.</param>
+            <returns>Returns information about how the validation went and the value being validated.</returns>
+        </member>
+        <member name="M:FileCabinetApp.UserInputValidationCustom.ValidateLastName(System.String)">
+            <summary>
+            Gets last name from user input.
+            </summary>
+            <param name="lastName">Last name of a person.</param>
+            <returns>Returns information about how the validation went and the value being validated.</returns>
+        </member>
+        <member name="M:FileCabinetApp.UserInputValidationCustom.ValidateDateOfBirth(System.DateTime)">
+            <summary>
+            Gets date of birth from user input.
+            </summary>
+            <param name="dateOfBirth">Date of birth of a person.</param>
+            <returns>Returns information about how the validation went and the value being validated.</returns>
+        </member>
+        <member name="M:FileCabinetApp.UserInputValidationCustom.ValidateGender(System.Char)">
+            <summary>
+            Gets gender from user input.
+            </summary>
+            <param name="gender">Gender of a person.</param>
+            <returns>Returns information about how the validation went and the value being validated.</returns>
+        </member>
+        <member name="M:FileCabinetApp.UserInputValidationCustom.ValidateHeight(System.Int16)">
+            <summary>
+            Gets height from user input.
+            </summary>
+            <param name="height">Height of a person.</param>
+            <returns>Returns information about how the validation went and the value being validated.</returns>
+        </member>
+        <member name="M:FileCabinetApp.UserInputValidationCustom.ValidateWeight(System.Decimal)">
+            <summary>
+            Gets weight from user input.
+            </summary>
+            <param name="weight">Weight of a person.</param>
+            <returns>Returns information about how the validation went and the value being validated.</returns>
+        </member>
+        <member name="T:FileCabinetApp.UserInputValidationDafault">
+            <summary>
+            Validate a new record from user input.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.UserInputValidationDafault.ValidateFirstName(System.String)">
+            <summary>
+            Gets first name from user input.
+            </summary>
+            <param name="firstName">First name of a person.</param>
+            <returns>Returns information about how the validation went and the value being validated.</returns>
+        </member>
+        <member name="M:FileCabinetApp.UserInputValidationDafault.ValidateLastName(System.String)">
+            <summary>
+            Gets last name from user input.
+            </summary>
+            <param name="lastName">Last name of a person.</param>
+            <returns>Returns information about how the validation went and the value being validated.</returns>
+        </member>
+        <member name="M:FileCabinetApp.UserInputValidationDafault.ValidateDateOfBirth(System.DateTime)">
+            <summary>
+            Gets date of birth from user input.
+            </summary>
+            <param name="dateOfBirth">Date of birth of a person.</param>
+            <returns>Returns information about how the validation went and the value being validated.</returns>
+        </member>
+        <member name="M:FileCabinetApp.UserInputValidationDafault.ValidateGender(System.Char)">
+            <summary>
+            Gets gender from user input.
+            </summary>
+            <param name="gender">Gender of a person.</param>
+            <returns>Returns information about how the validation went and the value being validated.</returns>
+        </member>
+        <member name="M:FileCabinetApp.UserInputValidationDafault.ValidateHeight(System.Int16)">
+            <summary>
+            Gets height from user input.
+            </summary>
+            <param name="height">Height of a person.</param>
+            <returns>Returns information about how the validation went and the value being validated.</returns>
+        </member>
+        <member name="M:FileCabinetApp.UserInputValidationDafault.ValidateWeight(System.Decimal)">
+            <summary>
+            Gets weight from user input.
+            </summary>
+            <param name="weight">Weight of a person.</param>
+            <returns>Returns information about how the validation went and the value being validated.</returns>
+        </member>
     </members>
 </doc>

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -9,6 +11,9 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FileCabinetApp
 {
+    /// <summary>
+    /// Works with user input when working with records.
+    /// </summary>
     public static class Program
     {
         private const string DeveloperName = "Krystsina Labada";
@@ -18,7 +23,9 @@ namespace FileCabinetApp
         private const int ExplanationHelpIndex = 2;
 
         private static bool isRunning = true;
-        private static FileCabinetService fileCabinetService = new FileCabinetService();
+        private static IFileCabinetService fileCabinetService = new FileCabinetService(new DefaultValidator());
+        private static IUserInputValidation inputValidation = new UserInputValidationDafault();
+        private static string validationRules = "Using default validation rules.";
 
         private static Tuple<string, Action<string>>[] commands = new Tuple<string, Action<string>>[]
         {
@@ -37,14 +44,38 @@ namespace FileCabinetApp
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
             new string[] { "stat", "displays statistics on records", "The 'stat' displays statistics on records." },
             new string[] { "create", "creat new record", "The 'create' creat new record." },
-            new string[] { "list", "returns a list of records added to the service.", "The 'list' returns a list of records added to the service." },
+            new string[] { "list", "returns a list of records.", "The 'list' returns a list of records." },
             new string[] { "edit", "editing a record by id.", "The 'edit' editing a record by id." },
             new string[] { "find", "finds all existing records by parameter.", "The 'find' finds all existing records by parameter." },
         };
 
+        /// <summary>
+        /// Receives a command from the user.
+        /// </summary>
+        /// <param name="args">Arguments of the appropriate type.</param>
         public static void Main(string[] args)
         {
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
+
+            if (args.Length == 1)
+            {
+                var comand = args[0].Split('=');
+
+                if (comand[0] == "--validation-rules" && comand[1].ToLowerInvariant() == "custom")
+                {
+                    fileCabinetService = new FileCabinetService(new CustomValidator());
+                    inputValidation = new UserInputValidationCustom();
+                    validationRules = "Using custom validation rules.";
+                }
+            }
+            else if (args.Length == 2 && args[0] == "-v" && args[1].ToLowerInvariant() == "custom")
+            {
+                fileCabinetService = new FileCabinetService(new CustomValidator());
+                inputValidation = new UserInputValidationCustom();
+                validationRules = "Using custom validation rules.";
+            }
+
+            Console.WriteLine(Program.validationRules);
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
 
@@ -118,22 +149,39 @@ namespace FileCabinetApp
 
         private static void Stat(string parameters)
         {
-            var recordsCount = Program.fileCabinetService.GetStat();
+            int recordsCount = Program.fileCabinetService.GetStat();
             Console.WriteLine($"{recordsCount} record(s).");
         }
 
         private static void Create(string parameters)
         {
-            ReadInput(out string firstName, out string lastName, out DateTime dateOfBirth, out char gender, out short height, out decimal weight);
+            Console.Write("First name: ");
+            var firstName = ReadInput(Converter.StringConverter, inputValidation.ValidateFirstName);
 
-            var recordId = Program.fileCabinetService.CreateRecord(firstName, lastName, dateOfBirth, gender, height, weight);
+            Console.Write("Last name: ");
+            var lastName = ReadInput(Converter.StringConverter, inputValidation.ValidateLastName);
+
+            Console.Write("Date of birth: ");
+            var dateOfBirth = ReadInput(Converter.DateConverter, inputValidation.ValidateDateOfBirth);
+
+            Console.Write("Gender (man - 'm' or woman - 'f'): ");
+            var gender = ReadInput(Converter.CharConverter, inputValidation.ValidateGender);
+
+            Console.Write("Height: ");
+            var height = ReadInput(Converter.ShortConverter, inputValidation.ValidateHeight);
+
+            Console.Write("Weight: ");
+            var weight = ReadInput(Converter.DecimalConverter, inputValidation.ValidateWeight);
+
+            FileCabinetRecordNewData fileCabinetRecordNewData = new FileCabinetRecordNewData(firstName, lastName, dateOfBirth, gender, height, weight);
+            int recordId = Program.fileCabinetService.CreateRecord(fileCabinetRecordNewData);
 
             Console.WriteLine($"Record #{recordId} is created.");
         }
 
         private static void List(string parameters)
         {
-            var list = Program.fileCabinetService.GetRecords();
+            ReadOnlyCollection<FileCabinetRecord> list = Program.fileCabinetService.GetRecords();
 
             OutputToTheConsoleDataFromTheList(list);
         }
@@ -152,8 +200,26 @@ namespace FileCabinetApp
 
             if (Program.fileCabinetService.IsExist(id))
             {
-                ReadInput(out string firstName, out string lastName, out DateTime dateOfBirth, out char gender, out short height, out decimal weight);
-                Program.fileCabinetService.EditRecord(id, firstName, lastName, dateOfBirth, gender, height, weight);
+                Console.Write("First name: ");
+                var firstName = ReadInput(Converter.StringConverter, inputValidation.ValidateFirstName);
+
+                Console.Write("Last name: ");
+                var lastName = ReadInput(Converter.StringConverter, inputValidation.ValidateLastName);
+
+                Console.Write("Date of birth: ");
+                var dateOfBirth = ReadInput(Converter.DateConverter, inputValidation.ValidateDateOfBirth);
+
+                Console.Write("Gender (man - 'm' or woman - 'f'): ");
+                var gender = ReadInput(Converter.CharConverter, inputValidation.ValidateGender);
+
+                Console.Write("Height: ");
+                var height = ReadInput(Converter.ShortConverter, inputValidation.ValidateHeight);
+
+                Console.Write("Weight: ");
+                var weight = ReadInput(Converter.DecimalConverter, inputValidation.ValidateWeight);
+
+                FileCabinetRecordNewData fileCabinetRecordNewData = new FileCabinetRecordNewData(firstName, lastName, dateOfBirth, gender, height, weight);
+                Program.fileCabinetService.EditRecord(id, fileCabinetRecordNewData);
 
                 Console.WriteLine($"Record #{id} is updated.");
             }
@@ -166,24 +232,25 @@ namespace FileCabinetApp
         private static void Find(string parameters)
         {
             Console.Write("Enter search parameter: ");
-            var input = Console.ReadLine().ToLowerInvariant().Split(' ');
+            var searchOptions = Console.ReadLine().ToLowerInvariant().Split(' ');
 
-            if (input.Length != 2)
+            if (searchOptions.Length != 2)
             {
                 Console.WriteLine("You have entered an invalid search parameter. Two are needed.");
                 return;
             }
 
-            switch (input[0])
+            var searchParameter = searchOptions[1].Trim('"');
+            switch (searchOptions[0])
             {
                 case "firstname":
-                    OutputToTheConsoleDataFromTheList(Program.fileCabinetService.FindByFirstName(input[1].Trim('"')));
+                    OutputToTheConsoleDataFromTheList(Program.fileCabinetService.FindByFirstName(searchParameter));
                     break;
                 case "lastname":
-                    OutputToTheConsoleDataFromTheList(Program.fileCabinetService.FindByLastName(input[1].Trim('"')));
+                    OutputToTheConsoleDataFromTheList(Program.fileCabinetService.FindByLastName(searchParameter));
                     break;
                 case "dateofbirth":
-                    if (DateTime.TryParseExact(input[1].Trim('"'), "yyyy-MMM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateOfBirth))
+                    if (DateTime.TryParseExact(searchParameter, "yyyy-MMM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateOfBirth))
                     {
                         OutputToTheConsoleDataFromTheList(Program.fileCabinetService.FindByDateOfBirth(dateOfBirth));
                         break;
@@ -191,7 +258,7 @@ namespace FileCabinetApp
                     else
                     {
                         Console.WriteLine("Error. You introduced the date in the wrong format. (correct format 2000-Jan-01)");
-                        throw new ArgumentException("Error. You introduced the date in the wrong format.");
+                        return;
                     }
 
                 default:
@@ -200,87 +267,7 @@ namespace FileCabinetApp
             }
         }
 
-        private static bool IsStringCorrect(string name)
-        {
-            var result = true;
-            foreach (var letter in name)
-            {
-                if (!char.IsLetter(letter))
-                {
-                    result = false;
-                }
-            }
-
-            return result;
-        }
-
-        private static void ReadInput(out string firstName, out string lastName, out DateTime dateOfBirth, out char gender, out short height, out decimal weight)
-        {
-            var culture = CultureInfo.InvariantCulture;
-
-            Console.Write("First name: ");
-            firstName = Console.ReadLine();
-            while (!IsStringCorrect(firstName))
-            {
-                Console.WriteLine("Your first name contains not only letters. Repeat the input.");
-                Console.Write("First name: ");
-                firstName = Console.ReadLine();
-            }
-
-            Console.Write("Last name: ");
-            lastName = Console.ReadLine();
-            while (!IsStringCorrect(lastName))
-            {
-                Console.WriteLine("Your last name contains not only letters. Repeat the input.");
-                Console.Write("Last name: ");
-                lastName = Console.ReadLine();
-            }
-
-            Console.Write("Date of birth: ");
-            var date = Console.ReadLine();
-            while (!DateTime.TryParseExact(date, "dd/MM/yyyy", culture, DateTimeStyles.None, out dateOfBirth))
-            {
-                Console.WriteLine("You introduced the date in the wrong format. Repeat the input of the date in the format 'dd/MM/yyyy'.");
-                Console.Write("Date of birth: ");
-                date = Console.ReadLine();
-            }
-
-            Console.Write("Gender (man - 'm' or woman - 'f'): ");
-            var inputGender = Console.ReadLine();
-            while (!IsStringCorrect(inputGender))
-            {
-                Console.WriteLine("The gender contains not only letters. Repeat the input.");
-                Console.Write("Gender (man - 'm' or woman - 'f'): ");
-                inputGender = Console.ReadLine();
-            }
-
-            while (!char.TryParse(inputGender, out gender))
-            {
-                Console.WriteLine("The gender length is not equal to one. Repeat the input.");
-                Console.Write("Gender (man - 'm' or woman - 'f'): ");
-                inputGender = Console.ReadLine();
-            }
-
-            Console.Write("Height: ");
-            var inputHeight = Console.ReadLine();
-            while (!short.TryParse(inputHeight, culture, out height))
-            {
-                Console.WriteLine("Height is entered in the wrong format. Repeat the input.");
-                Console.Write("Height: ");
-                inputHeight = Console.ReadLine();
-            }
-
-            Console.Write("Weight: ");
-            var inputWeight = Console.ReadLine();
-            while (!decimal.TryParse(inputWeight, culture, out weight))
-            {
-                Console.WriteLine("Weight is entered in the wrong format. Repeat the input.");
-                Console.Write("Weight: ");
-                inputWeight = Console.ReadLine();
-            }
-        }
-
-        private static void OutputToTheConsoleDataFromTheList(FileCabinetRecord[] list)
+        private static void OutputToTheConsoleDataFromTheList(ReadOnlyCollection<FileCabinetRecord> list)
         {
             foreach (var record in list)
             {
@@ -294,6 +281,35 @@ namespace FileCabinetApp
 
                 Console.WriteLine($"#{id}, {firstName}, {lastName}, {dateOfBirth}, {gender}, {height}, {weight}");
             }
+        }
+
+        private static T ReadInput<T>(Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator)
+        {
+            do
+            {
+                T value;
+
+                var input = Console.ReadLine();
+                var conversionResult = converter(input);
+
+                if (!conversionResult.Item1)
+                {
+                    Console.WriteLine($"Conversion failed: {conversionResult.Item2}. Please, correct your input.");
+                    continue;
+                }
+
+                value = conversionResult.Item3;
+
+                var validationResult = validator(value);
+                if (!validationResult.Item1)
+                {
+                    Console.WriteLine($"Validation failed: {validationResult.Item2}. Please, correct your input.");
+                    continue;
+                }
+
+                return value;
+            }
+            while (true);
         }
     }
 }

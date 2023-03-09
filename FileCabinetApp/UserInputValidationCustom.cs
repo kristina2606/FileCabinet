@@ -17,7 +17,7 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="firstName">First name of a person.</param>
         /// <returns>Returns information about how the validation went and the value being validated.</returns>
-        public Tuple<bool, string> FirstNameValidator(string firstName)
+        public Tuple<bool, string> ValidateFirstName(string firstName)
         {
             bool validationStatus = true;
             if (string.IsNullOrEmpty(firstName) || firstName.Length < 2 || firstName.Length > 15)
@@ -33,7 +33,7 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="lastName">Last name of a person.</param>
         /// <returns>Returns information about how the validation went and the value being validated.</returns>
-        public Tuple<bool, string> LastNameValidator(string lastName)
+        public Tuple<bool, string> ValidateLastName(string lastName)
         {
             bool validationStatus = true;
             if (string.IsNullOrEmpty(lastName) || lastName.Length < 2 || lastName.Length > 20)
@@ -49,7 +49,7 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="dateOfBirth">Date of birth of a person.</param>
         /// <returns>Returns information about how the validation went and the value being validated.</returns>
-        public Tuple<bool, string> DateOfBirthValidator(DateTime dateOfBirth)
+        public Tuple<bool, string> ValidateDateOfBirth(DateTime dateOfBirth)
         {
             bool validationStatus = true;
             if (DateTime.Now.Year - dateOfBirth.Year < 18 || DateTime.Now.Year - dateOfBirth.Year > 150)
@@ -65,7 +65,7 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="gender">Gender of a person.</param>
         /// <returns>Returns information about how the validation went and the value being validated.</returns>
-        public Tuple<bool, string> GenderValidator(char gender)
+        public Tuple<bool, string> ValidateGender(char gender)
         {
             bool validationStatus = true;
             if (gender != 'f' && gender != 'F' && gender != 'm' && gender != 'M')
@@ -81,7 +81,7 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="height">Height of a person.</param>
         /// <returns>Returns information about how the validation went and the value being validated.</returns>
-        public Tuple<bool, string> HeightValidator(short height)
+        public Tuple<bool, string> ValidateHeight(short height)
         {
             bool validationStatus = true;
             if (height < 145 || height > 250)
@@ -97,7 +97,7 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="weight">Weight of a person.</param>
         /// <returns>Returns information about how the validation went and the value being validated.</returns>
-        public Tuple<bool, string> WeightValidator(decimal weight)
+        public Tuple<bool, string> ValidateWeight(decimal weight)
         {
             bool validationStatus = true;
             if (weight <= 40)

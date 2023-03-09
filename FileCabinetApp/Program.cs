@@ -156,22 +156,22 @@ namespace FileCabinetApp
         private static void Create(string parameters)
         {
             Console.Write("First name: ");
-            var firstName = ReadInput(StringConverter, inputValidation.FirstNameValidator);
+            var firstName = ReadInput(Converter.StringConverter, inputValidation.ValidateFirstName);
 
             Console.Write("Last name: ");
-            var lastName = ReadInput(StringConverter, inputValidation.LastNameValidator);
+            var lastName = ReadInput(Converter.StringConverter, inputValidation.ValidateLastName);
 
             Console.Write("Date of birth: ");
-            var dateOfBirth = ReadInput(DateConverter, inputValidation.DateOfBirthValidator);
+            var dateOfBirth = ReadInput(Converter.DateConverter, inputValidation.ValidateDateOfBirth);
 
             Console.Write("Gender (man - 'm' or woman - 'f'): ");
-            var gender = ReadInput(CharConverter, inputValidation.GenderValidator);
+            var gender = ReadInput(Converter.CharConverter, inputValidation.ValidateGender);
 
             Console.Write("Height: ");
-            var height = ReadInput(ShortConverter, inputValidation.HeightValidator);
+            var height = ReadInput(Converter.ShortConverter, inputValidation.ValidateHeight);
 
             Console.Write("Weight: ");
-            var weight = ReadInput(DecimalConverter, inputValidation.WeightValidator);
+            var weight = ReadInput(Converter.DecimalConverter, inputValidation.ValidateWeight);
 
             FileCabinetRecordNewData fileCabinetRecordNewData = new FileCabinetRecordNewData(firstName, lastName, dateOfBirth, gender, height, weight);
             int recordId = Program.fileCabinetService.CreateRecord(fileCabinetRecordNewData);
@@ -201,22 +201,22 @@ namespace FileCabinetApp
             if (Program.fileCabinetService.IsExist(id))
             {
                 Console.Write("First name: ");
-                var firstName = ReadInput(StringConverter, inputValidation.FirstNameValidator);
+                var firstName = ReadInput(Converter.StringConverter, inputValidation.ValidateFirstName);
 
                 Console.Write("Last name: ");
-                var lastName = ReadInput(StringConverter, inputValidation.LastNameValidator);
+                var lastName = ReadInput(Converter.StringConverter, inputValidation.ValidateLastName);
 
                 Console.Write("Date of birth: ");
-                var dateOfBirth = ReadInput(DateConverter, inputValidation.DateOfBirthValidator);
+                var dateOfBirth = ReadInput(Converter.DateConverter, inputValidation.ValidateDateOfBirth);
 
                 Console.Write("Gender (man - 'm' or woman - 'f'): ");
-                var gender = ReadInput(CharConverter, inputValidation.GenderValidator);
+                var gender = ReadInput(Converter.CharConverter, inputValidation.ValidateGender);
 
                 Console.Write("Height: ");
-                var height = ReadInput(ShortConverter, inputValidation.HeightValidator);
+                var height = ReadInput(Converter.ShortConverter, inputValidation.ValidateHeight);
 
                 Console.Write("Weight: ");
-                var weight = ReadInput(DecimalConverter, inputValidation.WeightValidator);
+                var weight = ReadInput(Converter.DecimalConverter, inputValidation.ValidateWeight);
 
                 FileCabinetRecordNewData fileCabinetRecordNewData = new FileCabinetRecordNewData(firstName, lastName, dateOfBirth, gender, height, weight);
                 Program.fileCabinetService.EditRecord(id, fileCabinetRecordNewData);
@@ -267,20 +267,6 @@ namespace FileCabinetApp
             }
         }
 
-        private static bool IsStringCorrect(string name)
-        {
-            var result = true;
-            foreach (var letter in name)
-            {
-                if (!char.IsLetter(letter))
-                {
-                    result = false;
-                }
-            }
-
-            return result;
-        }
-
         private static void OutputToTheConsoleDataFromTheList(ReadOnlyCollection<FileCabinetRecord> list)
         {
             foreach (var record in list)
@@ -324,41 +310,6 @@ namespace FileCabinetApp
                 return value;
             }
             while (true);
-        }
-
-        private static Tuple<bool, string, string> StringConverter(string name)
-        {
-            bool a = IsStringCorrect(name);
-
-            return new Tuple<bool, string, string>(a, name, name);
-        }
-
-        private static Tuple<bool, string, DateTime> DateConverter(string date)
-        {
-            bool a = DateTime.TryParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var day);
-
-            return new Tuple<bool, string, DateTime>(a, date, day);
-        }
-
-        private static Tuple<bool, string, char> CharConverter(string inputGender)
-        {
-            bool a = char.TryParse(inputGender, out var gender);
-
-            return new Tuple<bool, string, char>(a, inputGender, gender);
-        }
-
-        private static Tuple<bool, string, short> ShortConverter(string inputHeight)
-        {
-            bool a = short.TryParse(inputHeight, CultureInfo.InvariantCulture, out var height);
-
-            return new Tuple<bool, string, short>(a, inputHeight, height);
-        }
-
-        private static Tuple<bool, string, decimal> DecimalConverter(string inputWeight)
-        {
-            bool a = short.TryParse(inputWeight, CultureInfo.InvariantCulture, out var weight);
-
-            return new Tuple<bool, string, decimal>(a, inputWeight, weight);
         }
     }
 }

@@ -162,6 +162,17 @@ namespace FileCabinetApp
         }
 
         /// <summary>
+        /// Passes the state of an object.
+        /// </summary>
+        /// <returns>Class containing the state of an object.</returns>
+        public FileCabinetServiceSnapshot MakeSnapshot()
+        {
+            FileCabinetServiceSnapshot fileCabinetServiceSnapshot = new FileCabinetServiceSnapshot();
+            fileCabinetServiceSnapshot.GetAllExistingRecords(this.list.ToArray());
+            return fileCabinetServiceSnapshot;
+        }
+
+        /// <summary>
         /// Checks if records with the specified id exists.
         /// </summary>
         /// <param name="id">The id entered by the user.</param>

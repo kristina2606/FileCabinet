@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics.Metrics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -36,6 +38,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("list", List),
             new Tuple<string, Action<string>>("edit", Edit),
             new Tuple<string, Action<string>>("find", Find),
+            new Tuple<string, Action<string>>("export_csv", ExportCsv),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -47,6 +50,7 @@ namespace FileCabinetApp
             new string[] { "list", "returns a list of records.", "The 'list' returns a list of records." },
             new string[] { "edit", "editing a record by id.", "The 'edit' editing a record by id." },
             new string[] { "find", "finds all existing records by parameter.", "The 'find' finds all existing records by parameter." },
+            new string[] { "export_csv", "exports service data to a CSV file.", "The 'export_csv' exports service data to a CSV file." },
         };
 
         /// <summary>
@@ -264,6 +268,44 @@ namespace FileCabinetApp
                 default:
                     Console.WriteLine("You entered an invalid search parameter.");
                     break;
+            }
+        }
+
+        private static void ExportCsv(string parameters)
+        {
+            Console.Write("Enter the export path: ");
+            var path = Console.ReadLine();
+
+            var folder = Path.GetDirectoryName(path);
+            if (!Directory.Exists(folder))
+            {
+                Console.WriteLine($"Export failed: can't open file {path}.");
+            }
+            else if (File.Exists(@path))
+            {
+                Console.Write($"File is exist - rewrite {path}? [Y/n]");
+                var fileRewrite = Console.ReadLine().ToLowerInvariant();
+                if (fileRewrite != "y" || fileRewrite != "n")
+                {
+                    Console.WriteLine("You entered an invalid character.");
+                }
+
+                if (fileRewrite == "y")
+                {
+                    using (StreamWriter sw = new StreamWriter(@path))
+                    {
+                        var makeSnapshot = Program.fileCabinetService.MakeSnapshot();
+                        makeSnapshot.SaveToCVS(sw);
+                    }
+                }
+            }
+            else
+            {
+                using (StreamWriter sw = new StreamWriter(@path))
+                {
+                    var makeSnapshot = Program.fileCabinetService.MakeSnapshot();
+                    makeSnapshot.SaveToCVS(sw);
+                }
             }
         }
 

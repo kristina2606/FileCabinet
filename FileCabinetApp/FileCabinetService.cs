@@ -167,8 +167,7 @@ namespace FileCabinetApp
         /// <returns>Class containing the state of an object.</returns>
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
-            FileCabinetServiceSnapshot fileCabinetServiceSnapshot = new FileCabinetServiceSnapshot();
-            fileCabinetServiceSnapshot.GetAllExistingRecords(this.list.ToArray());
+            FileCabinetServiceSnapshot fileCabinetServiceSnapshot = new FileCabinetServiceSnapshot(this.list.ToArray());
             return fileCabinetServiceSnapshot;
         }
 

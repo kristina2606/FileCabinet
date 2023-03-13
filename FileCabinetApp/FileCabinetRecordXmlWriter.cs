@@ -31,7 +31,7 @@ namespace FileCabinetApp
             xmlWriter.WriteAttributeString("id", record.Id.ToString(CultureInfo.InvariantCulture));
 
             xmlWriter.WriteStartElement("name");
-            xmlWriter.WriteAttributeString("firs", record.FirstName);
+            xmlWriter.WriteAttributeString("first", record.FirstName);
             xmlWriter.WriteAttributeString("last", record.LastName);
             xmlWriter.WriteEndElement();
 

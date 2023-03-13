@@ -1,15 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics.Metrics;
 using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text.RegularExpressions;
-using System.Xml.Linq;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FileCabinetApp
 {
@@ -23,6 +15,8 @@ namespace FileCabinetApp
         private const int CommandHelpIndex = 0;
         private const int DescriptionHelpIndex = 1;
         private const int ExplanationHelpIndex = 2;
+        private const string FileTypeCsv = "csv";
+        private const string FileTypeXml = "xml";
 
         private static bool isRunning = true;
         private static IFileCabinetService fileCabinetService = new FileCabinetService(new DefaultValidator());
@@ -273,56 +267,57 @@ namespace FileCabinetApp
 
         private static void Export(string parameters)
         {
+            var makeSnapshot = Program.fileCabinetService.MakeSnapshot();
+
             Console.Write("Enter export format (csv/xml): ");
             var format = Console.ReadLine().ToLowerInvariant();
 
-            if (format != "csv" && format != "xml")
+            if (format != FileTypeCsv && format != FileTypeXml)
             {
                 Console.WriteLine("You entered an invalid format.");
+                return;
+            }
+
+            Console.Write("Enter the export path: ");
+            var path = Console.ReadLine();
+
+            var folder = Path.GetDirectoryName(path);
+            if (!Directory.Exists(folder))
+            {
+                Console.WriteLine($"Export failed: can't open file {path}.");
+            }
+            else if (File.Exists(@path))
+            {
+                Console.Write($"File is exist - rewrite {path}? [Y/n] ");
+                var fileRewrite = Console.ReadLine().ToLowerInvariant();
+                if (fileRewrite != "y" && fileRewrite != "n")
+                {
+                    Console.WriteLine("You entered an invalid character.");
+                }
+
+                if (fileRewrite == "y")
+                {
+                    ExportData(makeSnapshot, format, path);
+                }
             }
             else
             {
-                Console.Write("Enter the export path: ");
-                var path = Console.ReadLine();
-
-                var folder = Path.GetDirectoryName(path);
-                if (!Directory.Exists(folder))
-                {
-                    Console.WriteLine($"Export failed: can't open file {path}.");
-                }
-                else if (File.Exists(@path))
-                {
-                    Console.Write($"File is exist - rewrite {path}? [Y/n] ");
-                    var fileRewrite = Console.ReadLine().ToLowerInvariant();
-                    if (fileRewrite != "y" && fileRewrite != "n")
-                    {
-                        Console.WriteLine("You entered an invalid character.");
-                    }
-
-                    if (fileRewrite == "y")
-                    {
-                        CallMethodToExportData(format, path);
-                    }
-                }
-                else
-                {
-                    CallMethodToExportData(format, path);
-                }
+                ExportData(makeSnapshot, format, path);
             }
         }
 
-        private static void CallMethodToExportData(string format, string path)
+        private static void ExportData(FileCabinetServiceSnapshot makeSnapshot, string format, string path)
         {
-            using (StreamWriter sw = new StreamWriter(@path))
+            using (StreamWriter sw = new StreamWriter(path))
             {
-                var makeSnapshot = Program.fileCabinetService.MakeSnapshot();
-                if (format == "csv")
+                switch (format)
                 {
-                    makeSnapshot.SaveToCsv(sw);
-                }
-                else
-                {
-                    makeSnapshot.SaveToXml(sw);
+                    case FileTypeCsv:
+                        makeSnapshot.SaveToCsv(sw);
+                        break;
+                    case FileTypeXml:
+                        makeSnapshot.SaveToXml(sw);
+                        break;
                 }
             }
         }

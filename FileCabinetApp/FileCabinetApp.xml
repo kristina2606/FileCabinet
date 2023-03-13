@@ -286,9 +286,9 @@
             Passes the state of an object.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.GetAllExistingRecords(FileCabinetApp.FileCabinetRecord[])">
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.#ctor(FileCabinetApp.FileCabinetRecord[])">
             <summary>
-            Gets an array of all records.
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetServiceSnapshot"/> class.
             </summary>
             <param name="records">All existing records.</param>
         </member>

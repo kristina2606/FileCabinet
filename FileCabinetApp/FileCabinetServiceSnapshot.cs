@@ -8,13 +8,13 @@ namespace FileCabinetApp
     /// </summary>
     public class FileCabinetServiceSnapshot
     {
-        private FileCabinetRecord[] records;
+        private readonly FileCabinetRecord[] records;
 
         /// <summary>
-        /// Gets an array of all records.
+        /// Initializes a new instance of the <see cref="FileCabinetServiceSnapshot"/> class.
         /// </summary>
         /// <param name="records">All existing records.</param>
-        public void GetAllExistingRecords(FileCabinetRecord[] records)
+        public FileCabinetServiceSnapshot(FileCabinetRecord[] records)
         {
             this.records = records;
         }
@@ -50,6 +50,8 @@ namespace FileCabinetApp
                 {
                     fileCabinetRecordXml.Write(record);
                 }
+
+                xmlWriter.WriteEndElement();
             }
         }
     }

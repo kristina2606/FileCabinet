@@ -38,7 +38,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("list", List),
             new Tuple<string, Action<string>>("edit", Edit),
             new Tuple<string, Action<string>>("find", Find),
-            new Tuple<string, Action<string>>("export_csv", ExportCsv),
+            new Tuple<string, Action<string>>("export", Export),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -50,7 +50,7 @@ namespace FileCabinetApp
             new string[] { "list", "returns a list of records.", "The 'list' returns a list of records." },
             new string[] { "edit", "editing a record by id.", "The 'edit' editing a record by id." },
             new string[] { "find", "finds all existing records by parameter.", "The 'find' finds all existing records by parameter." },
-            new string[] { "export_csv", "exports service data to a CSV file.", "The 'export_csv' exports service data to a CSV file." },
+            new string[] { "export", "exports service data to .csv or .xml file.", "The 'export_csv' exports service data to .csv or .xml file." },
         };
 
         /// <summary>
@@ -271,40 +271,58 @@ namespace FileCabinetApp
             }
         }
 
-        private static void ExportCsv(string parameters)
+        private static void Export(string parameters)
         {
-            Console.Write("Enter the export path: ");
-            var path = Console.ReadLine();
+            Console.Write("Enter export format (csv/xml): ");
+            var format = Console.ReadLine().ToLowerInvariant();
 
-            var folder = Path.GetDirectoryName(path);
-            if (!Directory.Exists(folder))
+            if (format != "csv" && format != "xml")
             {
-                Console.WriteLine($"Export failed: can't open file {path}.");
-            }
-            else if (File.Exists(@path))
-            {
-                Console.Write($"File is exist - rewrite {path}? [Y/n]");
-                var fileRewrite = Console.ReadLine().ToLowerInvariant();
-                if (fileRewrite != "y" || fileRewrite != "n")
-                {
-                    Console.WriteLine("You entered an invalid character.");
-                }
-
-                if (fileRewrite == "y")
-                {
-                    using (StreamWriter sw = new StreamWriter(@path))
-                    {
-                        var makeSnapshot = Program.fileCabinetService.MakeSnapshot();
-                        makeSnapshot.SaveToCVS(sw);
-                    }
-                }
+                Console.WriteLine("You entered an invalid format.");
             }
             else
             {
-                using (StreamWriter sw = new StreamWriter(@path))
+                Console.Write("Enter the export path: ");
+                var path = Console.ReadLine();
+
+                var folder = Path.GetDirectoryName(path);
+                if (!Directory.Exists(folder))
                 {
-                    var makeSnapshot = Program.fileCabinetService.MakeSnapshot();
-                    makeSnapshot.SaveToCVS(sw);
+                    Console.WriteLine($"Export failed: can't open file {path}.");
+                }
+                else if (File.Exists(@path))
+                {
+                    Console.Write($"File is exist - rewrite {path}? [Y/n] ");
+                    var fileRewrite = Console.ReadLine().ToLowerInvariant();
+                    if (fileRewrite != "y" && fileRewrite != "n")
+                    {
+                        Console.WriteLine("You entered an invalid character.");
+                    }
+
+                    if (fileRewrite == "y")
+                    {
+                        CallMethodToExportData(format, path);
+                    }
+                }
+                else
+                {
+                    CallMethodToExportData(format, path);
+                }
+            }
+        }
+
+        private static void CallMethodToExportData(string format, string path)
+        {
+            using (StreamWriter sw = new StreamWriter(@path))
+            {
+                var makeSnapshot = Program.fileCabinetService.MakeSnapshot();
+                if (format == "csv")
+                {
+                    makeSnapshot.SaveToCsv(sw);
+                }
+                else
+                {
+                    makeSnapshot.SaveToXml(sw);
                 }
             }
         }

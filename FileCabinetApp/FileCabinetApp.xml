@@ -188,6 +188,23 @@
             </summary>
             <value> New weight of a person. </value>
         </member>
+        <member name="T:FileCabinetApp.FileCabinetRecordXmlWriter">
+            <summary>
+            Export application data to a XML file.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlWriter.#ctor(System.Xml.XmlWriter)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordXmlWriter"/> class.
+            </summary>
+            <param name="writer">Path to create a file with records.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlWriter.Write(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Write the record to the file.
+            </summary>
+            <param name="record">Record for write.</param>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetService">
             <summary>
             Creates, edits and checks in entries. Finds records by parameters.
@@ -275,9 +292,15 @@
             </summary>
             <param name="records">All existing records.</param>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.SaveToCVS(System.IO.StreamWriter)">
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.SaveToCsv(System.IO.StreamWriter)">
             <summary>
-            Creates an instance of the class and call the function to write the record to the file.
+            Creates an instance of the class and call the function to write the record to the .csv file.
+            </summary>
+            <param name="streamWriter">Path to create a file with records.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.SaveToXml(System.IO.StreamWriter)">
+            <summary>
+            Creates an instance of the class and call the function to write the record to the .xml file.
             </summary>
             <param name="streamWriter">Path to create a file with records.</param>
         </member>

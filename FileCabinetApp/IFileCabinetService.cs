@@ -61,6 +61,12 @@ namespace FileCabinetApp
         ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth);
 
         /// <summary>
+        /// Passes the state of an object.
+        /// </summary>
+        /// <returns>Class containing the state of an object.</returns>
+        FileCabinetServiceSnapshot MakeSnapshot();
+
+        /// <summary>
         /// Checks if records with the specified id exists.
         /// </summary>
         /// <param name="id">The id entered by the user.</param>

@@ -119,6 +119,23 @@
             </summary>
             <value>The weight of a person.</value>
         </member>
+        <member name="T:FileCabinetApp.FileCabinetRecordCsvWriter">
+            <summary>
+            Export application data to a CSV file.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordCsvWriter.#ctor(System.IO.TextWriter)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordCsvWriter"/> class.
+            </summary>
+            <param name="writer">Path to create a file with records.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordCsvWriter.Write(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Write the record to the file.
+            </summary>
+            <param name="record">Record for write.</param>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetRecordNewData">
             <summary>
             Gets new data from user input.
@@ -170,6 +187,23 @@
             Gets weight from user input.
             </summary>
             <value> New weight of a person. </value>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetRecordXmlWriter">
+            <summary>
+            Export application data to a XML file.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlWriter.#ctor(System.Xml.XmlWriter)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordXmlWriter"/> class.
+            </summary>
+            <param name="writer">Path to create a file with records.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlWriter.Write(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Write the record to the file.
+            </summary>
+            <param name="record">Record for write.</param>
         </member>
         <member name="T:FileCabinetApp.FileCabinetService">
             <summary>
@@ -234,12 +268,41 @@
             <param name="dateOfBirth">The parameter by which you want to find all existing records.</param>
             <returns>Returns all records by date of birth.</returns>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetService.MakeSnapshot">
+            <summary>
+            Passes the state of an object.
+            </summary>
+            <returns>Class containing the state of an object.</returns>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetService.IsExist(System.Int32)">
             <summary>
             Checks if records with the specified id exists.
             </summary>
             <param name="id">The id entered by the user.</param>
             <returns>True if records exists and false if records don't exist.</returns>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetServiceSnapshot">
+            <summary>
+            Passes the state of an object.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.#ctor(FileCabinetApp.FileCabinetRecord[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetServiceSnapshot"/> class.
+            </summary>
+            <param name="records">All existing records.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.SaveToCsv(System.IO.StreamWriter)">
+            <summary>
+            Creates an instance of the class and call the function to write the record to the .csv file.
+            </summary>
+            <param name="streamWriter">Path to create a file with records.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.SaveToXml(System.IO.StreamWriter)">
+            <summary>
+            Creates an instance of the class and call the function to write the record to the .xml file.
+            </summary>
+            <param name="streamWriter">Path to create a file with records.</param>
         </member>
         <member name="T:FileCabinetApp.IFileCabinetService">
             <summary>
@@ -296,6 +359,12 @@
             </summary>
             <param name="dateOfBirth">The parameter by which you want to find all existing records.</param>
             <returns>Returns all records by date of birth.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.MakeSnapshot">
+            <summary>
+            Passes the state of an object.
+            </summary>
+            <returns>Class containing the state of an object.</returns>
         </member>
         <member name="M:FileCabinetApp.IFileCabinetService.IsExist(System.Int32)">
             <summary>

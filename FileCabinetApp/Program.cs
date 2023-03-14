@@ -19,7 +19,7 @@ namespace FileCabinetApp
         private const string FileTypeXml = "xml";
 
         private static bool isRunning = true;
-        private static IFileCabinetService fileCabinetService = new FileCabinetService(new DefaultValidator());
+        private static IFileCabinetService fileCabinetService = new FileCabinetMemoryService(new DefaultValidator());
         private static IUserInputValidation inputValidation = new UserInputValidationDafault();
         private static string validationRules = "Using default validation rules.";
 
@@ -61,14 +61,14 @@ namespace FileCabinetApp
 
                 if (comand[0] == "--validation-rules" && comand[1].ToLowerInvariant() == "custom")
                 {
-                    fileCabinetService = new FileCabinetService(new CustomValidator());
+                    fileCabinetService = new FileCabinetMemoryService(new CustomValidator());
                     inputValidation = new UserInputValidationCustom();
                     validationRules = "Using custom validation rules.";
                 }
             }
             else if (args.Length == 2 && args[0] == "-v" && args[1].ToLowerInvariant() == "custom")
             {
-                fileCabinetService = new FileCabinetService(new CustomValidator());
+                fileCabinetService = new FileCabinetMemoryService(new CustomValidator());
                 inputValidation = new UserInputValidationCustom();
                 validationRules = "Using custom validation rules.";
             }

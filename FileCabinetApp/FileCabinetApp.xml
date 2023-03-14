@@ -72,6 +72,82 @@
             <exception cref="T:System.ArgumentException">The firstName or lastName length is less than 2 or greater than 60.The dateOfBirth is less than 01-Jun-1950 or greater today's date.
             The gender isn't equal 'f' or 'm'. The height is less than 0 or greater than 250. The weight is less than 0.</exception>
         </member>
+        <member name="T:FileCabinetApp.FileCabinetMemoryService">
+            <summary>
+            Creates, edits and checks in entries. Finds records by parameters.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.#ctor(FileCabinetApp.IRecordValidator)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetMemoryService"/> class.
+            The class constructor takes a validation parameter.
+            </summary>
+            <param name="validator">Validation parameter.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.CreateRecord(FileCabinetApp.FileCabinetRecordNewData)">
+            <summary>
+            Creates a new record from user input.
+            </summary>
+            <param name="fileCabinetRecordNewData">The new date in the record.</param>
+            <returns>Returns the id of the created record.</returns>
+            <exception cref="T:System.ArgumentNullException">If the firstName or lastName is equal null.</exception>
+            <exception cref="T:System.ArgumentException">The firstName or lastName length is less than 2 or greater than 60.The dateOfBirth is less than 01-Jun-1950 or greater today's date.
+            The gender isn't equal 'f' or 'm'. The height is less than 0 or greater than 250. The weight is less than 0.</exception>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.GetRecords">
+            <summary>
+            Gets all existing records.
+            </summary>
+            <returns>Returns all existing records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.GetStat">
+            <summary>
+            Gets the count of all existing records.
+            </summary>
+            <returns>Returns the count of all existing records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.EditRecord(System.Int32,FileCabinetApp.FileCabinetRecordNewData)">
+            <summary>
+            Edits an already existing entry by id.
+            </summary>
+            <param name="id">The id of the record to be modified.</param>
+            <param name="fileCabinetRecordNewData">The new date in the record.</param>
+            <exception cref="T:System.ArgumentException">if records with the specified ID do not exist.</exception>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.FindByFirstName(System.String)">
+            <summary>
+            Finds all records by first name.
+            </summary>
+            <param name="firstName">The parameter by which you want to find all existing records.</param>
+            <returns>Returns  all records by first name.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.FindByLastName(System.String)">
+            <summary>
+            Finds all records by last name.
+            </summary>
+            <param name="lastName">The parameter by which you want to find all existing records.</param>
+            <returns>Returns all records by last name.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.FindByDateOfBirth(System.DateTime)">
+            <summary>
+            Finds all records by date of birth.
+            </summary>
+            <param name="dateOfBirth">The parameter by which you want to find all existing records.</param>
+            <returns>Returns all records by date of birth.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.MakeSnapshot">
+            <summary>
+            Passes the state of an object.
+            </summary>
+            <returns>Class containing the state of an object.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.IsExist(System.Int32)">
+            <summary>
+            Checks if records with the specified id exists.
+            </summary>
+            <param name="id">The id entered by the user.</param>
+            <returns>True if records exists and false if records don't exist.</returns>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetRecord">
             <summary>
             Fields for creating a record.
@@ -204,82 +280,6 @@
             Write the record to the file.
             </summary>
             <param name="record">Record for write.</param>
-        </member>
-        <member name="T:FileCabinetApp.FileCabinetService">
-            <summary>
-            Creates, edits and checks in entries. Finds records by parameters.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.#ctor(FileCabinetApp.IRecordValidator)">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetService"/> class.
-            The class constructor takes a validation parameter.
-            </summary>
-            <param name="validator">Validation parameter.</param>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.CreateRecord(FileCabinetApp.FileCabinetRecordNewData)">
-            <summary>
-            Creates a new record from user input.
-            </summary>
-            <param name="fileCabinetRecordNewData">The new date in the record.</param>
-            <returns>Returns the id of the created record.</returns>
-            <exception cref="T:System.ArgumentNullException">If the firstName or lastName is equal null.</exception>
-            <exception cref="T:System.ArgumentException">The firstName or lastName length is less than 2 or greater than 60.The dateOfBirth is less than 01-Jun-1950 or greater today's date.
-            The gender isn't equal 'f' or 'm'. The height is less than 0 or greater than 250. The weight is less than 0.</exception>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.GetRecords">
-            <summary>
-            Gets all existing records.
-            </summary>
-            <returns>Returns all existing records.</returns>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.GetStat">
-            <summary>
-            Gets the count of all existing records.
-            </summary>
-            <returns>Returns the count of all existing records.</returns>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.EditRecord(System.Int32,FileCabinetApp.FileCabinetRecordNewData)">
-            <summary>
-            Edits an already existing entry by id.
-            </summary>
-            <param name="id">The id of the record to be modified.</param>
-            <param name="fileCabinetRecordNewData">The new date in the record.</param>
-            <exception cref="T:System.ArgumentException">if records with the specified ID do not exist.</exception>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.FindByFirstName(System.String)">
-            <summary>
-            Finds all records by first name.
-            </summary>
-            <param name="firstName">The parameter by which you want to find all existing records.</param>
-            <returns>Returns  all records by first name.</returns>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.FindByLastName(System.String)">
-            <summary>
-            Finds all records by last name.
-            </summary>
-            <param name="lastName">The parameter by which you want to find all existing records.</param>
-            <returns>Returns all records by last name.</returns>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.FindByDateOfBirth(System.DateTime)">
-            <summary>
-            Finds all records by date of birth.
-            </summary>
-            <param name="dateOfBirth">The parameter by which you want to find all existing records.</param>
-            <returns>Returns all records by date of birth.</returns>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.MakeSnapshot">
-            <summary>
-            Passes the state of an object.
-            </summary>
-            <returns>Class containing the state of an object.</returns>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.IsExist(System.Int32)">
-            <summary>
-            Checks if records with the specified id exists.
-            </summary>
-            <param name="id">The id entered by the user.</param>
-            <returns>True if records exists and false if records don't exist.</returns>
         </member>
         <member name="T:FileCabinetApp.FileCabinetServiceSnapshot">
             <summary>

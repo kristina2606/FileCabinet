@@ -286,18 +286,18 @@ namespace FileCabinetApp
             {
                 Console.WriteLine($"Export failed: can't open file {path}.");
             }
-            else if (File.Exists(@path))
+            else if (File.Exists(path))
             {
                 Console.Write($"File is exist - rewrite {path}? [Y/n] ");
                 var fileRewrite = Console.ReadLine().ToLowerInvariant();
-                if (fileRewrite != "y" && fileRewrite != "n")
-                {
-                    Console.WriteLine("You entered an invalid character.");
-                }
 
-                if (fileRewrite == "y")
+                if (fileRewrite == "y" || string.IsNullOrEmpty(fileRewrite))
                 {
                     ExportData(makeSnapshot, format, path);
+                }
+                else if (fileRewrite != "n")
+                {
+                    Console.WriteLine("You entered an invalid character.");
                 }
             }
             else

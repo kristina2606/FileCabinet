@@ -25,33 +25,31 @@ namespace FileCabinetApp
         /// <param name="record">Record for write.</param>
         public void Write(FileCabinetRecord record)
         {
-            XmlWriter xmlWriter = XmlWriter.Create(this.writer);
+            this.writer.WriteStartElement("record");
+            this.writer.WriteAttributeString("id", record.Id.ToString(CultureInfo.InvariantCulture));
 
-            xmlWriter.WriteStartElement("record");
-            xmlWriter.WriteAttributeString("id", record.Id.ToString(CultureInfo.InvariantCulture));
+            this.writer.WriteStartElement("name");
+            this.writer.WriteAttributeString("first", record.FirstName);
+            this.writer.WriteAttributeString("last", record.LastName);
+            this.writer.WriteEndElement();
 
-            xmlWriter.WriteStartElement("name");
-            xmlWriter.WriteAttributeString("first", record.FirstName);
-            xmlWriter.WriteAttributeString("last", record.LastName);
-            xmlWriter.WriteEndElement();
+            this.writer.WriteStartElement("dateOfBirth");
+            this.writer.WriteString(record.DateOfBirth.ToShortDateString());
+            this.writer.WriteEndElement();
 
-            xmlWriter.WriteStartElement("dateOfBirth");
-            xmlWriter.WriteString(record.DateOfBirth.ToShortDateString());
-            xmlWriter.WriteEndElement();
+            this.writer.WriteStartElement("gender");
+            this.writer.WriteString(record.Gender.ToString(CultureInfo.InvariantCulture));
+            this.writer.WriteEndElement();
 
-            xmlWriter.WriteStartElement("gender");
-            xmlWriter.WriteString(record.Gender.ToString(CultureInfo.InvariantCulture));
-            xmlWriter.WriteEndElement();
+            this.writer.WriteStartElement("height");
+            this.writer.WriteString(record.Height.ToString(CultureInfo.InvariantCulture));
+            this.writer.WriteEndElement();
 
-            xmlWriter.WriteStartElement("height");
-            xmlWriter.WriteString(record.Height.ToString(CultureInfo.InvariantCulture));
-            xmlWriter.WriteEndElement();
+            this.writer.WriteStartElement("weight");
+            this.writer.WriteString(record.Weight.ToString(CultureInfo.InvariantCulture));
+            this.writer.WriteEndElement();
 
-            xmlWriter.WriteStartElement("weight");
-            xmlWriter.WriteString(record.Weight.ToString(CultureInfo.InvariantCulture));
-            xmlWriter.WriteEndElement();
-
-            xmlWriter.WriteEndElement();
+            this.writer.WriteEndElement();
         }
     }
 }

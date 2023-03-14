@@ -2,6 +2,8 @@
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
+using System.Linq;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace FileCabinetApp
 {
@@ -55,22 +57,20 @@ namespace FileCabinetApp
         {
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
 
-            if (args.Length == 1)
+            for (var i = 0; i < args.Length; i++)
             {
-                var comand = args[0].Split('=');
-
-                if (comand[0] == "--validation-rules" && comand[1].ToLowerInvariant() == "custom")
+                var comand = args[i].Split('=');
+                if ((comand[0] == "--validation-rules" && comand[1].ToLowerInvariant() == "custom") || (args[i] == "-v" && args[i + 1].ToLowerInvariant() == "custom"))
                 {
                     fileCabinetService = new FileCabinetMemoryService(new CustomValidator());
                     inputValidation = new UserInputValidationCustom();
                     validationRules = "Using custom validation rules.";
                 }
-            }
-            else if (args.Length == 2 && args[0] == "-v" && args[1].ToLowerInvariant() == "custom")
-            {
-                fileCabinetService = new FileCabinetMemoryService(new CustomValidator());
-                inputValidation = new UserInputValidationCustom();
-                validationRules = "Using custom validation rules.";
+
+                if ((args[i] == "--storage" || args[i] == "-s") && args[i + 1].ToLowerInvariant() == "file")
+                {
+                    fileCabinetService = new FileCabinetFilesystemService(new FileStream("cabinet-records.db", FileMode.OpenOrCreate));
+                }
             }
 
             Console.WriteLine(Program.validationRules);

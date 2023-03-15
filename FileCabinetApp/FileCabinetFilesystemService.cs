@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using static System.Reflection.Metadata.BlobBuilder;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FileCabinetApp
 {
@@ -93,9 +94,10 @@ namespace FileCabinetApp
 
             using (var reader = new BinaryReader(this.fileStream))
             {
-                reader.BaseStream.Position = 0;
-                while (reader.PeekChar() > -1)
-                {                    
+                reader.BaseStream.Seek(0, SeekOrigin.Begin);
+
+                while (reader.PeekChar() != -1)
+                {
                     short status = reader.ReadInt16();
                     int id = reader.ReadInt32();
                     char[] firstName = reader.ReadChars(60);
@@ -107,12 +109,16 @@ namespace FileCabinetApp
                     short height = reader.ReadInt16();
                     decimal weight = reader.ReadInt16();
 
+
+                    var date = year.ToString() + month.ToString() + day.ToString();
+                    bool a = DateTime.TryParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var dateOfBirth);
+
                     list.Add(new FileCabinetRecord
                     {
                         Id = id,
                         FirstName = firstName.ToString(),
                         LastName = laststName.ToString(),
-                        DateOfBirth = new DateTime(year, month, day),
+                        DateOfBirth = dateOfBirth,
                         Gender = gender,
                         Height = height,
                         Weight = weight,

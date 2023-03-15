@@ -126,9 +126,13 @@ namespace FileCabinetApp
             return new ReadOnlyCollection<FileCabinetRecord>(list);
         }
 
+        /// <summary>
+        /// Gets the number of records stored in the file.
+        /// </summary>
+        /// <returns>Returns the number of records stored in the file.</returns>
         public int GetStat()
         {
-            throw new NotImplementedException();
+            return (int)this.fileStream.Length / 157;
         }
 
         public bool IsExist(int id)

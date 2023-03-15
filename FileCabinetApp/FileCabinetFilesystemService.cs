@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace FileCabinetApp
 {
@@ -87,7 +89,38 @@ namespace FileCabinetApp
 
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
-            throw new NotImplementedException();
+            List<FileCabinetRecord> list = new List<FileCabinetRecord>();
+
+            using (var reader = new BinaryReader(this.fileStream))
+            {
+                reader.BaseStream.Position = 0;
+                while (reader.PeekChar() > -1)
+                {                    
+                    short status = reader.ReadInt16();
+                    int id = reader.ReadInt32();
+                    char[] firstName = reader.ReadChars(60);
+                    char[] laststName = reader.ReadChars(60);
+                    int year = reader.ReadInt32();
+                    int month = reader.ReadInt32();
+                    int day = reader.ReadInt32();
+                    char gender = reader.ReadChar();
+                    short height = reader.ReadInt16();
+                    decimal weight = reader.ReadInt16();
+
+                    list.Add(new FileCabinetRecord
+                    {
+                        Id = id,
+                        FirstName = firstName.ToString(),
+                        LastName = laststName.ToString(),
+                        DateOfBirth = new DateTime(year, month, day),
+                        Gender = gender,
+                        Height = height,
+                        Weight = weight,
+                    });
+                }
+            }
+
+            return new ReadOnlyCollection<FileCabinetRecord>(list);
         }
 
         public int GetStat()

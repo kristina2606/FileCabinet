@@ -69,7 +69,7 @@ namespace FileCabinetApp
 
                 if ((args[i] == "--storage" || args[i] == "-s") && args[i + 1].ToLowerInvariant() == "file")
                 {
-                    fileCabinetService = new FileCabinetFilesystemService(new FileStream("cabinet-records.db", FileMode.OpenOrCreate));
+                    fileCabinetService = new FileCabinetFilesystemService(new FileStream("cabinet-records.db", FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None));
                 }
             }
 

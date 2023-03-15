@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
+using System.Text;
 
 namespace FileCabinetApp
 {
@@ -9,6 +12,7 @@ namespace FileCabinetApp
     /// </summary>
     public class FileCabinetFilesystemService : IFileCabinetService
     {
+        private readonly List<byte> counter = new List<byte>();
         private readonly FileStream fileStream;
 
         /// <summary>
@@ -25,10 +29,40 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="fileCabinetRecordNewData">The new date in the record.</param>
         /// <returns>Returns the id of the created record.</returns>
-        /// <exception cref="NotImplementedException"></exception>
         public int CreateRecord(FileCabinetRecordNewData fileCabinetRecordNewData)
         {
-            throw new NotImplementedException();
+            short status = 0;
+
+            int id = this.counter.Count + 1;
+            this.counter.Add(0);
+
+            char[] firstName = new char[60];
+            for (var i = 0; i < fileCabinetRecordNewData.FirstName.Length; i++)
+            {
+                firstName[i] = fileCabinetRecordNewData.FirstName[i];
+            }
+
+            char[] lastName = new char[60];
+            for (var i = 0; i < fileCabinetRecordNewData.LastName.Length; i++)
+            {
+                lastName[i] = fileCabinetRecordNewData.LastName[i];
+            }
+
+            using (BinaryWriter writer = new BinaryWriter(this.fileStream, Encoding.UTF8, true))
+            {
+                writer.Write(status);
+                writer.Write(id);
+                writer.Write(firstName);
+                writer.Write(lastName);
+                writer.Write(fileCabinetRecordNewData.DateOfBirth.Year);
+                writer.Write(fileCabinetRecordNewData.DateOfBirth.Month);
+                writer.Write(fileCabinetRecordNewData.DateOfBirth.Day);
+                writer.Write(fileCabinetRecordNewData.Gender);
+                writer.Write(fileCabinetRecordNewData.Height);
+                writer.Write(fileCabinetRecordNewData.Weight);
+            }
+
+            return id;
         }
 
         public void EditRecord(int id, FileCabinetRecordNewData fileCabinetRecordNewData)

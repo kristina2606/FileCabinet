@@ -89,7 +89,6 @@
             </summary>
             <param name="fileCabinetRecordNewData">The new date in the record.</param>
             <returns>Returns the id of the created record.</returns>
-            <exception cref="T:System.NotImplementedException"></exception>
         </member>
         <member name="T:FileCabinetApp.FileCabinetMemoryService">
             <summary>

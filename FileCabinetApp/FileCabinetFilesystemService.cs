@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
-using static System.Reflection.Metadata.BlobBuilder;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FileCabinetApp
 {
@@ -15,7 +12,6 @@ namespace FileCabinetApp
     /// </summary>
     public class FileCabinetFilesystemService : IFileCabinetService
     {
-        private readonly List<byte> counter = new List<byte>();
         private readonly FileStream fileStream;
 
         /// <summary>
@@ -36,8 +32,7 @@ namespace FileCabinetApp
         {
             short status = 0;
 
-            int id = this.counter.Count + 1;
-            this.counter.Add(0);
+            var id = (int)(this.fileStream.Length / 157) + 1;
 
             char[] firstName = new char[60];
             for (var i = 0; i < fileCabinetRecordNewData.FirstName.Length; i++)
@@ -88,17 +83,21 @@ namespace FileCabinetApp
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Reads all available records from the data file.
+        /// </summary>
+        /// <returns>Returns all available records from the data file.</returns>
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
             List<FileCabinetRecord> list = new List<FileCabinetRecord>();
 
-            using (var reader = new BinaryReader(this.fileStream))
+            using (var reader = new BinaryReader(this.fileStream, Encoding.UTF8, true))
             {
                 reader.BaseStream.Seek(0, SeekOrigin.Begin);
 
-                while (reader.PeekChar() != -1)
+                while (reader.BaseStream.Position < reader.BaseStream.Length)
                 {
-                    short status = reader.ReadInt16();
+                    reader.ReadInt16();
                     int id = reader.ReadInt32();
                     char[] firstName = reader.ReadChars(60);
                     char[] laststName = reader.ReadChars(60);
@@ -107,18 +106,16 @@ namespace FileCabinetApp
                     int day = reader.ReadInt32();
                     char gender = reader.ReadChar();
                     short height = reader.ReadInt16();
-                    decimal weight = reader.ReadInt16();
+                    decimal weight = reader.ReadDecimal();
 
-
-                    var date = year.ToString() + month.ToString() + day.ToString();
-                    bool a = DateTime.TryParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var dateOfBirth);
+                    var date = new DateTime(year, month, day);
 
                     list.Add(new FileCabinetRecord
                     {
                         Id = id,
-                        FirstName = firstName.ToString(),
-                        LastName = laststName.ToString(),
-                        DateOfBirth = dateOfBirth,
+                        FirstName = string.Concat(firstName.Where(c => char.IsLetter(c))),
+                        LastName = string.Concat(laststName.Where(c => char.IsLetter(c))),
+                        DateOfBirth = date,
                         Gender = gender,
                         Height = height,
                         Weight = weight,

@@ -90,6 +90,12 @@
             <param name="fileCabinetRecordNewData">The new date in the record.</param>
             <returns>Returns the id of the created record.</returns>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.GetRecords">
+            <summary>
+            Reads all available records from the data file.
+            </summary>
+            <returns>Returns all available records from the data file.</returns>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetMemoryService">
             <summary>
             Creates, edits and checks in entries. Finds records by parameters.

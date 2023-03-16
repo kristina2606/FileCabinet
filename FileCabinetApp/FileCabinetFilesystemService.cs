@@ -53,17 +53,14 @@ namespace FileCabinetApp
         /// <param name="fileCabinetRecordNewData">The new date in the record.</param>
         public void EditRecord(int id, FileCabinetRecordNewData fileCabinetRecordNewData)
         {
-            long position = 0;
-
-            foreach (var record in this.GetRecordsInternal())
+            foreach (var (position, record) in this.GetRecordsInternal())
             {
-                if (record.record.Id == id)
+                if (record.Id == id)
                 {
-                    position = record.position;
+                    this.WriteBinary(fileCabinetRecordNewData, 0, id, position);
+                    break;
                 }
             }
-
-            this.WriteBinary(fileCabinetRecordNewData, 0, id, position);
         }
 
         /// <summary>
@@ -75,13 +72,7 @@ namespace FileCabinetApp
         {
             List<FileCabinetRecord> list = new List<FileCabinetRecord>();
 
-            foreach (var record in this.GetRecordsInternal())
-            {
-                if (record.record.DateOfBirth == dateOfBirth)
-                {
-                    list.Add(record.record);
-                }
-            }
+            this.GetRecordsInternal().Where(record => record.record.DateOfBirth == dateOfBirth).ToList().ForEach(record => list.Add(record.record));
 
             return new ReadOnlyCollection<FileCabinetRecord>(list);
         }
@@ -95,13 +86,7 @@ namespace FileCabinetApp
         {
             List<FileCabinetRecord> list = new List<FileCabinetRecord>();
 
-            foreach (var record in this.GetRecordsInternal())
-            {
-                if (record.record.FirstName.ToLowerInvariant() == firstName.ToLowerInvariant())
-                {
-                    list.Add(record.record);
-                }
-            }
+            this.GetRecordsInternal().Where(record => record.record.FirstName.ToLowerInvariant() == firstName.ToLowerInvariant()).ToList().ForEach(record => list.Add(record.record));
 
             return new ReadOnlyCollection<FileCabinetRecord>(list);
         }
@@ -115,13 +100,7 @@ namespace FileCabinetApp
         {
             List<FileCabinetRecord> list = new List<FileCabinetRecord>();
 
-            foreach (var record in this.GetRecordsInternal())
-            {
-                if (record.record.LastName.ToLowerInvariant() == lastName.ToLowerInvariant())
-                {
-                    list.Add(record.record);
-                }
-            }
+            this.GetRecordsInternal().Where(record => record.record.LastName.ToLowerInvariant() == lastName.ToLowerInvariant()).ToList().ForEach(record => list.Add(record.record));
 
             return new ReadOnlyCollection<FileCabinetRecord>(list);
         }
@@ -134,10 +113,7 @@ namespace FileCabinetApp
         {
             List<FileCabinetRecord> list = new List<FileCabinetRecord>();
 
-            foreach (var record in this.GetRecordsInternal())
-            {
-                list.Add(record.record);
-            }
+            this.GetRecordsInternal().ToList().ForEach(record => list.Add(record.record));
 
             return new ReadOnlyCollection<FileCabinetRecord>(list);
         }
@@ -148,14 +124,7 @@ namespace FileCabinetApp
         /// <returns>Returns the number of records stored in the file.</returns>
         public int GetStat()
         {
-            List<FileCabinetRecord> list = new List<FileCabinetRecord>();
-
-            foreach (var record in this.GetRecordsInternal())
-            {
-                list.Add(record.record);
-            }
-
-            return list.Count;
+            return (int)this.fileStream.Length / 157;
         }
 
         /// <summary>

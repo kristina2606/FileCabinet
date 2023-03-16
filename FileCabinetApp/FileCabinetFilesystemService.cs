@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Reflection.PortableExecutable;
+using System.Reflection;
 using System.Text;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FileCabinetApp
 {
@@ -65,19 +66,60 @@ namespace FileCabinetApp
             this.WriteBinary(fileCabinetRecordNewData, 0, id, pos);
         }
 
+        /// <summary>
+        /// Finds all records by date of birth in binary file.
+        /// </summary>
+        /// <param name="dateOfBirth">The parameter by which you want to find all existing records.</param>
+        /// <returns>Returns all records by date of birth.</returns>
         public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
         {
-            throw new NotImplementedException();
+            List<FileCabinetRecord> list = new List<FileCabinetRecord>();
+            var position = 126;
+
+            using (var reader = new BinaryReader(this.fileStream, Encoding.ASCII, true))
+            {
+                while (position < reader.BaseStream.Length)
+                {
+                    reader.BaseStream.Seek(position, SeekOrigin.Begin);
+
+                    var date = new DateTime(reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
+
+                    if (date == dateOfBirth)
+                    {
+                        position -= 126;
+
+                        reader.BaseStream.Seek(position, SeekOrigin.Begin);
+
+                        AddToListFromBinaryFile(list, reader);
+
+                        position += 126;
+                    }
+
+                    position += 157;
+                }
+            }
+
+            return new ReadOnlyCollection<FileCabinetRecord>(list);
         }
 
+        /// <summary>
+        /// Finds all records by first name in binary file.
+        /// </summary>
+        /// <param name="firstName">The parameter by which you want to find all existing records.</param>
+        /// <returns>Returns  all records by first name.</returns>
         public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
         {
-            throw new NotImplementedException();
+            return new ReadOnlyCollection<FileCabinetRecord>(this.FindByParametr(firstName, 6, 6));
         }
 
+        /// <summary>
+        /// Finds all records by last name in binary file.
+        /// </summary>
+        /// <param name="lastName">The parameter by which you want to find all existing records.</param>
+        /// <returns>Returns all records by last name.</returns>
         public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
         {
-            throw new NotImplementedException();
+            return new ReadOnlyCollection<FileCabinetRecord>(this.FindByParametr(lastName, 66, 66));
         }
 
         /// <summary>
@@ -94,29 +136,7 @@ namespace FileCabinetApp
 
                 while (reader.BaseStream.Position < reader.BaseStream.Length)
                 {
-                    reader.ReadInt16();
-                    int id = reader.ReadInt32();
-                    char[] firstName = reader.ReadChars(60);
-                    char[] laststName = reader.ReadChars(60);
-                    int year = reader.ReadInt32();
-                    int month = reader.ReadInt32();
-                    int day = reader.ReadInt32();
-                    char gender = reader.ReadChar();
-                    short height = reader.ReadInt16();
-                    decimal weight = reader.ReadDecimal();
-
-                    var date = new DateTime(year, month, day);
-
-                    list.Add(new FileCabinetRecord
-                    {
-                        Id = id,
-                        FirstName = string.Concat(firstName.Where(c => char.IsLetter(c))),
-                        LastName = string.Concat(laststName.Where(c => char.IsLetter(c))),
-                        DateOfBirth = date,
-                        Gender = gender,
-                        Height = height,
-                        Weight = weight,
-                    });
+                    AddToListFromBinaryFile(list, reader);
                 }
             }
 
@@ -160,9 +180,25 @@ namespace FileCabinetApp
             return a;
         }
 
+        /// <summary>
+        /// Passes the state of an object.
+        /// </summary>
+        /// <returns>Class containing the state of an object.</returns>
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
-            throw new NotImplementedException();
+            List<FileCabinetRecord> list = new List<FileCabinetRecord>();
+
+            using (var reader = new BinaryReader(this.fileStream, Encoding.ASCII, true))
+            {
+                reader.BaseStream.Seek(0, SeekOrigin.Begin);
+
+                while (reader.BaseStream.Position < reader.BaseStream.Length)
+                {
+                    AddToListFromBinaryFile(list, reader);
+                }
+            }
+
+            return new FileCabinetServiceSnapshot(list.ToArray());
         }
 
         private static char[] CreateCharArray(string name)
@@ -174,6 +210,22 @@ namespace FileCabinetApp
             }
 
             return newName;
+        }
+
+        private static void AddToListFromBinaryFile(List<FileCabinetRecord> list, BinaryReader reader)
+        {
+            reader.ReadInt16();
+
+            list.Add(new FileCabinetRecord
+            {
+                Id = reader.ReadInt32(),
+                FirstName = string.Concat(reader.ReadChars(60).Where(c => char.IsLetter(c))),
+                LastName = string.Concat(reader.ReadChars(60).Where(c => char.IsLetter(c))),
+                DateOfBirth = new DateTime(reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32()),
+                Gender = reader.ReadChar(),
+                Height = reader.ReadInt16(),
+                Weight = reader.ReadDecimal(),
+            });
         }
 
         private void WriteBinary(FileCabinetRecordNewData fileCabinetRecordNewData, short status, int id, long position)
@@ -193,6 +245,36 @@ namespace FileCabinetApp
                 writer.Write(fileCabinetRecordNewData.Height);
                 writer.Write(fileCabinetRecordNewData.Weight);
             }
+        }
+
+        private List<FileCabinetRecord> FindByParametr(string nameFind, long position, int count)
+        {
+            List<FileCabinetRecord> list = new List<FileCabinetRecord>();
+
+            using (var reader = new BinaryReader(this.fileStream, Encoding.ASCII, true))
+            {
+                while (position < reader.BaseStream.Length)
+                {
+                    reader.BaseStream.Seek(position, SeekOrigin.Begin);
+
+                    var name = string.Concat(reader.ReadChars(60).Where(c => char.IsLetter(c)));
+
+                    if (name.ToLowerInvariant() == nameFind.ToLowerInvariant())
+                    {
+                        position -= count;
+
+                        reader.BaseStream.Seek(position, SeekOrigin.Begin);
+
+                        AddToListFromBinaryFile(list, reader);
+
+                        position += count;
+                    }
+
+                    position += 157;
+                }
+            }
+
+            return list;
         }
     }
 }

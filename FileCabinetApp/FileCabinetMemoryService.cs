@@ -82,7 +82,7 @@ namespace FileCabinetApp
         }
 
         /// <summary>
-        /// Edits an already existing entry by id.
+        /// Edits an already existing record by id.
         /// </summary>
         /// <param name="id">The id of the record to be modified.</param>
         /// <param name="fileCabinetRecordNewData">The new date in the record.</param>

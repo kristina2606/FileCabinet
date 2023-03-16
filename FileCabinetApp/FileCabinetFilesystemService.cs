@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Reflection.PortableExecutable;
 using System.Text;
 
 namespace FileCabinetApp
@@ -33,39 +34,35 @@ namespace FileCabinetApp
             short status = 0;
 
             var id = (int)(this.fileStream.Length / 157) + 1;
-
-            char[] firstName = new char[60];
-            for (var i = 0; i < fileCabinetRecordNewData.FirstName.Length; i++)
-            {
-                firstName[i] = fileCabinetRecordNewData.FirstName[i];
-            }
-
-            char[] lastName = new char[60];
-            for (var i = 0; i < fileCabinetRecordNewData.LastName.Length; i++)
-            {
-                lastName[i] = fileCabinetRecordNewData.LastName[i];
-            }
-
-            using (BinaryWriter writer = new BinaryWriter(this.fileStream, Encoding.UTF8, true))
-            {
-                writer.Write(status);
-                writer.Write(id);
-                writer.Write(firstName);
-                writer.Write(lastName);
-                writer.Write(fileCabinetRecordNewData.DateOfBirth.Year);
-                writer.Write(fileCabinetRecordNewData.DateOfBirth.Month);
-                writer.Write(fileCabinetRecordNewData.DateOfBirth.Day);
-                writer.Write(fileCabinetRecordNewData.Gender);
-                writer.Write(fileCabinetRecordNewData.Height);
-                writer.Write(fileCabinetRecordNewData.Weight);
-            }
+            this.WriteBinary(fileCabinetRecordNewData, status, id, this.fileStream.Length);
 
             return id;
         }
 
+        /// <summary>
+        ///  Edits an already existing record in binary file by id.
+        /// </summary>
+        /// <param name="id">The id of the record to be modified.</param>
+        /// <param name="fileCabinetRecordNewData">The new date in the record.</param>
         public void EditRecord(int id, FileCabinetRecordNewData fileCabinetRecordNewData)
         {
-            throw new NotImplementedException();
+            int pos = 2;
+            using (var reader = new BinaryReader(this.fileStream, Encoding.ASCII, true))
+            {
+                while (pos < reader.BaseStream.Length)
+                {
+                    reader.BaseStream.Seek(pos, SeekOrigin.Begin);
+                    if (reader.ReadInt32() == id)
+                    {
+                        pos -= 2;
+                        break;
+                    }
+
+                    pos += 157;
+                }
+            }
+
+            this.WriteBinary(fileCabinetRecordNewData, 0, id, pos);
         }
 
         public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
@@ -91,7 +88,7 @@ namespace FileCabinetApp
         {
             List<FileCabinetRecord> list = new List<FileCabinetRecord>();
 
-            using (var reader = new BinaryReader(this.fileStream, Encoding.UTF8, true))
+            using (var reader = new BinaryReader(this.fileStream, Encoding.ASCII, true))
             {
                 reader.BaseStream.Seek(0, SeekOrigin.Begin);
 
@@ -135,14 +132,67 @@ namespace FileCabinetApp
             return (int)this.fileStream.Length / 157;
         }
 
+        /// <summary>
+        /// Checks if records with the specified id exists.
+        /// </summary>
+        /// <param name="id">The id entered by the user.</param>
+        /// <returns>True if records exists and false if records don't exist.</returns>
         public bool IsExist(int id)
         {
-            throw new NotImplementedException();
+            bool a = false;
+            using (var reader = new BinaryReader(this.fileStream, Encoding.ASCII, true))
+            {
+                int pos = 2;
+
+                while (pos < reader.BaseStream.Length)
+                {
+                    reader.BaseStream.Seek(pos, SeekOrigin.Begin);
+                    if (reader.ReadInt32() == id)
+                    {
+                        a = true;
+                        break;
+                    }
+
+                    pos += 157;
+                }
+            }
+
+            return a;
         }
 
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
             throw new NotImplementedException();
+        }
+
+        private static char[] CreateCharArray(string name)
+        {
+            char[] newName = new char[60];
+            for (var i = 0; i < name.Length; i++)
+            {
+                newName[i] = name[i];
+            }
+
+            return newName;
+        }
+
+        private void WriteBinary(FileCabinetRecordNewData fileCabinetRecordNewData, short status, int id, long position)
+        {
+            using (BinaryWriter writer = new BinaryWriter(this.fileStream, Encoding.ASCII, true))
+            {
+                writer.BaseStream.Seek(position, SeekOrigin.Begin);
+
+                writer.Write(status);
+                writer.Write(id);
+                writer.Write(CreateCharArray(fileCabinetRecordNewData.FirstName));
+                writer.Write(CreateCharArray(fileCabinetRecordNewData.LastName));
+                writer.Write(fileCabinetRecordNewData.DateOfBirth.Year);
+                writer.Write(fileCabinetRecordNewData.DateOfBirth.Month);
+                writer.Write(fileCabinetRecordNewData.DateOfBirth.Day);
+                writer.Write(fileCabinetRecordNewData.Gender);
+                writer.Write(fileCabinetRecordNewData.Height);
+                writer.Write(fileCabinetRecordNewData.Weight);
+            }
         }
     }
 }

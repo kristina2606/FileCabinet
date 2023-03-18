@@ -17,6 +17,7 @@ namespace FileCabinetApp
         private const int ExplanationHelpIndex = 2;
         private const string FileTypeCsv = "csv";
         private const string FileTypeXml = "xml";
+        private const string FileNameFormatDB = "cabinet-records.db";
 
         private static bool isRunning = true;
         private static IFileCabinetService fileCabinetService = new FileCabinetMemoryService(new DefaultValidator());
@@ -65,9 +66,9 @@ namespace FileCabinetApp
                     validationRules = "Using custom validation rules.";
                 }
 
-                if ((args[i] == "--storage" || args[i] == "-s") && args[i + 1].ToLowerInvariant() == "file")
+                if ((comand[0] == "--storage" && comand[1].ToLowerInvariant() == "file") || (args[i] == "-s" && args[i + 1].ToLowerInvariant() == "file"))
                 {
-                    fileCabinetService = new FileCabinetFilesystemService(new FileStream("cabinet-records.db", FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None));
+                    fileCabinetService = new FileCabinetFilesystemService(new FileStream(FileNameFormatDB, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None));
                 }
             }
 

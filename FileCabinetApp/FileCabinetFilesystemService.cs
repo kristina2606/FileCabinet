@@ -14,6 +14,9 @@ namespace FileCabinetApp
     /// </summary>
     public class FileCabinetFilesystemService : IFileCabinetService
     {
+        private const int LengthOfOneRecord = 157;
+        private const short Status = 0;
+
         private readonly FileStream fileStream;
 
         /// <summary>
@@ -32,16 +35,9 @@ namespace FileCabinetApp
         /// <returns>Returns the id of the created record.</returns>
         public int CreateRecord(FileCabinetRecordNewData fileCabinetRecordNewData)
         {
-            List<FileCabinetRecord> list = new List<FileCabinetRecord>();
+            int id = (int)(this.fileStream.Length / LengthOfOneRecord) + 1;
 
-            foreach (var record in this.GetRecordsInternal())
-            {
-                list.Add(record.record);
-            }
-
-            var id = list.Count + 1;
-
-            this.WriteBinary(fileCabinetRecordNewData, 0, id, this.fileStream.Length);
+            this.WriteBinary(fileCabinetRecordNewData, Status, id, this.fileStream.Length);
 
             return id;
         }
@@ -57,7 +53,7 @@ namespace FileCabinetApp
             {
                 if (record.Id == id)
                 {
-                    this.WriteBinary(fileCabinetRecordNewData, 0, id, position);
+                    this.WriteBinary(fileCabinetRecordNewData, Status, id, position);
                     break;
                 }
             }
@@ -70,9 +66,7 @@ namespace FileCabinetApp
         /// <returns>Returns all records by date of birth.</returns>
         public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
         {
-            List<FileCabinetRecord> list = new List<FileCabinetRecord>();
-
-            this.GetRecordsInternal().Where(record => record.record.DateOfBirth == dateOfBirth).ToList().ForEach(record => list.Add(record.record));
+            var list = this.GetRecordsInternal().Select(record => record.record).Where(record => record.DateOfBirth == dateOfBirth).ToList();
 
             return new ReadOnlyCollection<FileCabinetRecord>(list);
         }
@@ -84,9 +78,7 @@ namespace FileCabinetApp
         /// <returns>Returns  all records by first name.</returns>
         public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
         {
-            List<FileCabinetRecord> list = new List<FileCabinetRecord>();
-
-            this.GetRecordsInternal().Where(record => record.record.FirstName.ToLowerInvariant() == firstName.ToLowerInvariant()).ToList().ForEach(record => list.Add(record.record));
+            var list = this.GetRecordsInternal().Select(record => record.record).Where(record => record.FirstName.ToLowerInvariant() == firstName.ToLowerInvariant()).ToList();
 
             return new ReadOnlyCollection<FileCabinetRecord>(list);
         }
@@ -98,9 +90,7 @@ namespace FileCabinetApp
         /// <returns>Returns all records by last name.</returns>
         public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
         {
-            List<FileCabinetRecord> list = new List<FileCabinetRecord>();
-
-            this.GetRecordsInternal().Where(record => record.record.LastName.ToLowerInvariant() == lastName.ToLowerInvariant()).ToList().ForEach(record => list.Add(record.record));
+            var list = this.GetRecordsInternal().Select(record => record.record).Where(record => record.LastName.ToLowerInvariant() == lastName.ToLowerInvariant()).ToList();
 
             return new ReadOnlyCollection<FileCabinetRecord>(list);
         }
@@ -111,11 +101,7 @@ namespace FileCabinetApp
         /// <returns>Returns all available records from the data file.</returns>
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
-            List<FileCabinetRecord> list = new List<FileCabinetRecord>();
-
-            this.GetRecordsInternal().ToList().ForEach(record => list.Add(record.record));
-
-            return new ReadOnlyCollection<FileCabinetRecord>(list);
+            return new ReadOnlyCollection<FileCabinetRecord>(this.GetRecordsInternal().Select(record => record.record).ToList());
         }
 
         /// <summary>
@@ -124,7 +110,7 @@ namespace FileCabinetApp
         /// <returns>Returns the number of records stored in the file.</returns>
         public int GetStat()
         {
-            return (int)this.fileStream.Length / 157;
+            return (int)this.fileStream.Length / LengthOfOneRecord;
         }
 
         /// <summary>
@@ -143,14 +129,7 @@ namespace FileCabinetApp
         /// <returns>Class containing the state of an object.</returns>
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
-            List<FileCabinetRecord> list = new List<FileCabinetRecord>();
-
-            foreach (var record in this.GetRecordsInternal())
-            {
-                list.Add(record.record);
-            }
-
-            return new FileCabinetServiceSnapshot(list.ToArray());
+            return new FileCabinetServiceSnapshot(this.GetRecordsInternal().Select(record => record.record).ToArray());
         }
 
         private static char[] CreateCharArray(string name)
@@ -194,10 +173,10 @@ namespace FileCabinetApp
                     FileCabinetRecord record = new FileCabinetRecord();
                     long position = reader.BaseStream.Position;
 
-                    var status = reader.ReadInt16();
+                    reader.ReadInt16();
                     record.Id = reader.ReadInt32();
-                    record.FirstName = string.Concat(reader.ReadChars(60).Where(c => char.IsLetter(c)));
-                    record.LastName = string.Concat(reader.ReadChars(60).Where(c => char.IsLetter(c)));
+                    record.FirstName = new string(reader.ReadChars(60)).TrimEnd((char)0);
+                    record.LastName = new string(reader.ReadChars(60)).TrimEnd((char)0);
                     record.DateOfBirth = new DateTime(reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
                     record.Gender = reader.ReadChar();
                     record.Height = reader.ReadInt16();

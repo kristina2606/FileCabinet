@@ -17,9 +17,10 @@ namespace FileCabinetApp
         private const int ExplanationHelpIndex = 2;
         private const string FileTypeCsv = "csv";
         private const string FileTypeXml = "xml";
+        private const string FileNameFormatDatabasePath = "cabinet-records.db";
 
         private static bool isRunning = true;
-        private static IFileCabinetService fileCabinetService = new FileCabinetService(new DefaultValidator());
+        private static IFileCabinetService fileCabinetService = new FileCabinetMemoryService(new DefaultValidator());
         private static IUserInputValidation inputValidation = new UserInputValidationDafault();
         private static string validationRules = "Using default validation rules.";
 
@@ -55,22 +56,20 @@ namespace FileCabinetApp
         {
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
 
-            if (args.Length == 1)
+            for (var i = 0; i < args.Length; i++)
             {
-                var comand = args[0].Split('=');
-
-                if (comand[0] == "--validation-rules" && comand[1].ToLowerInvariant() == "custom")
+                var comand = args[i].Split('=');
+                if ((comand[0] == "--validation-rules" && comand[1].ToLowerInvariant() == "custom") || (args[i] == "-v" && args[i + 1].ToLowerInvariant() == "custom"))
                 {
-                    fileCabinetService = new FileCabinetService(new CustomValidator());
+                    fileCabinetService = new FileCabinetMemoryService(new CustomValidator());
                     inputValidation = new UserInputValidationCustom();
                     validationRules = "Using custom validation rules.";
                 }
-            }
-            else if (args.Length == 2 && args[0] == "-v" && args[1].ToLowerInvariant() == "custom")
-            {
-                fileCabinetService = new FileCabinetService(new CustomValidator());
-                inputValidation = new UserInputValidationCustom();
-                validationRules = "Using custom validation rules.";
+
+                if ((comand[0] == "--storage" && comand[1].ToLowerInvariant() == "file") || (args[i] == "-s" && args[i + 1].ToLowerInvariant() == "file"))
+                {
+                    fileCabinetService = new FileCabinetFilesystemService(new FileStream(FileNameFormatDatabasePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None));
+                }
             }
 
             Console.WriteLine(Program.validationRules);

@@ -10,7 +10,7 @@ namespace FileCabinetApp
     /// <summary>
     /// Creates, edits and checks in entries. Finds records by parameters.
     /// </summary>
-    public class FileCabinetService : IFileCabinetService
+    public class FileCabinetMemoryService : IFileCabinetService
     {
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
 
@@ -23,11 +23,11 @@ namespace FileCabinetApp
         private readonly IRecordValidator validator;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FileCabinetService"/> class.
+        /// Initializes a new instance of the <see cref="FileCabinetMemoryService"/> class.
         /// The class constructor takes a validation parameter.
         /// </summary>
         /// <param name="validator">Validation parameter.</param>
-        public FileCabinetService(IRecordValidator validator)
+        public FileCabinetMemoryService(IRecordValidator validator)
         {
             this.validator = validator;
         }
@@ -82,7 +82,7 @@ namespace FileCabinetApp
         }
 
         /// <summary>
-        /// Edits an already existing entry by id.
+        /// Edits an already existing record by id.
         /// </summary>
         /// <param name="id">The id of the record to be modified.</param>
         /// <param name="fileCabinetRecordNewData">The new date in the record.</param>

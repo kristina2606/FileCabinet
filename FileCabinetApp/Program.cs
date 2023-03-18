@@ -17,7 +17,7 @@ namespace FileCabinetApp
         private const int ExplanationHelpIndex = 2;
         private const string FileTypeCsv = "csv";
         private const string FileTypeXml = "xml";
-        private const string FileNameFormatDatabasePath = "cabinet-records.databasePath";
+        private const string FileNameFormatDatabasePath = "cabinet-records.db";
 
         private static bool isRunning = true;
         private static IFileCabinetService fileCabinetService = new FileCabinetMemoryService(new DefaultValidator());

@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FileCabinetApp
 {
@@ -15,7 +13,7 @@ namespace FileCabinetApp
     public class FileCabinetFilesystemService : IFileCabinetService
     {
         private const int LengthOfOneRecord = 157;
-        private const short Status = 0;
+        private const short DefaultStatus = 0;
 
         private readonly FileStream fileStream;
 
@@ -35,9 +33,9 @@ namespace FileCabinetApp
         /// <returns>Returns the id of the created record.</returns>
         public int CreateRecord(FileCabinetRecordNewData fileCabinetRecordNewData)
         {
-            int id = (int)(this.fileStream.Length / LengthOfOneRecord) + 1;
+            int id = this.GetStat() + 1;
 
-            this.WriteBinary(fileCabinetRecordNewData, Status, id, this.fileStream.Length);
+            this.WriteBinary(fileCabinetRecordNewData, DefaultStatus, id, this.fileStream.Length);
 
             return id;
         }
@@ -53,7 +51,7 @@ namespace FileCabinetApp
             {
                 if (record.Id == id)
                 {
-                    this.WriteBinary(fileCabinetRecordNewData, Status, id, position);
+                    this.WriteBinary(fileCabinetRecordNewData, DefaultStatus, id, position);
                     break;
                 }
             }
@@ -66,7 +64,10 @@ namespace FileCabinetApp
         /// <returns>Returns all records by date of birth.</returns>
         public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
         {
-            var list = this.GetRecordsInternal().Select(record => record.record).Where(record => record.DateOfBirth == dateOfBirth).ToList();
+            var list = this.GetRecordsInternal()
+                .Select(record => record.record)
+                .Where(record => record.DateOfBirth == dateOfBirth)
+                .ToList();
 
             return new ReadOnlyCollection<FileCabinetRecord>(list);
         }
@@ -78,7 +79,10 @@ namespace FileCabinetApp
         /// <returns>Returns  all records by first name.</returns>
         public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
         {
-            var list = this.GetRecordsInternal().Select(record => record.record).Where(record => record.FirstName.ToLowerInvariant() == firstName.ToLowerInvariant()).ToList();
+            var list = this.GetRecordsInternal()
+                .Select(record => record.record)
+                .Where(record => record.FirstName.ToLowerInvariant() == firstName.ToLowerInvariant())
+                .ToList();
 
             return new ReadOnlyCollection<FileCabinetRecord>(list);
         }
@@ -90,7 +94,10 @@ namespace FileCabinetApp
         /// <returns>Returns all records by last name.</returns>
         public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
         {
-            var list = this.GetRecordsInternal().Select(record => record.record).Where(record => record.LastName.ToLowerInvariant() == lastName.ToLowerInvariant()).ToList();
+            var list = this.GetRecordsInternal()
+                .Select(record => record.record)
+                .Where(record => record.LastName.ToLowerInvariant() == lastName.ToLowerInvariant())
+                .ToList();
 
             return new ReadOnlyCollection<FileCabinetRecord>(list);
         }
@@ -101,7 +108,9 @@ namespace FileCabinetApp
         /// <returns>Returns all available records from the data file.</returns>
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
-            return new ReadOnlyCollection<FileCabinetRecord>(this.GetRecordsInternal().Select(record => record.record).ToList());
+            return new ReadOnlyCollection<FileCabinetRecord>(this.GetRecordsInternal()
+                .Select(record => record.record)
+                .ToList());
         }
 
         /// <summary>
@@ -129,7 +138,9 @@ namespace FileCabinetApp
         /// <returns>Class containing the state of an object.</returns>
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
-            return new FileCabinetServiceSnapshot(this.GetRecordsInternal().Select(record => record.record).ToArray());
+            return new FileCabinetServiceSnapshot(this.GetRecordsInternal()
+                .Select(record => record.record)
+                .ToArray());
         }
 
         private static char[] CreateCharArray(string name)

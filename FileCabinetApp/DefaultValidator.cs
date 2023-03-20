@@ -51,7 +51,7 @@ namespace FileCabinetApp
                 throw new ArgumentException("height very small or very large.");
             }
 
-            if (fileCabinetRecordNewData.Weight <= 0)
+            if (fileCabinetRecordNewData.Weight <= 0 && fileCabinetRecordNewData.Weight >= 300)
             {
                 throw new ArgumentException("weight very small or very large.");
             }

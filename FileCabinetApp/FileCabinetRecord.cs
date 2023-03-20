@@ -1,16 +1,20 @@
 using System;
+using System.Xml.Serialization;
 
 namespace FileCabinetApp
 {
     /// <summary>
     /// Fields for creating a record.
     /// </summary>
+    [Serializable]
+    [XmlType("record")]
     public class FileCabinetRecord
     {
         /// <summary>
         /// Gets or sets record id.
         /// </summary>
         /// <value>Record id of a person.</value>
+        [XmlAttribute(AttributeName = "id")]
         public int Id { get; set; }
 
         /// <summary>

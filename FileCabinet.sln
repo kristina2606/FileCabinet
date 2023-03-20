@@ -3,20 +3,29 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileCabinetApp", "FileCabinetApp\FileCabinetApp.csproj", "{7C96D722-F2D8-4C10-B3AA-C629137BE790}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileCabinetApp", "FileCabinetApp\FileCabinetApp.csproj", "{7C96D722-F2D8-4C10-B3AA-C629137BE790}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileCabinetGenerator", "FileCabinetGenerator\FileCabinetGenerator.csproj", "{C7674821-50EB-48A7-8343-6ABE63AD337F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{7C96D722-F2D8-4C10-B3AA-C629137BE790}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7C96D722-F2D8-4C10-B3AA-C629137BE790}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7C96D722-F2D8-4C10-B3AA-C629137BE790}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7C96D722-F2D8-4C10-B3AA-C629137BE790}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7674821-50EB-48A7-8343-6ABE63AD337F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7674821-50EB-48A7-8343-6ABE63AD337F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7674821-50EB-48A7-8343-6ABE63AD337F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7674821-50EB-48A7-8343-6ABE63AD337F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BC8F1935-8AD0-4775-AE0E-4957BA25E76B}
 	EndGlobalSection
 EndGlobal

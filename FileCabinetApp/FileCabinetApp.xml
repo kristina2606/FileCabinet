@@ -150,6 +150,12 @@
             </summary>
             <returns>Class containing the state of an object.</returns>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
+            <summary>
+            Adding imported records to existing records.
+            </summary>
+            <param name="fileCabinetServiceSnapshot">Сlass instance.</param>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetMemoryService">
             <summary>
             Creates, edits and checks in entries. Finds records by parameters.
@@ -219,6 +225,12 @@
             </summary>
             <returns>Class containing the state of an object.</returns>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
+            <summary>
+            Adding imported records to existing records.
+            </summary>
+            <param name="fileCabinetServiceSnapshot">Сlass instance.</param>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.IsExist(System.Int32)">
             <summary>
             Checks if records with the specified id exists.
@@ -272,6 +284,23 @@
             Gets or sets the weight of a person.
             </summary>
             <value>The weight of a person.</value>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetRecordCsvReader">
+            <summary>
+            Imports data from a csv file.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordCsvReader.#ctor(System.IO.StreamReader)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordCsvReader"/> class.
+            </summary>
+            <param name="reader">Path to import a csv file with records.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordCsvReader.ReadAll">
+            <summary>
+            Imports all datas from a csv file.
+            </summary>
+            <returns>Returns all datas from a csv file.</returns>
         </member>
         <member name="T:FileCabinetApp.FileCabinetRecordCsvWriter">
             <summary>
@@ -370,6 +399,19 @@
             </summary>
             <param name="records">All existing records.</param>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetServiceSnapshot"/> class.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetServiceSnapshot.Records">
+            <summary>
+            Gets all imported data from a csv file.
+            </summary>
+            <value>
+            All imported data from a csv file.
+            </value>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.SaveToCsv(System.IO.StreamWriter)">
             <summary>
             Creates an instance of the class and call the function to write the record to the .csv file.
@@ -381,6 +423,12 @@
             Creates an instance of the class and call the function to write the record to the .xml file.
             </summary>
             <param name="streamWriter">Path to create a file with records.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.LoadFromCsv(System.IO.StreamReader)">
+            <summary>
+            Gets all imported data from a csv file.
+            </summary>
+            <param name="reader">Path to import a file with records.</param>
         </member>
         <member name="T:FileCabinetApp.IFileCabinetService">
             <summary>
@@ -450,6 +498,12 @@
             Passes the state of an object.
             </summary>
             <returns>Class containing the state of an object.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
+            <summary>
+            Adding imported records to existing records.
+            </summary>
+            <param name="fileCabinetServiceSnapshot">Сlass instance.</param>
         </member>
         <member name="T:FileCabinetApp.IRecordValidator">
             <summary>

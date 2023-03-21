@@ -73,6 +73,10 @@ namespace FileCabinetApp
         /// <returns>Class containing the state of an object.</returns>
         FileCabinetServiceSnapshot MakeSnapshot();
 
-        public void Restore(FileCabinetServiceSnapshot fileCabinetServiceSnapshot);
+        /// <summary>
+        /// Adding imported records to existing records.
+        /// </summary>
+        /// <param name="fileCabinetServiceSnapshot">Сlass instance.</param>
+        void Restore(FileCabinetServiceSnapshot fileCabinetServiceSnapshot);
     }
 }

@@ -21,10 +21,19 @@ namespace FileCabinetApp
             this.records = records;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileCabinetServiceSnapshot"/> class.
+        /// </summary>
         public FileCabinetServiceSnapshot()
         {
         }
 
+        /// <summary>
+        /// Gets all imported data from a csv file.
+        /// </summary>
+        /// <value>
+        /// All imported data from a csv file.
+        /// </value>
         public ReadOnlyCollection<FileCabinetRecord> Records { get; private set; }
 
         /// <summary>
@@ -63,6 +72,10 @@ namespace FileCabinetApp
             }
         }
 
+        /// <summary>
+        /// Gets all imported data from a csv file.
+        /// </summary>
+        /// <param name="reader">Path to import a file with records.</param>
         public void LoadFromCsv(StreamReader reader)
         {
             FileCabinetRecordCsvReader fileCabinetRecordCsvReader = new FileCabinetRecordCsvReader(reader);

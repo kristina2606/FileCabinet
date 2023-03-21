@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -143,6 +144,28 @@ namespace FileCabinetApp
                 .ToArray());
         }
 
+        /// <summary>
+        /// Adding imported records to existing records.
+        /// </summary>
+        /// <param name="fileCabinetServiceSnapshot">Сlass instance.</param>
+        public void Restore(FileCabinetServiceSnapshot fileCabinetServiceSnapshot)
+        {
+            var records = fileCabinetServiceSnapshot.Records;
+            foreach (var record in records)
+            {
+                var recordNew = new FileCabinetRecordNewData(record.FirstName, record.LastName, record.DateOfBirth, record.Gender, record.Height, record.Weight);
+
+                if (this.GetRecordsInternal().Any(x => x.record.Id == record.Id))
+                {
+                    this.EditRecord(record.Id, recordNew);
+                }
+                else
+                {
+                    this.CreateRecord(recordNew);
+                }
+            }
+        }
+
         private static char[] CreateCharArray(string name)
         {
             char[] newName = new char[60];
@@ -196,11 +219,6 @@ namespace FileCabinetApp
                     yield return (position, record);
                 }
             }
-        }
-
-        public void Restore(FileCabinetServiceSnapshot fileCabinetServiceSnapshot)
-        {
-            throw new NotImplementedException();
         }
     }
 }

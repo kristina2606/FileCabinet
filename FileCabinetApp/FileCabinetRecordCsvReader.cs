@@ -3,19 +3,29 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 
 namespace FileCabinetApp
 {
+    /// <summary>
+    /// Imports data from a csv file.
+    /// </summary>
     public class FileCabinetRecordCsvReader
     {
         private readonly StreamReader reader;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileCabinetRecordCsvReader"/> class.
+        /// </summary>
+        /// <param name="reader">Path to import a csv file with records.</param>
         public FileCabinetRecordCsvReader(StreamReader reader)
         {
             this.reader = reader;
         }
 
+        /// <summary>
+        /// Imports all datas from a csv file.
+        /// </summary>
+        /// <returns>Returns all datas from a csv file.</returns>
         public IList<FileCabinetRecord> ReadAll()
         {
             IList<FileCabinetRecord> records = new List<FileCabinetRecord>();

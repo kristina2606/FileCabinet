@@ -44,6 +44,13 @@
             <param name="inputWeight">Get string from user input.</param>
             <returns>Returns information about how the validation went, the string to convert, and the converted data type.</returns>
         </member>
+        <member name="M:FileCabinetApp.Converter.IntConverter(System.String)">
+            <summary>
+            Converts a string to a integer type.
+            </summary>
+            <param name="inputNumber">Get string from user input.</param>
+            <returns>Returns information about how the validation went, the string to convert, and the converted data type.</returns>
+        </member>
         <member name="T:FileCabinetApp.CustomValidator">
             <summary>
              Validate a new record from user input with settings for adults.

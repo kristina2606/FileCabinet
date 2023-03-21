@@ -69,6 +69,11 @@ namespace FileCabinetApp
             return new Tuple<bool, string, decimal>(a, inputWeight, weight);
         }
 
+        /// <summary>
+        /// Converts a string to a integer type.
+        /// </summary>
+        /// <param name="inputNumber">Get string from user input.</param>
+        /// <returns>Returns information about how the validation went, the string to convert, and the converted data type.</returns>
         public static Tuple<bool, string, int> IntConverter(string inputNumber)
         {
             bool a = int.TryParse(inputNumber, CultureInfo.InvariantCulture, out var number);

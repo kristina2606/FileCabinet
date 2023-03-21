@@ -173,7 +173,29 @@ namespace FileCabinetApp
 
         public void Restore(FileCabinetServiceSnapshot fileCabinetServiceSnapshot)
         {
-           var records = fileCabinetServiceSnapshot.Records;
+            var records = fileCabinetServiceSnapshot.Records;
+            foreach (var record in records)
+            {
+                var recordNew = new FileCabinetRecordNewData(record.FirstName, record.LastName, record.DateOfBirth, record.Gender, record.Height, record.Weight);
+                try
+                {
+                    this.validator.Validate(recordNew);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error! Record with id {record.Id}, {ex.Message}!");
+                    continue;
+                }
+
+                if (this.list.Any(x => x.Id == record.Id))
+                {
+                    this.EditRecord(record.Id, recordNew);
+                }
+                else
+                {
+                    this.CreateRecord(recordNew);
+                }
+            }
         }
 
         /// <summary>

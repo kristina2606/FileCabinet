@@ -197,5 +197,10 @@ namespace FileCabinetApp
                 }
             }
         }
+
+        public void Restore(FileCabinetServiceSnapshot fileCabinetServiceSnapshot)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

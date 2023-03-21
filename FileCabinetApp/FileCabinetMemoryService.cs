@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection;
 
 [assembly: CLSCompliant(true)]
 
@@ -168,6 +169,11 @@ namespace FileCabinetApp
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
             return new FileCabinetServiceSnapshot(this.list.ToArray());
+        }
+
+        public void Restore(FileCabinetServiceSnapshot fileCabinetServiceSnapshot)
+        {
+           var records = fileCabinetServiceSnapshot.Records;
         }
 
         /// <summary>

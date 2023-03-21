@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Text;
+using System.Xml;
 using System.Xml.Serialization;
 using FileCabinetApp;
 
@@ -57,7 +58,6 @@ namespace FileCabinetGenerator
                     if (args[i] == "-t" && args[i + 1].ToLowerInvariant() == FileTypeCsv)
                     {
                         type = FileTypeCsv;
-                        Console.WriteLine("FGHJKLKJHGVCVGHJKIJHGVFFG");
                     }
 
                     if (args[i] == "-t" && args[i + 1].ToLowerInvariant() == FileTypeXml)

@@ -72,5 +72,7 @@ namespace FileCabinetApp
         /// </summary>
         /// <returns>Class containing the state of an object.</returns>
         FileCabinetServiceSnapshot MakeSnapshot();
+
+        public void Restore(FileCabinetServiceSnapshot fileCabinetServiceSnapshot);
     }
 }

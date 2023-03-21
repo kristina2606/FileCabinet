@@ -69,6 +69,13 @@ namespace FileCabinetApp
             return new Tuple<bool, string, decimal>(a, inputWeight, weight);
         }
 
+        public static Tuple<bool, string, int> IntConverter(string inputNumber)
+        {
+            bool a = int.TryParse(inputNumber, CultureInfo.InvariantCulture, out var number);
+
+            return new Tuple<bool, string, int>(a, inputNumber, number);
+        }
+
         private static bool IsStringCorrect(string name)
         {
             bool result = name.All(letter => char.IsLetter(letter));

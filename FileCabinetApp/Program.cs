@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FileCabinetApp
 {
@@ -34,6 +35,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("edit", Edit),
             new Tuple<string, Action<string>>("find", Find),
             new Tuple<string, Action<string>>("export", Export),
+            new Tuple<string, Action<string>>("import", Import),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -45,7 +47,8 @@ namespace FileCabinetApp
             new string[] { "list", "returns a list of records.", "The 'list' returns a list of records." },
             new string[] { "edit", "editing a record by id.", "The 'edit' editing a record by id." },
             new string[] { "find", "finds all existing records by parameter.", "The 'find' finds all existing records by parameter." },
-            new string[] { "export", "exports service data to .csv or .xml file.", "The 'export_csv' exports service data to .csv or .xml file." },
+            new string[] { "export", "exports service data to .csv or .xml file.", "The 'export' exports service data to .csv or .xml file." },
+            new string[] { "import", "import data from .csv or .xml file.", "The 'import' import data from .csv or .xml file." },
         };
 
         /// <summary>
@@ -318,6 +321,24 @@ namespace FileCabinetApp
                         makeSnapshot.SaveToXml(sw);
                         break;
                 }
+            }
+        }
+
+        private static void Import(string parameters)
+        {
+            Console.Write("Enter the import path: ");
+            var path = Console.ReadLine();
+
+            if (!File.Exists(path))
+            {
+                Console.WriteLine($"Import error: {path} is not exist.");
+            }
+
+            using (FileStream fs = new FileStream(path, FileMode.Open))
+            {
+                FileCabinetServiceSnapshot fileCabinetServiceSnapshot = new FileCabinetServiceSnapshot();
+                fileCabinetServiceSnapshot.LoadFromCsv(new StreamReader(fs));
+                Program.fileCabinetService.Restore(fileCabinetServiceSnapshot);
             }
         }
 

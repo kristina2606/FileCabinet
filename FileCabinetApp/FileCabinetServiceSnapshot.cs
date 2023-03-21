@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
 using System.Xml;
 
 namespace FileCabinetApp
@@ -18,6 +20,12 @@ namespace FileCabinetApp
         {
             this.records = records;
         }
+
+        public FileCabinetServiceSnapshot()
+        {
+        }
+
+        public ReadOnlyCollection<FileCabinetRecord> Records { get; private set; }
 
         /// <summary>
         /// Creates an instance of the class and call the function to write the record to the .csv file.
@@ -53,6 +61,13 @@ namespace FileCabinetApp
 
                 xmlWriter.WriteEndElement();
             }
+        }
+
+        public void LoadFromCsv(StreamReader reader)
+        {
+            FileCabinetRecordCsvReader fileCabinetRecordCsvReader = new FileCabinetRecordCsvReader(reader);
+            var record = fileCabinetRecordCsvReader.ReadAll();
+            this.Records = new ReadOnlyCollection<FileCabinetRecord>(record);
         }
     }
 }

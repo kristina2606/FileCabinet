@@ -1,6 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
 using System.Xml;
 
 namespace FileCabinetApp
@@ -79,8 +78,20 @@ namespace FileCabinetApp
         public void LoadFromCsv(StreamReader reader)
         {
             FileCabinetRecordCsvReader fileCabinetRecordCsvReader = new FileCabinetRecordCsvReader(reader);
-            var record = fileCabinetRecordCsvReader.ReadAll();
-            this.Records = new ReadOnlyCollection<FileCabinetRecord>(record);
+            this.Records = new ReadOnlyCollection<FileCabinetRecord>(fileCabinetRecordCsvReader.ReadAll());
+        }
+
+        /// <summary>
+        /// Gets all imported data from a xml file.
+        /// </summary>
+        /// <param name="reader">Path to import a file with records.</param>
+        public void LoadFromXml(StreamReader reader)
+        {
+            using (XmlReader xmlReader = XmlReader.Create(reader))
+            {
+                FileCabinetRecordXmlReader fileCabinetRecordXmlReader = new FileCabinetRecordXmlReader(xmlReader);
+                this.Records = new ReadOnlyCollection<FileCabinetRecord>(fileCabinetRecordXmlReader.ReadAll());
+            }
         }
     }
 }

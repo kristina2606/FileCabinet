@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Serialization;
 using FileCabinetApp;
@@ -160,7 +161,6 @@ namespace FileCabinetGenerator
 
         private static void ExportXml(string path)
         {
-
             XmlSerializer xml = new XmlSerializer(typeof(List<FileCabinetRecord>));
             using (FileStream fs = new FileStream(path, FileMode.OpenOrCreate))
             {

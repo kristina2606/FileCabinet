@@ -326,6 +326,15 @@ namespace FileCabinetApp
 
         private static void Import(string parameters)
         {
+            Console.Write("Enter export format (csv/xml): ");
+            var format = Console.ReadLine().ToLowerInvariant();
+
+            if (format != FileTypeCsv && format != FileTypeXml)
+            {
+                Console.WriteLine("You entered an invalid format.");
+                return;
+            }
+
             Console.Write("Enter the import path: ");
             var path = Console.ReadLine();
 
@@ -337,7 +346,17 @@ namespace FileCabinetApp
             using (FileStream fs = new FileStream(path, FileMode.Open))
             {
                 FileCabinetServiceSnapshot fileCabinetServiceSnapshot = new FileCabinetServiceSnapshot();
-                fileCabinetServiceSnapshot.LoadFromCsv(new StreamReader(fs));
+
+                switch (format)
+                {
+                    case FileTypeCsv:
+                        fileCabinetServiceSnapshot.LoadFromCsv(new StreamReader(fs));
+                        break;
+                    case FileTypeXml:
+                        fileCabinetServiceSnapshot.LoadFromXml(new StreamReader(fs));
+                        break;
+                }
+
                 Program.fileCabinetService.Restore(fileCabinetServiceSnapshot);
             }
         }

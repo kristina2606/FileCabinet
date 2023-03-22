@@ -371,6 +371,23 @@
             </summary>
             <value> New weight of a person. </value>
         </member>
+        <member name="T:FileCabinetApp.FileCabinetRecordXmlReader">
+            <summary>
+            Imports data from a xml file.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlReader.#ctor(System.Xml.XmlReader)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordXmlReader"/> class.
+            </summary>
+            <param name="reader">Path to import a xml file with records.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlReader.ReadAll">
+            <summary>
+            Imports all datas from a xml file.
+            </summary>
+            <returns>Returns all datas from a xml file.</returns>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetRecordXmlWriter">
             <summary>
             Export application data to a XML file.
@@ -427,6 +444,12 @@
         <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.LoadFromCsv(System.IO.StreamReader)">
             <summary>
             Gets all imported data from a csv file.
+            </summary>
+            <param name="reader">Path to import a file with records.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.LoadFromXml(System.IO.StreamReader)">
+            <summary>
+            Gets all imported data from a xml file.
             </summary>
             <param name="reader">Path to import a file with records.</param>
         </member>

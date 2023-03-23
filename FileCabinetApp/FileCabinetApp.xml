@@ -90,12 +90,16 @@
             </summary>
             <param name="fileStream">Open binary record stream.</param>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetFilesystemService.CreateRecord(FileCabinetApp.FileCabinetRecordNewData)">
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.CreateRecord(System.Int32,FileCabinetApp.FileCabinetRecordNewData)">
             <summary>
-            Writes the data passed to it in a data file.
+            Creates a new record from user input.
             </summary>
+            <param name="id">The id of the record to be create.</param>
             <param name="fileCabinetRecordNewData">The new date in the record.</param>
             <returns>Returns the id of the created record.</returns>
+            <exception cref="T:System.ArgumentNullException">If the firstName or lastName is equal null.</exception>
+            <exception cref="T:System.ArgumentException">The firstName or lastName length is less than 2 or greater than 60.The dateOfBirth is less than 01-Jun-1950 or greater today's date.
+            The gender isn't equal 'f' or 'm'. The height is less than 0 or greater than 250. The weight is less than 0.</exception>
         </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.EditRecord(System.Int32,FileCabinetApp.FileCabinetRecordNewData)">
             <summary>
@@ -168,10 +172,11 @@
             </summary>
             <param name="validator">Validation parameter.</param>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetMemoryService.CreateRecord(FileCabinetApp.FileCabinetRecordNewData)">
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.CreateRecord(System.Int32,FileCabinetApp.FileCabinetRecordNewData)">
             <summary>
             Creates a new record from user input.
             </summary>
+            <param name="id">The id of the record to be create.</param>
             <param name="fileCabinetRecordNewData">The new date in the record.</param>
             <returns>Returns the id of the created record.</returns>
             <exception cref="T:System.ArgumentNullException">If the firstName or lastName is equal null.</exception>
@@ -249,23 +254,25 @@
             </summary>
             <value>Record id of a person.</value>
         </member>
-        <member name="P:FileCabinetApp.FileCabinetRecord.FirstName">
+        <member name="P:FileCabinetApp.FileCabinetRecord.FullName">
             <summary>
-            Gets or sets the first name.
+            Gets or sets the full name of a person.
             </summary>
-            <value>The first name of a person.</value>
-        </member>
-        <member name="P:FileCabinetApp.FileCabinetRecord.LastName">
-            <summary>
-            Gets or sets the last name of a person.
-            </summary>
-            <value>The last name of a person.</value>
+            <value>The full name of a person.</value>
         </member>
         <member name="P:FileCabinetApp.FileCabinetRecord.DateOfBirth">
             <summary>
             Gets or sets the date of birth of a person.
             </summary>
             <value>The date of birth of a person.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.DateOfBirthString">
+            <summary>
+            Gets or sets dummy string with correct DateTime format.
+            </summary>
+            <value>
+            Dummy string with correct DateTime format.
+            </value>
         </member>
         <member name="P:FileCabinetApp.FileCabinetRecord.Gender">
             <summary>
@@ -453,15 +460,45 @@
             </summary>
             <param name="reader">Path to import a file with records.</param>
         </member>
+        <member name="T:FileCabinetApp.FullName">
+            <summary>
+            Fields for creating the full name of a person.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FullName.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FullName"/> class.
+            </summary>
+            <param name="firstName">The first name of a person.</param>
+            <param name="lastName">The last name of a person.</param>
+        </member>
+        <member name="M:FileCabinetApp.FullName.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FullName"/> class.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.FullName.FirstName">
+            <summary>
+            Gets or sets the first name of a person.
+            </summary>
+            <value>The first name of a person.</value>
+        </member>
+        <member name="P:FileCabinetApp.FullName.LastName">
+            <summary>
+            Gets or sets the last name of a person.
+            </summary>
+            <value>The last name of a person.</value>
+        </member>
         <member name="T:FileCabinetApp.IFileCabinetService">
             <summary>
             Creates, edits and checks in entries. Finds records by parameters.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.IFileCabinetService.CreateRecord(FileCabinetApp.FileCabinetRecordNewData)">
+        <member name="M:FileCabinetApp.IFileCabinetService.CreateRecord(System.Int32,FileCabinetApp.FileCabinetRecordNewData)">
             <summary>
             Creates a new record from user input.
             </summary>
+            <param name="id">The id of the record to be create.</param>
             <param name="fileCabinetRecordNewData">The new date in the record.</param>
             <returns>Returns the id of the created record.</returns>
             <exception cref="T:System.ArgumentNullException">If the firstName or lastName is equal null.</exception>
@@ -596,6 +633,19 @@
             Receives a command from the user.
             </summary>
             <param name="args">Arguments of the appropriate type.</param>
+        </member>
+        <member name="T:FileCabinetApp.Records">
+            <summary>
+             Fields for creating a list of record.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.Records.Record">
+            <summary>
+            Gets or sets a list of record.
+            </summary>
+            <value>
+            A list of record.
+            </value>
         </member>
         <member name="T:FileCabinetApp.UserInputValidationCustom">
             <summary>

@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FileCabinetApp
@@ -50,6 +52,8 @@ namespace FileCabinetApp
             new string[] { "export", "exports service data to .csv or .xml file.", "The 'export' exports service data to .csv or .xml file." },
             new string[] { "import", "import data from .csv or .xml file.", "The 'import' import data from .csv or .xml file." },
         };
+
+        private static int NextId { get; set; }
 
         /// <summary>
         /// Receives a command from the user.
@@ -174,7 +178,8 @@ namespace FileCabinetApp
             var weight = ReadInput(Converter.DecimalConverter, inputValidation.ValidateWeight);
 
             FileCabinetRecordNewData fileCabinetRecordNewData = new FileCabinetRecordNewData(firstName, lastName, dateOfBirth, gender, height, weight);
-            int recordId = Program.fileCabinetService.CreateRecord(fileCabinetRecordNewData);
+            int recordId = Program.fileCabinetService.CreateRecord(NextId + 1, fileCabinetRecordNewData);
+            NextId++;
 
             Console.WriteLine($"Record #{recordId} is created.");
         }
@@ -366,8 +371,8 @@ namespace FileCabinetApp
             foreach (var record in list)
             {
                 var id = record.Id;
-                var firstName = record.FirstName;
-                var lastName = record.LastName;
+                var firstName = record.FullName.FirstName;
+                var lastName = record.FullName.LastName;
                 var dateOfBirth = record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture);
                 var gender = record.Gender;
                 var height = record.Height;

@@ -26,11 +26,11 @@ namespace FileCabinetApp
         /// <returns>Returns all datas from a xml file.</returns>
         public IList<FileCabinetRecord> ReadAll()
         {
-            var serializer = new XmlSerializer(typeof(List<FileCabinetRecord>));
+            var serializer = new XmlSerializer(typeof(Records));
 
-            IList<FileCabinetRecord> records = (List<FileCabinetRecord>)serializer.Deserialize(this.reader);
+            var records = (Records)serializer.Deserialize(this.reader);
 
-            return records;
+            return records.Record;
         }
     }
 }

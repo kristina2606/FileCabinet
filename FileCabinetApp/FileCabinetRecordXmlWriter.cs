@@ -29,12 +29,12 @@ namespace FileCabinetApp
             this.writer.WriteAttributeString("id", record.Id.ToString(CultureInfo.InvariantCulture));
 
             this.writer.WriteStartElement("name");
-            this.writer.WriteAttributeString("first", record.FirstName);
-            this.writer.WriteAttributeString("last", record.LastName);
+            this.writer.WriteAttributeString("first", record.FullName.FirstName);
+            this.writer.WriteAttributeString("last", record.FullName.LastName);
             this.writer.WriteEndElement();
 
             this.writer.WriteStartElement("dateOfBirth");
-            this.writer.WriteString(record.DateOfBirth.ToShortDateString());
+            this.writer.WriteString(record.DateOfBirth.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture));
             this.writer.WriteEndElement();
 
             this.writer.WriteStartElement("gender");

@@ -1,9 +1,12 @@
-﻿using System.Globalization;
+﻿using System.Diagnostics;
+using System.Globalization;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Serialization;
 using FileCabinetApp;
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace FileCabinetGenerator
 {
@@ -104,18 +107,20 @@ namespace FileCabinetGenerator
 
             var genderRandom = new[] { 'm', 'f' };
 
-            for (var i = 0; i < amount; i++)
+            var name = new FullName(GetRandomName(), GetRandomName());
 
+            for (var i = 0; i < amount; i++)
+            {
                 list.Add(new FileCabinetRecord
                 {
                     Id = idStart + i,
-                    FirstName = GetRandomName(),
-                    LastName = GetRandomName(),
+                    FullName = name,
                     DateOfBirth = startDate.AddDays(random.Next(daysCount)),
                     Gender = genderRandom[random.Next(genderRandom.Length)],
                     Height = (short)random.Next(0, 251),
                     Weight = random.Next(301),
-                });
+                }); ;
+            }
         }
 
         private static string GetRandomName()
@@ -161,10 +166,15 @@ namespace FileCabinetGenerator
 
         private static void ExportXml(string path)
         {
-            XmlSerializer xml = new XmlSerializer(typeof(List<FileCabinetRecord>));
-            using (FileStream fs = new FileStream(path, FileMode.OpenOrCreate))
+            var ns = new XmlSerializerNamespaces(new[] { XmlQualifiedName.Empty });
+
+            using (var writer = XmlWriter.Create(path))
             {
-                xml.Serialize(fs, list);
+                var serializer = new XmlSerializer(typeof(Records));
+
+                var records = new Records();
+                records.Record = list;
+                serializer.Serialize(writer, records, ns);
             }
         }
     }

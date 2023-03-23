@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Xml.Serialization;
 
 namespace FileCabinetApp
@@ -6,7 +7,6 @@ namespace FileCabinetApp
     /// <summary>
     /// Fields for creating a record.
     /// </summary>
-    [XmlRoot("record")]
     public class FileCabinetRecord
     {
         /// <summary>
@@ -17,45 +17,51 @@ namespace FileCabinetApp
         public int Id { get; set; }
 
         /// <summary>
-        /// Gets or sets the first name.
+        /// Gets or sets the full name of a person.
         /// </summary>
-        /// <value>The first name of a person.</value>
-        [XmlElement("FirstName")]
-        public string FirstName { get; set; }
-
-        /// <summary>
-        /// Gets or sets the last name of a person.
-        /// </summary>
-        /// <value>The last name of a person.</value>
-        [XmlElement("LastName")]
-        public string LastName { get; set; }
+        /// <value>The full name of a person.</value>
+        [XmlElement("name")]
+        public FullName FullName { get; set; }
 
         /// <summary>
         /// Gets or sets the date of birth of a person.
         /// </summary>
         /// <value>The date of birth of a person.</value>
-        [XmlElement("DateOfBirth")]
+        [XmlIgnore]
         public DateTime DateOfBirth { get; set; }
+
+        /// <summary>
+        /// Gets or sets dummy string with correct DateTime format.
+        /// </summary>
+        /// <value>
+        /// Dummy string with correct DateTime format.
+        /// </value>
+        [XmlElement("dateOfBirth")]
+        public string DateOfBirthString
+        {
+            get { return this.DateOfBirth.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture); }
+            set => this.DateOfBirth = DateTime.Parse(value, CultureInfo.InvariantCulture);
+        }
 
         /// <summary>
         /// Gets or sets the gender of a person.
         /// </summary>
         /// <value>The gender of a person.</value>
-        [XmlElement("Gender")]
+        [XmlElement("gender")]
         public char Gender { get; set; }
 
         /// <summary>
         /// Gets or sets the height of a person.
         /// </summary>
         /// <value>The height of a person.</value>
-        [XmlElement("Height")]
+        [XmlElement("height")]
         public short Height { get; set; }
 
         /// <summary>
         /// Gets or sets the weight of a person.
         /// </summary>
         /// <value>The weight of a person.</value>
-        [XmlElement("Weight")]
+        [XmlElement("weight")]
         public decimal Weight { get; set; }
     }
 }

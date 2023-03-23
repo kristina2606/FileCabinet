@@ -29,8 +29,8 @@ namespace FileCabinetApp
             this.writer.WriteAttributeString("id", record.Id.ToString(CultureInfo.InvariantCulture));
 
             this.writer.WriteStartElement("name");
-            this.writer.WriteAttributeString("first", record.FullName.FirstName);
-            this.writer.WriteAttributeString("last", record.FullName.LastName);
+            this.writer.WriteAttributeString("first", record.FirstName);
+            this.writer.WriteAttributeString("last", record.LastName);
             this.writer.WriteEndElement();
 
             this.writer.WriteStartElement("dateOfBirth");

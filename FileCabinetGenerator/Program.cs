@@ -1,12 +1,12 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Serialization;
 using FileCabinetApp;
-using static System.Reflection.Metadata.BlobBuilder;
 
 namespace FileCabinetGenerator
 {
@@ -98,6 +98,8 @@ namespace FileCabinetGenerator
                 ExportCsv(path);
             }
 
+            Console.WriteLine($"{amount} records were written to {path}.");
+
         }
 
         private static void Create(int idStart, int amount)
@@ -107,19 +109,18 @@ namespace FileCabinetGenerator
 
             var genderRandom = new[] { 'm', 'f' };
 
-            var name = new FullName(GetRandomName(), GetRandomName());
-
             for (var i = 0; i < amount; i++)
             {
                 list.Add(new FileCabinetRecord
                 {
                     Id = idStart + i,
-                    FullName = name,
+                    FirstName = GetRandomName(),
+                    LastName = GetRandomName(),
                     DateOfBirth = startDate.AddDays(random.Next(daysCount)),
                     Gender = genderRandom[random.Next(genderRandom.Length)],
                     Height = (short)random.Next(0, 251),
                     Weight = random.Next(301),
-                }); ;
+                });
             }
         }
 
@@ -137,7 +138,7 @@ namespace FileCabinetGenerator
                 name.Append(letters[random.Next(letters.Length)]);
             }
 
-            return new string(name.ToString());
+            return name.ToString();
         }
 
         private static int IntConverter(string inputNumber)
@@ -154,12 +155,12 @@ namespace FileCabinetGenerator
         {
             using (StreamWriter sw = new StreamWriter(path))
             {
-                FileCabinetRecordCsvWriter fileCabinetRecordCsv = new FileCabinetRecordCsvWriter(sw);
+                FileCabinetRecordCsvWriter recordCsvWriter = new FileCabinetRecordCsvWriter(sw);
                 sw.WriteLine("Id,First Name,Last Name,Date of Birth,Gender,Height,Weight");
 
                 foreach (var record in list)
                 {
-                    fileCabinetRecordCsv.Write(record);
+                    recordCsvWriter.Write(record);
                 }
             }
         }
@@ -170,10 +171,26 @@ namespace FileCabinetGenerator
 
             using (var writer = XmlWriter.Create(path))
             {
-                var serializer = new XmlSerializer(typeof(Records));
+                var serializer = new XmlSerializer(typeof(RecordsSeralization));
 
-                var records = new Records();
-                records.Record = list;
+                var records = new RecordsSeralization();
+                var recordNew = new List<FileCabinetRecordSeralization>();
+
+                foreach (var record in list)
+                {
+                    recordNew.Add(new FileCabinetRecordSeralization
+                    {
+                        Id = record.Id,
+                        FullName = new FullNameSeralization(record.FirstName, record.LastName),
+                        DateOfBirth = record.DateOfBirth,
+                        Gender = record.Gender,
+                        Height = record.Height,
+                        Weight = record.Weight,
+                    });
+
+                    records.Record = recordNew;
+                }
+
                 serializer.Serialize(writer, records, ns);
             }
         }

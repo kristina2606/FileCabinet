@@ -5,23 +5,23 @@ namespace FileCabinetApp
     /// <summary>
     /// Fields for creating the full name of a person.
     /// </summary>
-    public class FullName
+    public class FullNameSeralization
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="FullName"/> class.
+        /// Initializes a new instance of the <see cref="FullNameSeralization"/> class.
         /// </summary>
         /// <param name="firstName">The first name of a person.</param>
         /// <param name="lastName">The last name of a person.</param>
-        public FullName(string firstName, string lastName)
+        public FullNameSeralization(string firstName, string lastName)
         {
             this.FirstName = firstName;
             this.LastName = lastName;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FullName"/> class.
+        /// Initializes a new instance of the <see cref="FullNameSeralization"/> class.
         /// </summary>
-        public FullName()
+        public FullNameSeralization()
         {
         }
 

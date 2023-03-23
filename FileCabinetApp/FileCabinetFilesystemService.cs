@@ -17,6 +17,8 @@ namespace FileCabinetApp
 
         private readonly FileStream fileStream;
 
+        private int currentId = 1;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetFilesystemService"/> class.
         /// </summary>
@@ -26,25 +28,27 @@ namespace FileCabinetApp
             this.fileStream = fileStream;
         }
 
+        private int NextId
+        {
+            get
+            {
+                return this.currentId++;
+            }
+        }
+
         /// <summary>
         /// Creates a new record from user input.
         /// </summary>
-        /// <param name="id">The id of the record to be create.</param>
         /// <param name="fileCabinetRecordNewData">The new date in the record.</param>
         /// <returns>Returns the id of the created record.</returns>
         /// <exception cref="ArgumentNullException">If the firstName or lastName is equal null.</exception>
         /// <exception cref="ArgumentException">The firstName or lastName length is less than 2 or greater than 60.The dateOfBirth is less than 01-Jun-1950 or greater today's date.
         /// The gender isn't equal 'f' or 'm'. The height is less than 0 or greater than 250. The weight is less than 0.</exception>
-        public int CreateRecord(int id, FileCabinetRecordNewData fileCabinetRecordNewData)
+        public int CreateRecord(FileCabinetRecordNewData fileCabinetRecordNewData)
         {
-            while (this.IsExist(id))
-            {
-                id++;
-            }
+            this.WriteBinary(fileCabinetRecordNewData, DefaultStatus, this.NextId, this.fileStream.Length);
 
-            this.WriteBinary(fileCabinetRecordNewData, DefaultStatus, id, this.fileStream.Length);
-
-            return id;
+            return this.currentId;
         }
 
         /// <summary>
@@ -88,7 +92,7 @@ namespace FileCabinetApp
         {
             var list = this.GetRecordsInternal()
                 .Select(record => record.record)
-                .Where(record => record.FullName.FirstName.ToLowerInvariant() == firstName.ToLowerInvariant())
+                .Where(record => record.FirstName.ToLowerInvariant() == firstName.ToLowerInvariant())
                 .ToList();
 
             return new ReadOnlyCollection<FileCabinetRecord>(list);
@@ -103,7 +107,7 @@ namespace FileCabinetApp
         {
             var list = this.GetRecordsInternal()
                 .Select(record => record.record)
-                .Where(record => record.FullName.LastName.ToLowerInvariant() == lastName.ToLowerInvariant())
+                .Where(record => record.LastName.ToLowerInvariant() == lastName.ToLowerInvariant())
                 .ToList();
 
             return new ReadOnlyCollection<FileCabinetRecord>(list);
@@ -157,9 +161,13 @@ namespace FileCabinetApp
         public void Restore(FileCabinetServiceSnapshot fileCabinetServiceSnapshot)
         {
             var records = fileCabinetServiceSnapshot.Records;
+
+            var temp = this.currentId;
+
             foreach (var record in records)
             {
-                var recordNew = new FileCabinetRecordNewData(record.FullName.FirstName, record.FullName.LastName, record.DateOfBirth, record.Gender, record.Height, record.Weight);
+                this.currentId = record.Id;
+                var recordNew = new FileCabinetRecordNewData(record.FirstName, record.LastName, record.DateOfBirth, record.Gender, record.Height, record.Weight);
 
                 if (this.GetRecordsInternal().Any(x => x.record.Id == record.Id))
                 {
@@ -167,9 +175,11 @@ namespace FileCabinetApp
                 }
                 else
                 {
-                    this.CreateRecord(record.Id, recordNew);
+                    this.CreateRecord(recordNew);
                 }
             }
+
+            this.currentId = temp;
         }
 
         private static char[] CreateCharArray(string name)
@@ -215,8 +225,8 @@ namespace FileCabinetApp
 
                     reader.ReadInt16();
                     record.Id = reader.ReadInt32();
-                    record.FullName.FirstName = new string(reader.ReadChars(60)).TrimEnd((char)0);
-                    record.FullName.LastName = new string(reader.ReadChars(60)).TrimEnd((char)0);
+                    record.FirstName = new string(reader.ReadChars(60)).TrimEnd((char)0);
+                    record.LastName = new string(reader.ReadChars(60)).TrimEnd((char)0);
                     record.DateOfBirth = new DateTime(reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
                     record.Gender = reader.ReadChar();
                     record.Height = reader.ReadInt16();

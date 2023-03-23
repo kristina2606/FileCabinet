@@ -40,12 +40,11 @@ namespace FileCabinetApp
                     .Where(p => !string.IsNullOrWhiteSpace(p))
                     .ToArray();
 
-                var name = new FullName(Converter.StringConverter(values[1]).Item3, Converter.StringConverter(values[2]).Item3);
-
                 records.Add(new FileCabinetRecord
                 {
                     Id = Converter.IntConverter(values[0]).Item3,
-                    FullName = name,
+                    FirstName = Converter.StringConverter(values[1]).Item3,
+                    LastName = Converter.StringConverter(values[2]).Item3,
                     DateOfBirth = Convert.ToDateTime(values[3], CultureInfo.CurrentCulture),
                     Gender = Converter.CharConverter(values[4]).Item3,
                     Height = Converter.ShortConverter(values[5]).Item3,

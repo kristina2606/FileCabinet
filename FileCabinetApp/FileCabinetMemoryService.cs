@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Reflection;
 
 [assembly: CLSCompliant(true)]
 
@@ -23,6 +22,8 @@ namespace FileCabinetApp
 
         private readonly IRecordValidator validator;
 
+        private int currentId = 1;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetMemoryService"/> class.
         /// The class constructor takes a validation parameter.
@@ -33,30 +34,31 @@ namespace FileCabinetApp
             this.validator = validator;
         }
 
+        private int NextId
+        {
+            get
+            {
+                return this.currentId++;
+            }
+        }
+
         /// <summary>
         /// Creates a new record from user input.
         /// </summary>
-        /// <param name="id">The id of the record to be create.</param>
         /// <param name="fileCabinetRecordNewData">The new date in the record.</param>
         /// <returns>Returns the id of the created record.</returns>
         /// <exception cref="ArgumentNullException">If the firstName or lastName is equal null.</exception>
         /// <exception cref="ArgumentException">The firstName or lastName length is less than 2 or greater than 60.The dateOfBirth is less than 01-Jun-1950 or greater today's date.
         /// The gender isn't equal 'f' or 'm'. The height is less than 0 or greater than 250. The weight is less than 0.</exception>
-        public int CreateRecord(int id, FileCabinetRecordNewData fileCabinetRecordNewData)
+        public int CreateRecord(FileCabinetRecordNewData fileCabinetRecordNewData)
         {
             this.validator.Validate(fileCabinetRecordNewData);
 
-            while (this.list.Any(x => x.Id == id))
-            {
-                id++;
-            }
-
-            var name = new FullName(fileCabinetRecordNewData.FirstName, fileCabinetRecordNewData.LastName);
-
             var record = new FileCabinetRecord
             {
-                Id = id,
-                FullName = name,
+                Id = this.NextId,
+                FirstName = fileCabinetRecordNewData.FirstName,
+                LastName = fileCabinetRecordNewData.LastName,
                 DateOfBirth = fileCabinetRecordNewData.DateOfBirth,
                 Gender = fileCabinetRecordNewData.Gender,
                 Height = fileCabinetRecordNewData.Height,
@@ -98,6 +100,8 @@ namespace FileCabinetApp
         /// <exception cref="ArgumentException">if records with the specified ID do not exist.</exception>
         public void EditRecord(int id, FileCabinetRecordNewData fileCabinetRecordNewData)
         {
+            this.validator.Validate(fileCabinetRecordNewData);
+
             var result = this.list.FirstOrDefault(x => x.Id == id);
 
             if (result is null)
@@ -105,14 +109,14 @@ namespace FileCabinetApp
                 throw new ArgumentException("records with the specified ID do not exist.");
             }
 
-            EditDictionary(this.firstNameDictionary, result.FullName.FirstName.ToLowerInvariant(), result, fileCabinetRecordNewData.FirstName.ToLowerInvariant());
+            EditDictionary(this.firstNameDictionary, result.FirstName.ToLowerInvariant(), result, fileCabinetRecordNewData.FirstName.ToLowerInvariant());
 
-            EditDictionary(this.lastNameDictionary, result.FullName.LastName.ToLowerInvariant(), result, fileCabinetRecordNewData.LastName.ToLowerInvariant());
+            EditDictionary(this.lastNameDictionary, result.LastName.ToLowerInvariant(), result, fileCabinetRecordNewData.LastName.ToLowerInvariant());
 
             EditDictionary(this.dateOfBirthDictionary, result.DateOfBirth, result, fileCabinetRecordNewData.DateOfBirth);
 
-            result.FullName.FirstName = fileCabinetRecordNewData.FirstName;
-            result.FullName.LastName = fileCabinetRecordNewData.LastName;
+            result.FirstName = fileCabinetRecordNewData.FirstName;
+            result.LastName = fileCabinetRecordNewData.LastName;
             result.DateOfBirth = fileCabinetRecordNewData.DateOfBirth;
             result.Gender = fileCabinetRecordNewData.Gender;
             result.Height = fileCabinetRecordNewData.Height;
@@ -186,18 +190,13 @@ namespace FileCabinetApp
         public void Restore(FileCabinetServiceSnapshot fileCabinetServiceSnapshot)
         {
             var records = fileCabinetServiceSnapshot.Records;
+
+            var temp = this.currentId;
+
             foreach (var record in records)
             {
-                var recordNew = new FileCabinetRecordNewData(record.FullName.FirstName, record.FullName.LastName, record.DateOfBirth, record.Gender, record.Height, record.Weight);
-                try
-                {
-                    this.validator.Validate(recordNew);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error! Record with id {record.Id}, {ex.Message}!");
-                    continue;
-                }
+                this.currentId = record.Id;
+                var recordNew = new FileCabinetRecordNewData(record.FirstName, record.LastName, record.DateOfBirth, record.Gender, record.Height, record.Weight);
 
                 if (this.list.Any(x => x.Id == record.Id))
                 {
@@ -205,9 +204,11 @@ namespace FileCabinetApp
                 }
                 else
                 {
-                    this.CreateRecord(record.Id, recordNew);
+                    this.CreateRecord(recordNew);
                 }
             }
+
+            this.currentId = temp;
         }
 
         /// <summary>

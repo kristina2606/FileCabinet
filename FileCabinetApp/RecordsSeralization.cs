@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
+﻿using System.Collections.Generic;
 using System.Xml.Serialization;
 
 namespace FileCabinetApp
@@ -9,7 +7,7 @@ namespace FileCabinetApp
     ///  Fields for creating a list of record.
     /// </summary>
     [XmlRoot("records")]
-    public class Records
+    public class RecordsSeralization
     {
         /// <summary>
         /// Gets or sets a list of record.
@@ -18,6 +16,6 @@ namespace FileCabinetApp
         /// A list of record.
         /// </value>
         [XmlElement("record")]
-        public List<FileCabinetRecord> Record { get; set; }
+        public List<FileCabinetRecordSeralization> Record { get; set; }
     }
 }

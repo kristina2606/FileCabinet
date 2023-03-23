@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace FileCabinetApp
@@ -12,13 +11,12 @@ namespace FileCabinetApp
         /// <summary>
         /// Creates a new record from user input.
         /// </summary>
-        /// <param name="id">The id of the record to be create.</param>
         /// <param name="fileCabinetRecordNewData">The new date in the record.</param>
         /// <returns>Returns the id of the created record.</returns>
         /// <exception cref="ArgumentNullException">If the firstName or lastName is equal null.</exception>
         /// <exception cref="ArgumentException">The firstName or lastName length is less than 2 or greater than 60.The dateOfBirth is less than 01-Jun-1950 or greater today's date.
         /// The gender isn't equal 'f' or 'm'. The height is less than 0 or greater than 250. The weight is less than 0.</exception>
-        int CreateRecord(int id, FileCabinetRecordNewData fileCabinetRecordNewData);
+        int CreateRecord(FileCabinetRecordNewData fileCabinetRecordNewData);
 
         /// <summary>
         /// Gets all existing records.

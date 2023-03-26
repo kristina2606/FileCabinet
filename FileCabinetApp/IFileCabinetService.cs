@@ -77,5 +77,11 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="fileCabinetServiceSnapshot">Сlass instance.</param>
         void Restore(FileCabinetServiceSnapshot fileCabinetServiceSnapshot);
+
+        /// <summary>
+        /// Remove record by id.
+        /// </summary>
+        /// <param name="id">Record id to remove.</param>
+        void Remove(int id);
     }
 }

@@ -14,6 +14,7 @@ namespace FileCabinetApp
     {
         private const int LengthOfOneRecord = 157;
         private const short DefaultStatus = 0;
+        private const short DeliteStatus = ~(~0 << 1) << 2;
 
         private readonly FileStream fileStream;
 
@@ -58,9 +59,9 @@ namespace FileCabinetApp
         /// <param name="fileCabinetRecordNewData">The new date in the record.</param>
         public void EditRecord(int id, FileCabinetRecordNewData fileCabinetRecordNewData)
         {
-            foreach (var (position, record) in this.GetRecordsInternal())
+            foreach (var (position, record, status) in this.GetRecordsInternal())
             {
-                if (record.Id == id)
+                if (record.Id == id && status == DefaultStatus)
                 {
                     this.WriteBinary(fileCabinetRecordNewData, DefaultStatus, id, position);
                     break;
@@ -76,6 +77,7 @@ namespace FileCabinetApp
         public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
         {
             var list = this.GetRecordsInternal()
+                .Where(x => x.status == DefaultStatus)
                 .Select(record => record.record)
                 .Where(record => record.DateOfBirth == dateOfBirth)
                 .ToList();
@@ -91,6 +93,7 @@ namespace FileCabinetApp
         public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
         {
             var list = this.GetRecordsInternal()
+                .Where(x => x.status == DefaultStatus)
                 .Select(record => record.record)
                 .Where(record => record.FirstName.ToLowerInvariant() == firstName.ToLowerInvariant())
                 .ToList();
@@ -106,6 +109,7 @@ namespace FileCabinetApp
         public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
         {
             var list = this.GetRecordsInternal()
+                .Where(x => x.status == DefaultStatus)
                 .Select(record => record.record)
                 .Where(record => record.LastName.ToLowerInvariant() == lastName.ToLowerInvariant())
                 .ToList();
@@ -120,6 +124,7 @@ namespace FileCabinetApp
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
             return new ReadOnlyCollection<FileCabinetRecord>(this.GetRecordsInternal()
+                .Where(x => x.status == DefaultStatus)
                 .Select(record => record.record)
                 .ToList());
         }
@@ -140,7 +145,7 @@ namespace FileCabinetApp
         /// <returns>True if records exists and false if records don't exist.</returns>
         public bool IsExist(int id)
         {
-            return this.GetRecordsInternal().Any(x => x.record.Id == id);
+            return this.GetRecordsInternal().Any(x => x.record.Id == id && x.status == DefaultStatus);
         }
 
         /// <summary>
@@ -182,6 +187,28 @@ namespace FileCabinetApp
             this.currentId = temp;
         }
 
+        /// <summary>
+        /// Remove record by id.
+        /// </summary>
+        /// <param name="id">Record id to remove.</param>
+        public void Remove(int id)
+        {
+            foreach (var (position, record, status) in this.GetRecordsInternal())
+            {
+                if (record.Id == id)
+                {
+                    using (BinaryWriter writer = new BinaryWriter(this.fileStream, Encoding.ASCII, true))
+                    {
+                        writer.BaseStream.Seek(position, SeekOrigin.Begin);
+
+                        writer.Write(DeliteStatus);
+                    }
+
+                    break;
+                }
+            }
+        }
+
         private static char[] CreateCharArray(string name)
         {
             char[] newName = new char[60];
@@ -212,7 +239,7 @@ namespace FileCabinetApp
             }
         }
 
-        private IEnumerable<(long position, FileCabinetRecord record)> GetRecordsInternal()
+        private IEnumerable<(long position, FileCabinetRecord record, short status)> GetRecordsInternal()
         {
             using (var reader = new BinaryReader(this.fileStream, Encoding.ASCII, true))
             {
@@ -223,7 +250,7 @@ namespace FileCabinetApp
                     FileCabinetRecord record = new FileCabinetRecord();
                     long position = reader.BaseStream.Position;
 
-                    reader.ReadInt16();
+                    short status = reader.ReadInt16();
                     record.Id = reader.ReadInt32();
                     record.FirstName = new string(reader.ReadChars(60)).TrimEnd((char)0);
                     record.LastName = new string(reader.ReadChars(60)).TrimEnd((char)0);
@@ -232,7 +259,7 @@ namespace FileCabinetApp
                     record.Height = reader.ReadInt16();
                     record.Weight = reader.ReadDecimal();
 
-                    yield return (position, record);
+                    yield return (position, record, status);
                 }
             }
         }

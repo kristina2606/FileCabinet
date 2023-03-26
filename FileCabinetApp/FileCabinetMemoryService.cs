@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -109,11 +110,14 @@ namespace FileCabinetApp
                 throw new ArgumentException("records with the specified ID do not exist.");
             }
 
-            EditDictionary(this.firstNameDictionary, result.FirstName.ToLowerInvariant(), result, fileCabinetRecordNewData.FirstName.ToLowerInvariant());
+            RemoveFromDictionary(this.firstNameDictionary, result.FirstName.ToLowerInvariant(), result);
+            AddToIndex(result, this.firstNameDictionary, fileCabinetRecordNewData.FirstName.ToLowerInvariant());
 
-            EditDictionary(this.lastNameDictionary, result.LastName.ToLowerInvariant(), result, fileCabinetRecordNewData.LastName.ToLowerInvariant());
+            RemoveFromDictionary(this.lastNameDictionary, result.LastName.ToLowerInvariant(), result);
+            AddToIndex(result, this.lastNameDictionary, fileCabinetRecordNewData.LastName.ToLowerInvariant());
 
-            EditDictionary(this.dateOfBirthDictionary, result.DateOfBirth, result, fileCabinetRecordNewData.DateOfBirth);
+            RemoveFromDictionary(this.dateOfBirthDictionary, result.DateOfBirth, result);
+            AddToIndex(result, this.dateOfBirthDictionary, fileCabinetRecordNewData.DateOfBirth);
 
             result.FirstName = fileCabinetRecordNewData.FirstName;
             result.LastName = fileCabinetRecordNewData.LastName;
@@ -212,6 +216,21 @@ namespace FileCabinetApp
         }
 
         /// <summary>
+        /// Remove record by id.
+        /// </summary>
+        /// <param name="id">Record id to remove.</param>
+        public void Remove(int id)
+        {
+            var valueForRemove = this.list.Find(x => x.Id == id);
+
+            this.list.Remove(valueForRemove);
+
+            RemoveFromDictionary(this.firstNameDictionary, valueForRemove.FirstName.ToLowerInvariant(), valueForRemove);
+            RemoveFromDictionary(this.lastNameDictionary, valueForRemove.LastName.ToLowerInvariant(), valueForRemove);
+            RemoveFromDictionary(this.dateOfBirthDictionary, valueForRemove.DateOfBirth, valueForRemove);
+        }
+
+        /// <summary>
         /// Checks if records with the specified id exists.
         /// </summary>
         /// <param name="id">The id entered by the user.</param>
@@ -219,16 +238,6 @@ namespace FileCabinetApp
         public bool IsExist(int id)
         {
             return this.list.Any(x => x.Id == id);
-        }
-
-        private static void EditDictionary<T>(Dictionary<T, List<FileCabinetRecord>> dictionary, T existingKey, FileCabinetRecord record, T newKey)
-        {
-            if (dictionary.TryGetValue(existingKey, out List<FileCabinetRecord> allValueOfExistingKey))
-            {
-                allValueOfExistingKey.Remove(record);
-            }
-
-            AddToIndex(record, dictionary, newKey);
         }
 
         private static void AddToIndex<T>(FileCabinetRecord record, Dictionary<T, List<FileCabinetRecord>> dictionary, T key)
@@ -241,6 +250,14 @@ namespace FileCabinetApp
             {
                 List<FileCabinetRecord> valueForDictionary = new List<FileCabinetRecord>() { record };
                 dictionary.Add(key, valueForDictionary);
+            }
+        }
+
+        private static void RemoveFromDictionary<T>(Dictionary<T, List<FileCabinetRecord>> dictionary, T keyForRemove, FileCabinetRecord recordForRemove)
+        {
+            if (dictionary.TryGetValue(keyForRemove, out List<FileCabinetRecord> allValueOfExistingKey))
+            {
+                allValueOfExistingKey.Remove(recordForRemove);
             }
         }
     }

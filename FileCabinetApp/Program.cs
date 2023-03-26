@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
+using System.Reflection;
 
 namespace FileCabinetApp
 {
@@ -35,6 +36,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("find", Find),
             new Tuple<string, Action<string>>("export", Export),
             new Tuple<string, Action<string>>("import", Import),
+            new Tuple<string, Action<string>>("remove", Remove),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -48,6 +50,7 @@ namespace FileCabinetApp
             new string[] { "find", "finds all existing records by parameter.", "The 'find' finds all existing records by parameter." },
             new string[] { "export", "exports service data to .csv or .xml file.", "The 'export' exports service data to .csv or .xml file." },
             new string[] { "import", "import data from .csv or .xml file.", "The 'import' import data from .csv or .xml file." },
+            new string[] { "remove", "remove record by id.", "The 'remove' remove record by id." },
         };
 
         /// <summary>
@@ -362,6 +365,29 @@ namespace FileCabinetApp
             }
 
             Console.WriteLine($"All records were imported from {path}.");
+        }
+
+        private static void Remove(string parameters)
+        {
+            Console.Write("Enter the record number for remove: ");
+            var inputId = Console.ReadLine();
+            int id;
+            if (!int.TryParse(inputId, out id))
+            {
+                Console.WriteLine("You introduced an incorrect ID.");
+                return;
+            }
+
+            if (Program.fileCabinetService.IsExist(id))
+            {
+                Program.fileCabinetService.Remove(id);
+
+                Console.WriteLine($"Record #{id} is removed.");
+            }
+            else
+            {
+                Console.WriteLine($"Record #{id} doesn't exists.");
+            }
         }
 
         private static void OutputToTheConsoleDataFromTheList(ReadOnlyCollection<FileCabinetRecord> list)

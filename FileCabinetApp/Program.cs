@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FileCabinetApp
 {
@@ -21,7 +22,8 @@ namespace FileCabinetApp
         private const string FileNameFormatDatabasePath = "cabinet-records.db";
 
         private static bool isRunning = true;
-        private static IFileCabinetService fileCabinetService = new FileCabinetMemoryService(new DefaultValidator());
+        //private static IFileCabinetService fileCabinetService = new FileCabinetMemoryService(new DefaultValidator());
+        private static IFileCabinetService fileCabinetService = new FileCabinetFilesystemService(new FileStream(FileNameFormatDatabasePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None));
         private static IUserInputValidation inputValidation = new UserInputValidationDafault();
         private static string validationRules = "Using default validation rules.";
 
@@ -37,6 +39,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("export", Export),
             new Tuple<string, Action<string>>("import", Import),
             new Tuple<string, Action<string>>("remove", Remove),
+            new Tuple<string, Action<string>>("purge", Purge),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -51,6 +54,7 @@ namespace FileCabinetApp
             new string[] { "export", "exports service data to .csv or .xml file.", "The 'export' exports service data to .csv or .xml file." },
             new string[] { "import", "import data from .csv or .xml file.", "The 'import' import data from .csv or .xml file." },
             new string[] { "remove", "remove record by id.", "The 'remove' remove record by id." },
+            new string[] { "purge", "The command defragments the data file.", "The 'purge' command defragments the data file." },
         };
 
         /// <summary>
@@ -387,6 +391,19 @@ namespace FileCabinetApp
             else
             {
                 Console.WriteLine($"Record #{id} doesn't exists.");
+            }
+        }
+
+        private static void Purge(string parameters)
+        {
+            var countOfRecords = fileCabinetService.GetStat();
+
+            if (fileCabinetService is FileCabinetFilesystemService)
+            {
+                var countOfCorrectRecords = fileCabinetService.Purge();
+                fileCabinetService = new FileCabinetFilesystemService(new FileStream(FileNameFormatDatabasePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None));
+
+                Console.WriteLine($"Data file processing is completed: {countOfRecords - countOfCorrectRecords} of {countOfRecords} records were purged.");
             }
         }
 

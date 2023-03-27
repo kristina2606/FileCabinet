@@ -83,5 +83,10 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="id">Record id to remove.</param>
         void Remove(int id);
+
+        /// <summary>
+        /// Defragments the data file.
+        /// </summary>
+        public int Purge();
     }
 }

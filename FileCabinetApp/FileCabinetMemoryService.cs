@@ -231,6 +231,14 @@ namespace FileCabinetApp
         }
 
         /// <summary>
+        /// Defragments the data file. Only for FileCabinetFilesystemService.
+        /// </summary>
+        public int Purge()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// Checks if records with the specified id exists.
         /// </summary>
         /// <param name="id">The id entered by the user.</param>

@@ -165,6 +165,12 @@
             </summary>
             <param name="id">Record id to remove.</param>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.Purge">
+            <summary>
+            Defragments the data file.
+            </summary>
+            <returns>Count of purge records.</returns>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetMemoryService">
             <summary>
             Creates, edits and checks in entries. Finds records by parameters.
@@ -245,6 +251,11 @@
             Remove record by id.
             </summary>
             <param name="id">Record id to remove.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.Purge">
+            <summary>
+            Defragments the data file. Only for FileCabinetFilesystemService.
+            </summary>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.IsExist(System.Int32)">
             <summary>
@@ -634,6 +645,11 @@
             Remove record by id.
             </summary>
             <param name="id">Record id to remove.</param>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.Purge">
+            <summary>
+            Defragments the data file.
+            </summary>
         </member>
         <member name="T:FileCabinetApp.IRecordValidator">
             <summary>

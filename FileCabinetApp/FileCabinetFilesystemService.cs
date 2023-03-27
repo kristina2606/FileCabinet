@@ -15,6 +15,8 @@ namespace FileCabinetApp
         private const int LengthOfOneRecord = 157;
         private const short DefaultStatus = 0;
         private const short DeliteStatus = ~(~0 << 1) << 2;
+        private const string FileNameFormatDatabasePath = "cabinet-records.db";
+        private const string TemporaryFileNameFormatDatabasePath = "cabinet-records_new.db";
 
         private readonly FileStream fileStream;
 
@@ -47,7 +49,7 @@ namespace FileCabinetApp
         /// The gender isn't equal 'f' or 'm'. The height is less than 0 or greater than 250. The weight is less than 0.</exception>
         public int CreateRecord(FileCabinetRecordNewData fileCabinetRecordNewData)
         {
-            this.WriteBinary(fileCabinetRecordNewData, DefaultStatus, this.NextId, this.fileStream.Length);
+            this.WriteBinary(fileCabinetRecordNewData, DefaultStatus, this.NextId, this.fileStream.Length, this.fileStream);
 
             return this.currentId;
         }
@@ -63,7 +65,7 @@ namespace FileCabinetApp
             {
                 if (record.Id == id && status == DefaultStatus)
                 {
-                    this.WriteBinary(fileCabinetRecordNewData, DefaultStatus, id, position);
+                    this.WriteBinary(fileCabinetRecordNewData, DefaultStatus, id, position, this.fileStream);
                     break;
                 }
             }
@@ -209,6 +211,38 @@ namespace FileCabinetApp
             }
         }
 
+        /// <summary>
+        /// Defragments the data file.
+        /// </summary>
+        /// <returns>Count of purge records.</returns>
+        public int Purge()
+        {
+            var listWithCorrectRecords = new List<FileCabinetRecord>(this.GetRecordsInternal()
+                .Where(x => x.status == DefaultStatus)
+                .Select(record => record.record)
+                .ToList());
+
+            var position = 0;
+
+            using (var fs = new FileStream(TemporaryFileNameFormatDatabasePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
+            {
+                foreach (var record in listWithCorrectRecords)
+                {
+                    var recordNew = new FileCabinetRecordNewData(record.FirstName, record.LastName, record.DateOfBirth, record.Gender, record.Height, record.Weight);
+                    this.WriteBinary(recordNew, DefaultStatus, record.Id, position, fs);
+                    position += LengthOfOneRecord;
+                }
+            }
+
+            this.fileStream.Close();
+
+            File.Delete(FileNameFormatDatabasePath);
+            File.Move(TemporaryFileNameFormatDatabasePath, FileNameFormatDatabasePath);
+
+            return listWithCorrectRecords.Count;
+        }
+
+
         private static char[] CreateCharArray(string name)
         {
             char[] newName = new char[60];
@@ -220,9 +254,9 @@ namespace FileCabinetApp
             return newName;
         }
 
-        private void WriteBinary(FileCabinetRecordNewData fileCabinetRecordNewData, short status, int id, long position)
+        private void WriteBinary(FileCabinetRecordNewData fileCabinetRecordNewData, short status, int id, long position, FileStream file)
         {
-            using (BinaryWriter writer = new BinaryWriter(this.fileStream, Encoding.ASCII, true))
+            using (BinaryWriter writer = new BinaryWriter(file, Encoding.ASCII, true))
             {
                 writer.BaseStream.Seek(position, SeekOrigin.Begin);
 

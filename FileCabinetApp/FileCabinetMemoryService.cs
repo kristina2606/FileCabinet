@@ -34,14 +34,6 @@ namespace FileCabinetApp
             this.validator = validator;
         }
 
-        private int NextId
-        {
-            get
-            {
-                return this.currentId++;
-            }
-        }
-
         /// <summary>
         /// Creates a new record from user input.
         /// </summary>
@@ -53,10 +45,11 @@ namespace FileCabinetApp
         public int CreateRecord(FileCabinetRecordNewData fileCabinetRecordNewData)
         {
             this.validator.Validate(fileCabinetRecordNewData);
+            var id = this.GetNextId();
 
             var record = new FileCabinetRecord
             {
-                Id = this.NextId,
+                Id = id,
                 FirstName = fileCabinetRecordNewData.FirstName,
                 LastName = fileCabinetRecordNewData.LastName,
                 DateOfBirth = fileCabinetRecordNewData.DateOfBirth,
@@ -191,11 +184,8 @@ namespace FileCabinetApp
         {
             var records = fileCabinetServiceSnapshot.Records;
 
-            var temp = this.currentId;
-
             foreach (var record in records)
             {
-                this.currentId = record.Id;
                 var recordNew = new FileCabinetRecordNewData(record.FirstName, record.LastName, record.DateOfBirth, record.Gender, record.Height, record.Weight);
 
                 if (this.list.Any(x => x.Id == record.Id))
@@ -204,11 +194,10 @@ namespace FileCabinetApp
                 }
                 else
                 {
+                    this.currentId = record.Id;
                     this.CreateRecord(recordNew);
                 }
             }
-
-            this.currentId = temp;
         }
 
         /// <summary>
@@ -242,6 +231,16 @@ namespace FileCabinetApp
                 List<FileCabinetRecord> valueForDictionary = new List<FileCabinetRecord>() { record };
                 dictionary.Add(key, valueForDictionary);
             }
+        }
+
+        private int GetNextId()
+        {
+            while (this.list.Any(x => x.Id == this.currentId))
+            {
+                ++this.currentId;
+            }
+
+            return this.currentId;
         }
     }
 }

@@ -28,14 +28,6 @@ namespace FileCabinetApp
             this.fileStream = fileStream;
         }
 
-        private int NextId
-        {
-            get
-            {
-                return this.currentId++;
-            }
-        }
-
         /// <summary>
         /// Creates a new record from user input.
         /// </summary>
@@ -46,9 +38,10 @@ namespace FileCabinetApp
         /// The gender isn't equal 'f' or 'm'. The height is less than 0 or greater than 250. The weight is less than 0.</exception>
         public int CreateRecord(FileCabinetRecordNewData fileCabinetRecordNewData)
         {
-            this.WriteBinary(fileCabinetRecordNewData, DefaultStatus, this.NextId, this.fileStream.Length);
+            var id = this.GetNextId();
+            this.WriteBinary(ConvertToFileCabinetRecord(fileCabinetRecordNewData, id), DefaultStatus, this.fileStream.Length);
 
-            return this.currentId;
+            return id;
         }
 
         /// <summary>
@@ -62,7 +55,7 @@ namespace FileCabinetApp
             {
                 if (record.Id == id)
                 {
-                    this.WriteBinary(fileCabinetRecordNewData, DefaultStatus, id, position);
+                    this.WriteBinary(ConvertToFileCabinetRecord(fileCabinetRecordNewData, id), DefaultStatus, position);
                     break;
                 }
             }
@@ -162,11 +155,8 @@ namespace FileCabinetApp
         {
             var records = fileCabinetServiceSnapshot.Records;
 
-            var temp = this.currentId;
-
             foreach (var record in records)
             {
-                this.currentId = record.Id;
                 var recordNew = new FileCabinetRecordNewData(record.FirstName, record.LastName, record.DateOfBirth, record.Gender, record.Height, record.Weight);
 
                 if (this.GetRecordsInternal().Any(x => x.record.Id == record.Id))
@@ -175,11 +165,10 @@ namespace FileCabinetApp
                 }
                 else
                 {
+                    this.currentId = record.Id;
                     this.CreateRecord(recordNew);
                 }
             }
-
-            this.currentId = temp;
         }
 
         private static char[] CreateCharArray(string name)
@@ -193,22 +182,38 @@ namespace FileCabinetApp
             return newName;
         }
 
-        private void WriteBinary(FileCabinetRecordNewData fileCabinetRecordNewData, short status, int id, long position)
+        private static FileCabinetRecord ConvertToFileCabinetRecord(FileCabinetRecordNewData fileCabinetRecordNewData, int id)
+        {
+            var record = new FileCabinetRecord
+            {
+                Id = id,
+                FirstName = fileCabinetRecordNewData.FirstName,
+                LastName = fileCabinetRecordNewData.LastName,
+                DateOfBirth = fileCabinetRecordNewData.DateOfBirth,
+                Gender = fileCabinetRecordNewData.Gender,
+                Height = fileCabinetRecordNewData.Height,
+                Weight = fileCabinetRecordNewData.Weight,
+            };
+
+            return record;
+        }
+
+        private void WriteBinary(FileCabinetRecord fileCabinetRecord, short status, long position)
         {
             using (BinaryWriter writer = new BinaryWriter(this.fileStream, Encoding.ASCII, true))
             {
                 writer.BaseStream.Seek(position, SeekOrigin.Begin);
 
                 writer.Write(status);
-                writer.Write(id);
-                writer.Write(CreateCharArray(fileCabinetRecordNewData.FirstName));
-                writer.Write(CreateCharArray(fileCabinetRecordNewData.LastName));
-                writer.Write(fileCabinetRecordNewData.DateOfBirth.Year);
-                writer.Write(fileCabinetRecordNewData.DateOfBirth.Month);
-                writer.Write(fileCabinetRecordNewData.DateOfBirth.Day);
-                writer.Write(fileCabinetRecordNewData.Gender);
-                writer.Write(fileCabinetRecordNewData.Height);
-                writer.Write(fileCabinetRecordNewData.Weight);
+                writer.Write(fileCabinetRecord.Id);
+                writer.Write(CreateCharArray(fileCabinetRecord.FirstName));
+                writer.Write(CreateCharArray(fileCabinetRecord.LastName));
+                writer.Write(fileCabinetRecord.DateOfBirth.Year);
+                writer.Write(fileCabinetRecord.DateOfBirth.Month);
+                writer.Write(fileCabinetRecord.DateOfBirth.Day);
+                writer.Write(fileCabinetRecord.Gender);
+                writer.Write(fileCabinetRecord.Height);
+                writer.Write(fileCabinetRecord.Weight);
             }
         }
 
@@ -235,6 +240,16 @@ namespace FileCabinetApp
                     yield return (position, record);
                 }
             }
+        }
+
+        private int GetNextId()
+        {
+            while (this.GetRecordsInternal().Any(x => x.record.Id == this.currentId))
+            {
+                ++this.currentId;
+            }
+
+            return this.currentId;
         }
     }
 }

@@ -22,8 +22,8 @@ namespace FileCabinetApp
         private const string FileNameFormatDatabasePath = "cabinet-records.db";
 
         private static bool isRunning = true;
-        //private static IFileCabinetService fileCabinetService = new FileCabinetMemoryService(new DefaultValidator());
-        private static IFileCabinetService fileCabinetService = new FileCabinetFilesystemService(new FileStream(FileNameFormatDatabasePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None));
+        private static IFileCabinetService fileCabinetService = new FileCabinetMemoryService(new DefaultValidator());
+        //private static IFileCabinetService fileCabinetService = new FileCabinetFilesystemService(new FileStream(FileNameFormatDatabasePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None));
         private static IUserInputValidation inputValidation = new UserInputValidationDafault();
         private static string validationRules = "Using default validation rules.";
 

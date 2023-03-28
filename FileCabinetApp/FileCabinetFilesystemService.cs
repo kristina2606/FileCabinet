@@ -31,14 +31,6 @@ namespace FileCabinetApp
             this.fileStream = fileStream;
         }
 
-        private int NextId
-        {
-            get
-            {
-                return this.currentId++;
-            }
-        }
-
         /// <summary>
         /// Creates a new record from user input.
         /// </summary>
@@ -49,9 +41,10 @@ namespace FileCabinetApp
         /// The gender isn't equal 'f' or 'm'. The height is less than 0 or greater than 250. The weight is less than 0.</exception>
         public int CreateRecord(FileCabinetRecordNewData fileCabinetRecordNewData)
         {
-            this.WriteBinary(fileCabinetRecordNewData, DefaultStatus, this.NextId, this.fileStream.Length, this.fileStream);
+            var id = this.GetNextId();
+            WriteBinary(fileCabinetRecordNewData, DefaultStatus, id, this.fileStream.Length, this.fileStream);
 
-            return this.currentId;
+            return id;
         }
 
         /// <summary>
@@ -65,7 +58,7 @@ namespace FileCabinetApp
             {
                 if (record.Id == id && status == DefaultStatus)
                 {
-                    this.WriteBinary(fileCabinetRecordNewData, DefaultStatus, id, position, this.fileStream);
+                    WriteBinary(fileCabinetRecordNewData, DefaultStatus, id, position, this.fileStream);
                     break;
                 }
             }
@@ -169,11 +162,8 @@ namespace FileCabinetApp
         {
             var records = fileCabinetServiceSnapshot.Records;
 
-            var temp = this.currentId;
-
             foreach (var record in records)
             {
-                this.currentId = record.Id;
                 var recordNew = new FileCabinetRecordNewData(record.FirstName, record.LastName, record.DateOfBirth, record.Gender, record.Height, record.Weight);
 
                 if (this.GetRecordsInternal().Any(x => x.record.Id == record.Id))
@@ -182,11 +172,10 @@ namespace FileCabinetApp
                 }
                 else
                 {
+                    this.currentId = record.Id;
                     this.CreateRecord(recordNew);
                 }
             }
-
-            this.currentId = temp;
         }
 
         /// <summary>
@@ -229,7 +218,7 @@ namespace FileCabinetApp
                 foreach (var record in listWithCorrectRecords)
                 {
                     var recordNew = new FileCabinetRecordNewData(record.FirstName, record.LastName, record.DateOfBirth, record.Gender, record.Height, record.Weight);
-                    this.WriteBinary(recordNew, DefaultStatus, record.Id, position, fs);
+                    WriteBinary(recordNew, DefaultStatus, record.Id, position, fs);
                     position += LengthOfOneRecord;
                 }
             }
@@ -242,7 +231,6 @@ namespace FileCabinetApp
             return listWithCorrectRecords.Count;
         }
 
-
         private static char[] CreateCharArray(string name)
         {
             char[] newName = new char[60];
@@ -254,7 +242,7 @@ namespace FileCabinetApp
             return newName;
         }
 
-        private void WriteBinary(FileCabinetRecordNewData fileCabinetRecordNewData, short status, int id, long position, FileStream file)
+        private static void WriteBinary(FileCabinetRecordNewData fileCabinetRecordNewData, short status, int id, long position, FileStream file)
         {
             using (BinaryWriter writer = new BinaryWriter(file, Encoding.ASCII, true))
             {
@@ -296,6 +284,16 @@ namespace FileCabinetApp
                     yield return (position, record, status);
                 }
             }
+        }
+
+        private int GetNextId()
+        {
+            while (this.GetRecordsInternal().Any(x => x.record.Id == this.currentId))
+            {
+                ++this.currentId;
+            }
+
+            return this.currentId;
         }
     }
 }

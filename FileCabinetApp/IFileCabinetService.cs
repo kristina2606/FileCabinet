@@ -87,6 +87,13 @@ namespace FileCabinetApp
         /// <summary>
         /// Defragments the data file.
         /// </summary>
+        /// <returns>Count of purged records. Only for FileCabinetFilesystemService.</returns>
         public int Purge();
+
+        /// <summary>
+        /// Gets the count of all deleted records.
+        /// </summary>
+        /// <returns>Returns the count of all deleted records.</returns>
+        int GetStatDeletedRecords();
     }
 }

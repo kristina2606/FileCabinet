@@ -13,6 +13,8 @@ namespace FileCabinetApp
     /// </summary>
     public class FileCabinetMemoryService : IFileCabinetService
     {
+        private const int ValueOfDeletedRecords = 0;
+
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
 
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
@@ -49,6 +51,7 @@ namespace FileCabinetApp
 
             var id = this.GetNextId();
             this.currentId = 1;
+
             var record = new FileCabinetRecord
             {
                 Id = id,
@@ -223,9 +226,19 @@ namespace FileCabinetApp
         /// <summary>
         /// Defragments the data file. Only for FileCabinetFilesystemService.
         /// </summary>
+        /// <returns>Count of purged records.Only for FileCabinetFilesystemService.</returns>
         public int Purge()
         {
             throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Gets the count of all deleted records.
+        /// </summary>
+        /// <returns>Returns the count of all deleted records.</returns>
+        public int GetStatDeletedRecords()
+        {
+            return ValueOfDeletedRecords;
         }
 
         /// <summary>

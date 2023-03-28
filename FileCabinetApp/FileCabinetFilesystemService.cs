@@ -203,7 +203,7 @@ namespace FileCabinetApp
         /// <summary>
         /// Defragments the data file.
         /// </summary>
-        /// <returns>Count of purge records.</returns>
+        /// <returns>Count of purged records.</returns>
         public int Purge()
         {
             var listWithCorrectRecords = new List<FileCabinetRecord>(this.GetRecordsInternal()
@@ -229,6 +229,16 @@ namespace FileCabinetApp
             File.Move(TemporaryFileNameFormatDatabasePath, FileNameFormatDatabasePath);
 
             return listWithCorrectRecords.Count;
+        }
+
+        /// <summary>
+        /// Gets the count of all deleted records.
+        /// </summary>
+        /// <returns>Returns the count of all deleted records.</returns>
+        public int GetStatDeletedRecords()
+        {
+            var listOfDeletedRecords = this.GetRecordsInternal().Where(x => x.status == DeliteStatus).ToList();
+            return listOfDeletedRecords.Count;
         }
 
         private static char[] CreateCharArray(string name)

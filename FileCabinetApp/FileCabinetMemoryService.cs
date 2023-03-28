@@ -46,6 +46,7 @@ namespace FileCabinetApp
         {
             this.validator.Validate(fileCabinetRecordNewData);
             var id = this.GetNextId();
+            this.currentId = 1;
 
             var record = new FileCabinetRecord
             {

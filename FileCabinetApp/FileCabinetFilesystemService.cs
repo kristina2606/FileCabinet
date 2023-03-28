@@ -39,6 +39,7 @@ namespace FileCabinetApp
         public int CreateRecord(FileCabinetRecordNewData fileCabinetRecordNewData)
         {
             var id = this.GetNextId();
+            this.currentId = 1;
             this.WriteBinary(ConvertToFileCabinetRecord(fileCabinetRecordNewData, id), DefaultStatus, this.fileStream.Length);
 
             return id;

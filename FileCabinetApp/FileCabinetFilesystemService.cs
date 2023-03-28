@@ -42,7 +42,8 @@ namespace FileCabinetApp
         public int CreateRecord(FileCabinetRecordNewData fileCabinetRecordNewData)
         {
             var id = this.GetNextId();
-            WriteBinary(fileCabinetRecordNewData, DefaultStatus, id, this.fileStream.Length, this.fileStream);
+
+            WriteBinary(ConvertToFileCabinetRecord(fileCabinetRecordNewData, id), DefaultStatus, id, this.fileStream.Length, this.fileStream);
 
             return id;
         }
@@ -58,7 +59,8 @@ namespace FileCabinetApp
             {
                 if (record.Id == id && status == DefaultStatus)
                 {
-                    WriteBinary(fileCabinetRecordNewData, DefaultStatus, id, position, this.fileStream);
+
+                    WriteBinary(ConvertToFileCabinetRecord(fileCabinetRecordNewData, id), DefaultStatus, id, position, this.fileStream);
                     break;
                 }
             }
@@ -217,8 +219,7 @@ namespace FileCabinetApp
             {
                 foreach (var record in listWithCorrectRecords)
                 {
-                    var recordNew = new FileCabinetRecordNewData(record.FirstName, record.LastName, record.DateOfBirth, record.Gender, record.Height, record.Weight);
-                    WriteBinary(recordNew, DefaultStatus, record.Id, position, fs);
+                    WriteBinary(record, DefaultStatus, record.Id, position, fs);
                     position += LengthOfOneRecord;
                 }
             }
@@ -252,7 +253,7 @@ namespace FileCabinetApp
             return newName;
         }
 
-        private static void WriteBinary(FileCabinetRecordNewData fileCabinetRecordNewData, short status, int id, long position, FileStream file)
+        private static void WriteBinary(FileCabinetRecord record, short status, int id, long position, FileStream file)
         {
             using (BinaryWriter writer = new BinaryWriter(file, Encoding.ASCII, true))
             {
@@ -260,15 +261,30 @@ namespace FileCabinetApp
 
                 writer.Write(status);
                 writer.Write(id);
-                writer.Write(CreateCharArray(fileCabinetRecordNewData.FirstName));
-                writer.Write(CreateCharArray(fileCabinetRecordNewData.LastName));
-                writer.Write(fileCabinetRecordNewData.DateOfBirth.Year);
-                writer.Write(fileCabinetRecordNewData.DateOfBirth.Month);
-                writer.Write(fileCabinetRecordNewData.DateOfBirth.Day);
-                writer.Write(fileCabinetRecordNewData.Gender);
-                writer.Write(fileCabinetRecordNewData.Height);
-                writer.Write(fileCabinetRecordNewData.Weight);
+                writer.Write(CreateCharArray(record.FirstName));
+                writer.Write(CreateCharArray(record.LastName));
+                writer.Write(record.DateOfBirth.Year);
+                writer.Write(record.DateOfBirth.Month);
+                writer.Write(record.DateOfBirth.Day);
+                writer.Write(record.Gender);
+                writer.Write(record.Height);
+                writer.Write(record.Weight);
             }
+        }
+
+        private static FileCabinetRecord ConvertToFileCabinetRecord(FileCabinetRecordNewData fileCabinetRecordNewData, int id)
+        {
+            var record = new FileCabinetRecord
+            {
+                Id = id,
+                FirstName = fileCabinetRecordNewData.FirstName,
+                LastName = fileCabinetRecordNewData.LastName,
+                DateOfBirth = fileCabinetRecordNewData.DateOfBirth,
+                Gender = fileCabinetRecordNewData.Gender,
+                Height = fileCabinetRecordNewData.Height,
+                Weight = fileCabinetRecordNewData.Weight,
+            };
+            return record;
         }
 
         private IEnumerable<(long position, FileCabinetRecord record, short status)> GetRecordsInternal()

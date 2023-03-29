@@ -189,7 +189,7 @@ namespace FileCabinetApp
             {
                 var recordNew = new FileCabinetRecordNewData(record.FirstName, record.LastName, record.DateOfBirth, record.Gender, record.Height, record.Weight);
 
-                if (this.list.Any(x => x.Id == record.Id))
+                if (this.IsExist(record.Id))
                 {
                     this.EditRecord(record.Id, recordNew);
                 }

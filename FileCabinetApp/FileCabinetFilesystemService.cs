@@ -38,8 +38,8 @@ namespace FileCabinetApp
         /// The gender isn't equal 'f' or 'm'. The height is less than 0 or greater than 250. The weight is less than 0.</exception>
         public int CreateRecord(FileCabinetRecordNewData fileCabinetRecordNewData)
         {
-            var id = this.GetNextId();
-            this.currentId = 1;
+            var id = this.GetNext();
+
             this.WriteBinary(ConvertToFileCabinetRecord(fileCabinetRecordNewData, id), DefaultStatus, this.fileStream.Length);
 
             return id;
@@ -160,16 +160,34 @@ namespace FileCabinetApp
             {
                 var recordNew = new FileCabinetRecordNewData(record.FirstName, record.LastName, record.DateOfBirth, record.Gender, record.Height, record.Weight);
 
-                if (this.GetRecordsInternal().Any(x => x.record.Id == record.Id))
+                if (this.IsExist(record.Id))
                 {
                     this.EditRecord(record.Id, recordNew);
                 }
                 else
                 {
-                    this.currentId = record.Id;
+                    this.SetInitialId(record.Id);
                     this.CreateRecord(recordNew);
                 }
             }
+        }
+
+        /// <summary>
+        /// Generates the following id.
+        /// </summary>
+        /// <returns>Next id.</returns>
+        public int GetNext()
+        {
+            return this.currentId++;
+        }
+
+        /// <summary>
+        /// Sets initial id.
+        /// </summary>
+        /// <param name="id">Initial id.</param>
+        public void SetInitialId(int id)
+        {
+            this.currentId = id;
         }
 
         private static char[] CreateCharArray(string name)
@@ -241,16 +259,6 @@ namespace FileCabinetApp
                     yield return (position, record);
                 }
             }
-        }
-
-        private int GetNextId()
-        {
-            while (this.GetRecordsInternal().Any(x => x.record.Id == this.currentId))
-            {
-                ++this.currentId;
-            }
-
-            return this.currentId;
         }
     }
 }

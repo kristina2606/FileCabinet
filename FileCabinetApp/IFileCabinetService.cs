@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FileCabinetApp
 {
     /// <summary>
     /// Creates, edits and checks in entries. Finds records by parameters.
     /// </summary>
-    public interface IFileCabinetService
+    public interface IFileCabinetService : IIdGenerator
     {
         /// <summary>
         /// Creates a new record from user input.

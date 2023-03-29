@@ -45,8 +45,8 @@ namespace FileCabinetApp
         public int CreateRecord(FileCabinetRecordNewData fileCabinetRecordNewData)
         {
             this.validator.Validate(fileCabinetRecordNewData);
-            var id = this.GetNextId();
-            this.currentId = 1;
+
+            var id = this.GetNext();
 
             var record = new FileCabinetRecord
             {
@@ -195,7 +195,7 @@ namespace FileCabinetApp
                 }
                 else
                 {
-                    this.currentId = record.Id;
+                    this.SetInitialId(record.Id);
                     this.CreateRecord(recordNew);
                 }
             }
@@ -209,6 +209,24 @@ namespace FileCabinetApp
         public bool IsExist(int id)
         {
             return this.list.Any(x => x.Id == id);
+        }
+
+        /// <summary>
+        /// Generates the following id.
+        /// </summary>
+        /// <returns>Next id.</returns>
+        public int GetNext()
+        {
+            return this.currentId++;
+        }
+
+        /// <summary>
+        /// Sets initial id.
+        /// </summary>
+        /// <param name="id">Initial id.</param>
+        public void SetInitialId(int id)
+        {
+            this.currentId = id;
         }
 
         private static void EditDictionary<T>(Dictionary<T, List<FileCabinetRecord>> dictionary, T existingKey, FileCabinetRecord record, T newKey)
@@ -232,16 +250,6 @@ namespace FileCabinetApp
                 List<FileCabinetRecord> valueForDictionary = new List<FileCabinetRecord>() { record };
                 dictionary.Add(key, valueForDictionary);
             }
-        }
-
-        private int GetNextId()
-        {
-            while (this.list.Any(x => x.Id == this.currentId))
-            {
-                ++this.currentId;
-            }
-
-            return this.currentId;
         }
     }
 }

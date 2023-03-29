@@ -7,7 +7,7 @@ namespace FileCabinetApp
     /// <summary>
     /// Creates, edits and checks in entries. Finds records by parameters.
     /// </summary>
-    public interface IFileCabinetService : IIdGenerator
+    public interface IFileCabinetService
     {
         /// <summary>
         /// Creates a new record from user input.

@@ -15,9 +15,8 @@ namespace FileCabinetApp
         private const int LengthOfOneRecord = 157;
         private const short DefaultStatus = 0;
 
+        private readonly IIdGenerator currentId = new IdGenerator();
         private readonly FileStream fileStream;
-
-        private int currentId = 1;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetFilesystemService"/> class.
@@ -38,7 +37,7 @@ namespace FileCabinetApp
         /// The gender isn't equal 'f' or 'm'. The height is less than 0 or greater than 250. The weight is less than 0.</exception>
         public int CreateRecord(FileCabinetRecordNewData fileCabinetRecordNewData)
         {
-            var id = this.GetNext();
+            var id = this.currentId.GetNext();
 
             this.WriteBinary(ConvertToFileCabinetRecord(fileCabinetRecordNewData, id), DefaultStatus, this.fileStream.Length);
 
@@ -166,28 +165,10 @@ namespace FileCabinetApp
                 }
                 else
                 {
-                    this.SetInitialId(record.Id);
+                    this.currentId.SetInitialId(record.Id);
                     this.CreateRecord(recordNew);
                 }
             }
-        }
-
-        /// <summary>
-        /// Generates the following id.
-        /// </summary>
-        /// <returns>Next id.</returns>
-        public int GetNext()
-        {
-            return this.currentId++;
-        }
-
-        /// <summary>
-        /// Sets initial id.
-        /// </summary>
-        /// <param name="id">Initial id.</param>
-        public void SetInitialId(int id)
-        {
-            this.currentId = id;
         }
 
         private static char[] CreateCharArray(string name)

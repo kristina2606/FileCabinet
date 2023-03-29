@@ -20,9 +20,9 @@ namespace FileCabinetApp
 
         private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
 
-        private readonly IRecordValidator validator;
+        private readonly IIdGenerator currentId = new IdGenerator();
 
-        private int currentId = 1;
+        private readonly IRecordValidator validator;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetMemoryService"/> class.
@@ -46,7 +46,7 @@ namespace FileCabinetApp
         {
             this.validator.Validate(fileCabinetRecordNewData);
 
-            var id = this.GetNext();
+            var id = this.currentId.GetNext();
 
             var record = new FileCabinetRecord
             {
@@ -195,7 +195,7 @@ namespace FileCabinetApp
                 }
                 else
                 {
-                    this.SetInitialId(record.Id);
+                    this.currentId.SetInitialId(record.Id);
                     this.CreateRecord(recordNew);
                 }
             }
@@ -209,24 +209,6 @@ namespace FileCabinetApp
         public bool IsExist(int id)
         {
             return this.list.Any(x => x.Id == id);
-        }
-
-        /// <summary>
-        /// Generates the following id.
-        /// </summary>
-        /// <returns>Next id.</returns>
-        public int GetNext()
-        {
-            return this.currentId++;
-        }
-
-        /// <summary>
-        /// Sets initial id.
-        /// </summary>
-        /// <param name="id">Initial id.</param>
-        public void SetInitialId(int id)
-        {
-            this.currentId = id;
         }
 
         private static void EditDictionary<T>(Dictionary<T, List<FileCabinetRecord>> dictionary, T existingKey, FileCabinetRecord record, T newKey)

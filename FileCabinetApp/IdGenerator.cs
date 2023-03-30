@@ -1,4 +1,6 @@
-﻿namespace FileCabinetApp
+﻿using System;
+
+namespace FileCabinetApp
 {
     /// <summary>
     /// Generates the following id.
@@ -22,7 +24,7 @@
         /// <param name="id">Initial id.</param>
         public void SetInitialId(int id)
         {
-            this.currentId = id;
+            this.currentId = Math.Max(this.currentId, id);
         }
     }
 }

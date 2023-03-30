@@ -15,7 +15,7 @@ namespace FileCabinetApp
         private const int LengthOfOneRecord = 157;
         private const short DefaultStatus = 0;
 
-        private readonly IIdGenerator currentId = new IdGenerator();
+        private readonly IIdGenerator idGenerator = new IdGenerator();
         private readonly FileStream fileStream;
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace FileCabinetApp
         /// The gender isn't equal 'f' or 'm'. The height is less than 0 or greater than 250. The weight is less than 0.</exception>
         public int CreateRecord(FileCabinetRecordNewData fileCabinetRecordNewData)
         {
-            var id = this.currentId.GetNext();
+            var id = this.idGenerator.GetNext();
 
             this.WriteBinary(ConvertToFileCabinetRecord(fileCabinetRecordNewData, id), DefaultStatus, this.fileStream.Length);
 
@@ -165,7 +165,7 @@ namespace FileCabinetApp
                 }
                 else
                 {
-                    this.currentId.SetInitialId(record.Id);
+                    this.idGenerator.SetInitialId(record.Id);
                     this.CreateRecord(recordNew);
                 }
             }

@@ -20,7 +20,7 @@ namespace FileCabinetApp
 
         private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
 
-        private readonly IIdGenerator currentId = new IdGenerator();
+        private readonly IIdGenerator idGenerator = new IdGenerator();
 
         private readonly IRecordValidator validator;
 
@@ -46,7 +46,7 @@ namespace FileCabinetApp
         {
             this.validator.Validate(fileCabinetRecordNewData);
 
-            var id = this.currentId.GetNext();
+            var id = this.idGenerator.GetNext();
 
             var record = new FileCabinetRecord
             {
@@ -195,7 +195,7 @@ namespace FileCabinetApp
                 }
                 else
                 {
-                    this.currentId.SetInitialId(record.Id);
+                    this.idGenerator.SetInitialId(record.Id);
                     this.CreateRecord(recordNew);
                 }
             }

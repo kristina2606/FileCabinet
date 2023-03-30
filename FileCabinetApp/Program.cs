@@ -401,7 +401,6 @@ namespace FileCabinetApp
             if (fileCabinetService is FileCabinetFilesystemService)
             {
                 var countOfCorrectRecords = fileCabinetService.Purge();
-                fileCabinetService = new FileCabinetFilesystemService(new FileStream(FileNameFormatDatabasePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None));
 
                 Console.WriteLine($"Data file processing is completed: {countOfRecords - countOfCorrectRecords} of {countOfRecords} records were purged.");
             }

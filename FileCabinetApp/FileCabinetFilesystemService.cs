@@ -14,9 +14,7 @@ namespace FileCabinetApp
     {
         private const int LengthOfOneRecord = 157;
         private const short DefaultStatus = 0;
-        private const short DeliteStatus = ~(~0 << 1) << 2;
-        private const string FileNameFormatDatabasePath = "cabinet-records.db";
-        private const string TemporaryFileNameFormatDatabasePath = "cabinet-records_new.db";
+        private const short MaskForDelete = ~(~0 << 1) << 2;
 
         private readonly FileStream fileStream;
 
@@ -43,7 +41,7 @@ namespace FileCabinetApp
         {
             var id = this.GetNextId();
 
-            WriteBinary(ConvertToFileCabinetRecord(fileCabinetRecordNewData, id), DefaultStatus, id, this.fileStream.Length, this.fileStream);
+            this.WriteBinary(ConvertToFileCabinetRecord(fileCabinetRecordNewData, id), DefaultStatus, id, this.fileStream.Length);
 
             return id;
         }
@@ -57,10 +55,9 @@ namespace FileCabinetApp
         {
             foreach (var (position, record, status) in this.GetRecordsInternal())
             {
-                if (record.Id == id && status == DefaultStatus)
+                if (record.Id == id && (status & MaskForDelete) == 0)
                 {
-
-                    WriteBinary(ConvertToFileCabinetRecord(fileCabinetRecordNewData, id), DefaultStatus, id, position, this.fileStream);
+                    this.WriteBinary(ConvertToFileCabinetRecord(fileCabinetRecordNewData, id), DefaultStatus, id, position);
                     break;
                 }
             }
@@ -73,9 +70,7 @@ namespace FileCabinetApp
         /// <returns>Returns all records by date of birth.</returns>
         public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
         {
-            var list = this.GetRecordsInternal()
-                .Where(x => x.status == DefaultStatus)
-                .Select(record => record.record)
+            var list = this.GetExistingRecords()
                 .Where(record => record.DateOfBirth == dateOfBirth)
                 .ToList();
 
@@ -89,9 +84,7 @@ namespace FileCabinetApp
         /// <returns>Returns  all records by first name.</returns>
         public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
         {
-            var list = this.GetRecordsInternal()
-                .Where(x => x.status == DefaultStatus)
-                .Select(record => record.record)
+            var list = this.GetExistingRecords()
                 .Where(record => record.FirstName.ToLowerInvariant() == firstName.ToLowerInvariant())
                 .ToList();
 
@@ -105,9 +98,7 @@ namespace FileCabinetApp
         /// <returns>Returns all records by last name.</returns>
         public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
         {
-            var list = this.GetRecordsInternal()
-                .Where(x => x.status == DefaultStatus)
-                .Select(record => record.record)
+            var list = this.GetExistingRecords()
                 .Where(record => record.LastName.ToLowerInvariant() == lastName.ToLowerInvariant())
                 .ToList();
 
@@ -121,9 +112,8 @@ namespace FileCabinetApp
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
             return new ReadOnlyCollection<FileCabinetRecord>(this.GetRecordsInternal()
-                .Where(x => x.status == DefaultStatus)
-                .Select(record => record.record)
-                .ToList());
+                            .Where(x => (x.status & MaskForDelete) == 0)
+                            .Select(record => record.record).ToList());
         }
 
         /// <summary>
@@ -142,7 +132,7 @@ namespace FileCabinetApp
         /// <returns>True if records exists and false if records don't exist.</returns>
         public bool IsExist(int id)
         {
-            return this.GetRecordsInternal().Any(x => x.record.Id == id && x.status == DefaultStatus);
+            return this.GetRecordsInternal().Any(x => x.record.Id == id && (x.status & MaskForDelete) == 0);
         }
 
         /// <summary>
@@ -176,6 +166,7 @@ namespace FileCabinetApp
                 {
                     this.currentId = record.Id;
                     this.CreateRecord(recordNew);
+                    this.CreateRecord(recordNew);
                 }
             }
         }
@@ -194,7 +185,7 @@ namespace FileCabinetApp
                     {
                         writer.BaseStream.Seek(position, SeekOrigin.Begin);
 
-                        writer.Write(DeliteStatus);
+                        writer.Write(MaskForDelete | status);
                     }
 
                     break;
@@ -208,28 +199,17 @@ namespace FileCabinetApp
         /// <returns>Count of purged records.</returns>
         public int Purge()
         {
-            var listWithCorrectRecords = new List<FileCabinetRecord>(this.GetRecordsInternal()
-                .Where(x => x.status == DefaultStatus)
-                .Select(record => record.record)
-                .ToList());
-
             var position = 0;
 
-            using (var fs = new FileStream(TemporaryFileNameFormatDatabasePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
+            foreach (var record in this.GetExistingRecords())
             {
-                foreach (var record in listWithCorrectRecords)
-                {
-                    WriteBinary(record, DefaultStatus, record.Id, position, fs);
-                    position += LengthOfOneRecord;
-                }
+                this.WriteBinary(record, DefaultStatus, record.Id, position);
+                position += LengthOfOneRecord;
             }
 
-            this.fileStream.Close();
+            this.fileStream.SetLength(position);
 
-            File.Delete(FileNameFormatDatabasePath);
-            File.Move(TemporaryFileNameFormatDatabasePath, FileNameFormatDatabasePath);
-
-            return listWithCorrectRecords.Count;
+            return this.GetExistingRecords().Count;
         }
 
         /// <summary>
@@ -238,8 +218,8 @@ namespace FileCabinetApp
         /// <returns>Returns the count of all deleted records.</returns>
         public int GetStatDeletedRecords()
         {
-            var listOfDeletedRecords = this.GetRecordsInternal().Where(x => x.status == DeliteStatus).ToList();
-            return listOfDeletedRecords.Count;
+            return this.GetRecordsInternal()
+                .Count(x => (x.status & MaskForDelete) != 0);
         }
 
         private static char[] CreateCharArray(string name)
@@ -251,25 +231,6 @@ namespace FileCabinetApp
             }
 
             return newName;
-        }
-
-        private static void WriteBinary(FileCabinetRecord record, short status, int id, long position, FileStream file)
-        {
-            using (BinaryWriter writer = new BinaryWriter(file, Encoding.ASCII, true))
-            {
-                writer.BaseStream.Seek(position, SeekOrigin.Begin);
-
-                writer.Write(status);
-                writer.Write(id);
-                writer.Write(CreateCharArray(record.FirstName));
-                writer.Write(CreateCharArray(record.LastName));
-                writer.Write(record.DateOfBirth.Year);
-                writer.Write(record.DateOfBirth.Month);
-                writer.Write(record.DateOfBirth.Day);
-                writer.Write(record.Gender);
-                writer.Write(record.Height);
-                writer.Write(record.Weight);
-            }
         }
 
         private static FileCabinetRecord ConvertToFileCabinetRecord(FileCabinetRecordNewData fileCabinetRecordNewData, int id)
@@ -285,6 +246,25 @@ namespace FileCabinetApp
                 Weight = fileCabinetRecordNewData.Weight,
             };
             return record;
+        }
+
+        private void WriteBinary(FileCabinetRecord record, short status, int id, long position)
+        {
+            using (BinaryWriter writer = new BinaryWriter(this.fileStream, Encoding.ASCII, true))
+            {
+                writer.BaseStream.Seek(position, SeekOrigin.Begin);
+
+                writer.Write(status);
+                writer.Write(id);
+                writer.Write(CreateCharArray(record.FirstName));
+                writer.Write(CreateCharArray(record.LastName));
+                writer.Write(record.DateOfBirth.Year);
+                writer.Write(record.DateOfBirth.Month);
+                writer.Write(record.DateOfBirth.Day);
+                writer.Write(record.Gender);
+                writer.Write(record.Height);
+                writer.Write(record.Weight);
+            }
         }
 
         private IEnumerable<(long position, FileCabinetRecord record, short status)> GetRecordsInternal()
@@ -320,6 +300,13 @@ namespace FileCabinetApp
             }
 
             return this.currentId;
+        }
+
+        private List<FileCabinetRecord> GetExistingRecords()
+        {
+            return this.GetRecordsInternal()
+                            .Where(x => (x.status & MaskForDelete) == 0)
+                            .Select(record => record.record).ToList();
         }
     }
 }

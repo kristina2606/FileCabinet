@@ -159,6 +159,12 @@
             </summary>
             <param name="fileCabinetServiceSnapshot">Сlass instance.</param>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.GetAllImportExeptions">
+            <summary>
+            Get all import exeptions.
+            </summary>
+            <returns>Dictionary with key 'id with exeption' and value 'messege of exeption.</returns>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetMemoryService">
             <summary>
             Creates, edits and checks in entries. Finds records by parameters.
@@ -233,6 +239,12 @@
             Adding imported records to existing records.
             </summary>
             <param name="fileCabinetServiceSnapshot">Сlass instance.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.GetAllImportExeptions">
+            <summary>
+            Get all import exeptions.
+            </summary>
+            <returns>Dictionary with key 'id with exeption' and value 'messege of exeption.</returns>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.IsExist(System.Int32)">
             <summary>
@@ -633,6 +645,12 @@
             Adding imported records to existing records.
             </summary>
             <param name="fileCabinetServiceSnapshot">Сlass instance.</param>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.GetAllImportExeptions">
+            <summary>
+            Get all import exeptions.
+            </summary>
+            <returns>Dictionary with key 'id with exeption' and value 'messege of exeption.</returns>
         </member>
         <member name="T:FileCabinetApp.IIdGenerator">
             <summary>

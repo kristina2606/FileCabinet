@@ -17,6 +17,8 @@ namespace FileCabinetApp
 
         private readonly IIdGenerator idGenerator = new IdGenerator();
         private readonly FileStream fileStream;
+        private readonly IRecordValidator validator = new DefaultValidator();
+        private readonly Dictionary<int, string> importExeptions = new Dictionary<int, string>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetFilesystemService"/> class.
@@ -37,6 +39,8 @@ namespace FileCabinetApp
         /// The gender isn't equal 'f' or 'm'. The height is less than 0 or greater than 250. The weight is less than 0.</exception>
         public int CreateRecord(FileCabinetRecordNewData fileCabinetRecordNewData)
         {
+            this.validator.Validate(fileCabinetRecordNewData);
+
             var id = this.idGenerator.GetNext();
 
             this.WriteBinary(ConvertToFileCabinetRecord(fileCabinetRecordNewData, id), DefaultStatus, this.fileStream.Length);
@@ -51,6 +55,8 @@ namespace FileCabinetApp
         /// <param name="fileCabinetRecordNewData">The new date in the record.</param>
         public void EditRecord(int id, FileCabinetRecordNewData fileCabinetRecordNewData)
         {
+            this.validator.Validate(fileCabinetRecordNewData);
+
             foreach (var (position, record) in this.GetRecordsInternal())
             {
                 if (record.Id == id)
@@ -159,17 +165,34 @@ namespace FileCabinetApp
 
             foreach (var record in records)
             {
-                if (this.IsExist(record.Id))
+                var recordNew = new FileCabinetRecordNewData(record.FirstName, record.LastName, record.DateOfBirth, record.Gender, record.Height, record.Weight);
+                try
                 {
-                    var recordNew = new FileCabinetRecordNewData(record.FirstName, record.LastName, record.DateOfBirth, record.Gender, record.Height, record.Weight);
+                    this.validator.Validate(recordNew);
 
-                    this.EditRecord(record.Id, recordNew);
+                    if (this.IsExist(record.Id))
+                    {
+                        this.EditRecord(record.Id, recordNew);
+                    }
+                    else
+                    {
+                        this.Create(record);
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    this.Create(record);
+                    this.importExeptions.Add(record.Id, ex.Message);
                 }
             }
+        }
+
+        /// <summary>
+        /// Get all import exeptions.
+        /// </summary>
+        /// <returns>Dictionary with key 'id with exeption' and value 'messege of exeption.</returns>
+        public Dictionary<int, string> GetAllImportExeptions()
+        {
+            return this.importExeptions;
         }
 
         private static char[] CreateCharArray(string name)

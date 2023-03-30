@@ -13,16 +13,13 @@ namespace FileCabinetApp
     public class FileCabinetMemoryService : IFileCabinetService
     {
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
-
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
-
         private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
-
         private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
-
         private readonly IIdGenerator idGenerator = new IdGenerator();
-
         private readonly IRecordValidator validator;
+
+        private readonly Dictionary<int, string> importExeptions = new Dictionary<int, string>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetMemoryService"/> class.
@@ -204,9 +201,18 @@ namespace FileCabinetApp
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Record with id = {record.Id} - {ex.Message}.");
+                    this.importExeptions.Add(record.Id, ex.Message);
                 }
             }
+        }
+
+        /// <summary>
+        /// Get all import exeptions.
+        /// </summary>
+        /// <returns>Dictionary with key 'id with exeption' and value 'messege of exeption.</returns>
+        public Dictionary<int, string> GetAllImportExeptions()
+        {
+            return this.importExeptions;
         }
 
         /// <summary>

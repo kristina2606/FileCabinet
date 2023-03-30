@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -78,5 +79,11 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="fileCabinetServiceSnapshot">Сlass instance.</param>
         void Restore(FileCabinetServiceSnapshot fileCabinetServiceSnapshot);
+
+        /// <summary>
+        /// Get all import exeptions.
+        /// </summary>
+        /// <returns>Dictionary with key 'id with exeption' and value 'messege of exeption.</returns>
+        public Dictionary<int, string> GetAllImportExeptions();
     }
 }

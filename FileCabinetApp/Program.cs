@@ -359,6 +359,11 @@ namespace FileCabinetApp
                 }
 
                 Program.fileCabinetService.Restore(fileCabinetServiceSnapshot);
+                var exeption = Program.fileCabinetService.GetAllImportExeptions();
+                foreach (var ex in exeption)
+                {
+                    Console.WriteLine($"Record with id = {ex.Key} - {ex.Value}.");
+                }
             }
 
             Console.WriteLine($"All records were imported from {path}.");

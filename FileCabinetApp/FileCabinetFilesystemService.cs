@@ -155,18 +155,19 @@ namespace FileCabinetApp
         {
             var records = fileCabinetServiceSnapshot.Records;
 
+            this.idGenerator.SkipId(records.Max(x => x.Id));
+
             foreach (var record in records)
             {
-                var recordNew = new FileCabinetRecordNewData(record.FirstName, record.LastName, record.DateOfBirth, record.Gender, record.Height, record.Weight);
-
                 if (this.IsExist(record.Id))
                 {
+                    var recordNew = new FileCabinetRecordNewData(record.FirstName, record.LastName, record.DateOfBirth, record.Gender, record.Height, record.Weight);
+
                     this.EditRecord(record.Id, recordNew);
                 }
                 else
                 {
-                    this.idGenerator.SetInitialId(record.Id);
-                    this.CreateRecord(recordNew);
+                    this.Create(record);
                 }
             }
         }
@@ -240,6 +241,11 @@ namespace FileCabinetApp
                     yield return (position, record);
                 }
             }
+        }
+
+        private void Create(FileCabinetRecord record)
+        {
+            this.WriteBinary(record, DefaultStatus, this.fileStream.Length);
         }
     }
 }

@@ -15,6 +15,6 @@
         /// Sets initial id.
         /// </summary>
         /// <param name="id">Initial id.</param>
-        void SetInitialId(int id);
+        void SkipId(int id);
     }
 }

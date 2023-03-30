@@ -22,9 +22,9 @@ namespace FileCabinetApp
         /// Sets initial id.
         /// </summary>
         /// <param name="id">Initial id.</param>
-        public void SetInitialId(int id)
+        public void SkipId(int id)
         {
-            this.currentId = Math.Max(this.currentId, id);
+            this.currentId = Math.Max(this.currentId, id + 1);
         }
     }
 }

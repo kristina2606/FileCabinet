@@ -185,18 +185,26 @@ namespace FileCabinetApp
         {
             var records = fileCabinetServiceSnapshot.Records;
 
+            this.idGenerator.SkipId(records.Max(x => x.Id));
+
             foreach (var record in records)
             {
                 var recordNew = new FileCabinetRecordNewData(record.FirstName, record.LastName, record.DateOfBirth, record.Gender, record.Height, record.Weight);
-
-                if (this.IsExist(record.Id))
+                try
                 {
-                    this.EditRecord(record.Id, recordNew);
+                    this.validator.Validate(recordNew);
+                    if (this.IsExist(record.Id))
+                    {
+                        this.EditRecord(record.Id, recordNew);
+                    }
+                    else
+                    {
+                        this.Create(record);
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    this.idGenerator.SetInitialId(record.Id);
-                    this.CreateRecord(recordNew);
+                    Console.WriteLine($"Record with id = {record.Id} - {ex.Message}.");
                 }
             }
         }
@@ -232,6 +240,15 @@ namespace FileCabinetApp
                 List<FileCabinetRecord> valueForDictionary = new List<FileCabinetRecord>() { record };
                 dictionary.Add(key, valueForDictionary);
             }
+        }
+
+        private void Create(FileCabinetRecord record)
+        {
+            this.list.Add(record);
+
+            AddToIndex(record, this.firstNameDictionary, record.FirstName.ToLowerInvariant());
+            AddToIndex(record, this.lastNameDictionary, record.LastName.ToLowerInvariant());
+            AddToIndex(record, this.dateOfBirthDictionary, record.DateOfBirth);
         }
     }
 }

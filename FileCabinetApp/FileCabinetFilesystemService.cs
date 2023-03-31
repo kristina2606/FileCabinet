@@ -18,7 +18,7 @@ namespace FileCabinetApp
         private readonly IIdGenerator idGenerator = new IdGenerator();
         private readonly FileStream fileStream;
         private readonly IRecordValidator validator = new DefaultValidator();
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetFilesystemService"/> class.
         /// </summary>
@@ -42,7 +42,7 @@ namespace FileCabinetApp
 
             var id = this.idGenerator.GetNext();
 
-            this.Create(ConvertToFileCabinetRecord(fileCabinetRecordNewData, id));
+            this.CreateRecord(ConvertToFileCabinetRecord(fileCabinetRecordNewData, id));
 
             return id;
         }
@@ -160,6 +160,7 @@ namespace FileCabinetApp
         {
             var records = fileCabinetServiceSnapshot.Records;
             Dictionary<int, string> importExeptions = new Dictionary<int, string>();
+            bool isError = false;
 
             foreach (var record in records)
             {
@@ -176,16 +177,20 @@ namespace FileCabinetApp
                     }
                     else
                     {
-                        this.Create(record);
+                        this.CreateRecord(record);
                     }
                 }
                 catch (Exception ex)
                 {
                     importExeptions.Add(record.Id, ex.Message);
+                    isError = true;
                 }
             }
 
-            throw new ImportException(importExeptions);
+            if (isError)
+            {
+                throw new ImportException(importExeptions);
+            }
         }
 
         private static char[] CreateCharArray(string name)
@@ -259,7 +264,7 @@ namespace FileCabinetApp
             }
         }
 
-        private void Create(FileCabinetRecord record)
+        private void CreateRecord(FileCabinetRecord record)
         {
             this.WriteBinary(record, DefaultStatus, this.fileStream.Length);
         }

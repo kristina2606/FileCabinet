@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace FileCabinetApp
 {
     /// <summary>
     /// An ImportException is thrown when a record fails validation.
     /// </summary>
-    public class ImportException : ArgumentException
+    public class ImportException : Exception
     {
-        private readonly Dictionary<int, string> dictionary;
+        private readonly Dictionary<int, string> importExeptionsDictionary;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ImportException"/> class.
@@ -23,7 +24,7 @@ namespace FileCabinetApp
         /// <param name="dictionary">Dictionary with key 'id of rrecords' and value 'exeption'.</param>
         public ImportException(Dictionary<int, string> dictionary)
         {
-            this.dictionary = dictionary;
+            this.importExeptionsDictionary = dictionary;
         }
 
         /// <summary>
@@ -32,6 +33,6 @@ namespace FileCabinetApp
         /// <value>
         /// Returns dictionary with key 'id of records' and value 'exeption'.
         /// </value>
-        public virtual Dictionary<int, string> Dictionary => this.dictionary;
+        public ReadOnlyDictionary<int, string> Dictionary => new ReadOnlyDictionary<int, string>(this.importExeptionsDictionary);
     }
 }

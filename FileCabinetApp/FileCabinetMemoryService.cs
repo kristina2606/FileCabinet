@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Globalization;
 using System.Linq;
 
 [assembly: CLSCompliant(true)]
@@ -19,8 +18,6 @@ namespace FileCabinetApp
         private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
         private readonly IIdGenerator idGenerator = new IdGenerator();
         private readonly IRecordValidator validator;
-
-
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetMemoryService"/> class.
@@ -57,12 +54,7 @@ namespace FileCabinetApp
                 Weight = fileCabinetRecordNewData.Weight,
             };
 
-            this.list.Add(record);
-
-            AddToIndex(record, this.firstNameDictionary, fileCabinetRecordNewData.FirstName.ToLowerInvariant());
-            AddToIndex(record, this.lastNameDictionary, fileCabinetRecordNewData.LastName.ToLowerInvariant());
-            AddToIndex(record, this.dateOfBirthDictionary, fileCabinetRecordNewData.DateOfBirth);
-
+            this.CreateRecord(record);
             return record.Id;
         }
 
@@ -183,6 +175,7 @@ namespace FileCabinetApp
         {
             var records = fileCabinetServiceSnapshot.Records;
             Dictionary<int, string> importExeptions = new Dictionary<int, string>();
+            bool isError = false;
 
             foreach (var record in records)
             {
@@ -198,16 +191,20 @@ namespace FileCabinetApp
                     }
                     else
                     {
-                        this.Create(record);
+                        this.CreateRecord(record);
                     }
                 }
                 catch (Exception ex)
                 {
                     importExeptions.Add(record.Id, ex.Message);
+                    isError = true;
                 }
             }
 
-            throw new ImportException(importExeptions);
+            if (isError)
+            {
+                throw new ImportException(importExeptions);
+            }
         }
 
         /// <summary>
@@ -243,7 +240,7 @@ namespace FileCabinetApp
             }
         }
 
-        private void Create(FileCabinetRecord record)
+        private void CreateRecord(FileCabinetRecord record)
         {
             this.list.Add(record);
 

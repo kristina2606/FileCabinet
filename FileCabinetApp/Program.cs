@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
+using System.Runtime.CompilerServices;
 
 namespace FileCabinetApp
 {
@@ -342,31 +343,39 @@ namespace FileCabinetApp
             if (!File.Exists(path))
             {
                 Console.WriteLine($"Import error: {path} is not exist.");
+                return;
             }
 
             using (FileStream fs = new FileStream(path, FileMode.Open))
             {
                 FileCabinetServiceSnapshot fileCabinetServiceSnapshot = new FileCabinetServiceSnapshot();
-
-                switch (format)
+                using (StreamReader sr = new StreamReader(fs))
                 {
-                    case FileTypeCsv:
-                        fileCabinetServiceSnapshot.LoadFromCsv(new StreamReader(fs));
-                        break;
-                    case FileTypeXml:
-                        fileCabinetServiceSnapshot.LoadFromXml(new StreamReader(fs));
-                        break;
+                    switch (format)
+                    {
+                        case FileTypeCsv:
+                            fileCabinetServiceSnapshot.LoadFromCsv(sr);
+                            break;
+                        case FileTypeXml:
+                            fileCabinetServiceSnapshot.LoadFromXml(sr);
+                            break;
+                    }
                 }
 
-                Program.fileCabinetService.Restore(fileCabinetServiceSnapshot);
-                var exeption = Program.fileCabinetService.GetAllImportExeptions();
-                foreach (var ex in exeption)
+                try
                 {
-                    Console.WriteLine($"Record with id = {ex.Key} - {ex.Value}.");
+                    Program.fileCabinetService.Restore(fileCabinetServiceSnapshot);
                 }
+                catch (ImportException dict)
+                {
+                    foreach (var exeption in dict.Dictionary)
+                    {
+                        Console.WriteLine($"Record with id = {exeption.Key} - {exeption.Value}.");
+                    }
+                }
+
+                Console.WriteLine($"All records were imported from {path}.");
             }
-
-            Console.WriteLine($"All records were imported from {path}.");
         }
 
         private static void OutputToTheConsoleDataFromTheList(ReadOnlyCollection<FileCabinetRecord> list)

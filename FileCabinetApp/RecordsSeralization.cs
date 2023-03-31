@@ -16,6 +16,6 @@ namespace FileCabinetApp
         /// A list of record.
         /// </value>
         [XmlElement("record")]
-        public List<FileCabinetRecordSeralization> Record { get; set; }
+        public List<FileCabinetRecordSeralization> Records { get; set; }
     }
 }

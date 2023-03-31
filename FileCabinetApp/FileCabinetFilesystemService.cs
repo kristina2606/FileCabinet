@@ -18,8 +18,7 @@ namespace FileCabinetApp
         private readonly IIdGenerator idGenerator = new IdGenerator();
         private readonly FileStream fileStream;
         private readonly IRecordValidator validator = new DefaultValidator();
-        private readonly Dictionary<int, string> importExeptions = new Dictionary<int, string>();
-
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetFilesystemService"/> class.
         /// </summary>
@@ -43,7 +42,7 @@ namespace FileCabinetApp
 
             var id = this.idGenerator.GetNext();
 
-            this.WriteBinary(ConvertToFileCabinetRecord(fileCabinetRecordNewData, id), DefaultStatus, this.fileStream.Length);
+            this.Create(ConvertToFileCabinetRecord(fileCabinetRecordNewData, id));
 
             return id;
         }
@@ -160,12 +159,13 @@ namespace FileCabinetApp
         public void Restore(FileCabinetServiceSnapshot fileCabinetServiceSnapshot)
         {
             var records = fileCabinetServiceSnapshot.Records;
-
-            this.idGenerator.SkipId(records.Max(x => x.Id));
+            Dictionary<int, string> importExeptions = new Dictionary<int, string>();
 
             foreach (var record in records)
             {
+                this.idGenerator.SkipId(record.Id);
                 var recordNew = new FileCabinetRecordNewData(record.FirstName, record.LastName, record.DateOfBirth, record.Gender, record.Height, record.Weight);
+
                 try
                 {
                     this.validator.Validate(recordNew);
@@ -181,18 +181,11 @@ namespace FileCabinetApp
                 }
                 catch (Exception ex)
                 {
-                    this.importExeptions.Add(record.Id, ex.Message);
+                    importExeptions.Add(record.Id, ex.Message);
                 }
             }
-        }
 
-        /// <summary>
-        /// Get all import exeptions.
-        /// </summary>
-        /// <returns>Dictionary with key 'id with exeption' and value 'messege of exeption.</returns>
-        public Dictionary<int, string> GetAllImportExeptions()
-        {
-            return this.importExeptions;
+            throw new ImportException(importExeptions);
         }
 
         private static char[] CreateCharArray(string name)

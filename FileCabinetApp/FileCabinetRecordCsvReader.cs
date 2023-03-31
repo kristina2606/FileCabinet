@@ -37,7 +37,6 @@ namespace FileCabinetApp
                 string[] values = csvLine
                     .Split(',')
                     .Select(p => p.Trim())
-                    .Where(p => !string.IsNullOrWhiteSpace(p))
                     .ToArray();
 
                 records.Add(new FileCabinetRecord

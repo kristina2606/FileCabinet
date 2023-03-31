@@ -79,11 +79,5 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="fileCabinetServiceSnapshot">Сlass instance.</param>
         void Restore(FileCabinetServiceSnapshot fileCabinetServiceSnapshot);
-
-        /// <summary>
-        /// Get all import exeptions.
-        /// </summary>
-        /// <returns>Dictionary with key 'id with exeption' and value 'messege of exeption.</returns>
-        public Dictionary<int, string> GetAllImportExeptions();
     }
 }

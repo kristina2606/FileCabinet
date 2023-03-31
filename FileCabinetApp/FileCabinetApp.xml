@@ -159,12 +159,6 @@
             </summary>
             <param name="fileCabinetServiceSnapshot">Сlass instance.</param>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetFilesystemService.GetAllImportExeptions">
-            <summary>
-            Get all import exeptions.
-            </summary>
-            <returns>Dictionary with key 'id with exeption' and value 'messege of exeption.</returns>
-        </member>
         <member name="T:FileCabinetApp.FileCabinetMemoryService">
             <summary>
             Creates, edits and checks in entries. Finds records by parameters.
@@ -239,12 +233,6 @@
             Adding imported records to existing records.
             </summary>
             <param name="fileCabinetServiceSnapshot">Сlass instance.</param>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetMemoryService.GetAllImportExeptions">
-            <summary>
-            Get all import exeptions.
-            </summary>
-            <returns>Dictionary with key 'id with exeption' and value 'messege of exeption.</returns>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.IsExist(System.Int32)">
             <summary>
@@ -646,12 +634,6 @@
             </summary>
             <param name="fileCabinetServiceSnapshot">Сlass instance.</param>
         </member>
-        <member name="M:FileCabinetApp.IFileCabinetService.GetAllImportExeptions">
-            <summary>
-            Get all import exeptions.
-            </summary>
-            <returns>Dictionary with key 'id with exeption' and value 'messege of exeption.</returns>
-        </member>
         <member name="T:FileCabinetApp.IIdGenerator">
             <summary>
             Generates the following id.
@@ -668,6 +650,27 @@
             Sets initial id.
             </summary>
             <param name="id">Initial id.</param>
+        </member>
+        <member name="T:FileCabinetApp.ImportException">
+            <summary>
+            An ImportException is thrown when a record fails validation.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.ImportException.Dictionary">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.ImportException.#ctor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.ImportException.#ctor(System.Collections.Generic.Dictionary{System.Int32,System.String})">
+            <summary>
+            
+            </summary>
+            <param name="dictionary"></param>
         </member>
         <member name="T:FileCabinetApp.IRecordValidator">
             <summary>
@@ -743,7 +746,7 @@
              Fields for creating a list of record.
             </summary>
         </member>
-        <member name="P:FileCabinetApp.RecordsSeralization.Record">
+        <member name="P:FileCabinetApp.RecordsSeralization.Records">
             <summary>
             Gets or sets a list of record.
             </summary>

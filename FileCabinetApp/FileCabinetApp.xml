@@ -84,11 +84,12 @@
             Works with binary notation.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetFilesystemService.#ctor(System.IO.FileStream)">
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.#ctor(System.IO.FileStream,FileCabinetApp.IRecordValidator)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetFilesystemService"/> class.
             </summary>
             <param name="fileStream">Open binary record stream.</param>
+            <param name="validator">Validation parameter.</param>
         </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.CreateRecord(FileCabinetApp.FileCabinetRecordNewData)">
             <summary>
@@ -578,6 +579,23 @@
             </summary>
             <value>The last name of a person.</value>
         </member>
+        <member name="T:FileCabinetApp.IdGenerator">
+            <summary>
+            Generates the following id.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.IdGenerator.GetNext">
+            <summary>
+            Generates the following id.
+            </summary>
+            <returns>Next id.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IdGenerator.SkipId(System.Int32)">
+            <summary>
+            Sets initial id.
+            </summary>
+            <param name="id">Initial id.</param>
+        </member>
         <member name="T:FileCabinetApp.IFileCabinetService">
             <summary>
             Creates, edits and checks in entries. Finds records by parameters.
@@ -671,6 +689,47 @@
             </summary>
             <returns>Returns the count of all deleted records.</returns>
         </member>
+        <member name="T:FileCabinetApp.IIdGenerator">
+            <summary>
+            Generates the following id.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.IIdGenerator.GetNext">
+            <summary>
+            Generates the following id.
+            </summary>
+            <returns>Next id.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IIdGenerator.SkipId(System.Int32)">
+            <summary>
+            Sets initial id.
+            </summary>
+            <param name="id">Initial id.</param>
+        </member>
+        <member name="T:FileCabinetApp.ImportException">
+            <summary>
+            An ImportException is thrown when a record fails validation.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.ImportException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.ImportException"/> class.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.ImportException.#ctor(System.Collections.Generic.Dictionary{System.Int32,System.String})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.ImportException"/> class.
+            </summary>
+            <param name="dictionary">Dictionary with key 'id of rrecords' and value 'exeption'.</param>
+        </member>
+        <member name="P:FileCabinetApp.ImportException.ImportExceptionByRecordId">
+            <summary>
+            Gets returns dictionary with key 'id of records' and value 'exeption'.
+            </summary>
+            <value>
+            Returns dictionary with key 'id of records' and value 'exeption'.
+            </value>
+        </member>
         <member name="T:FileCabinetApp.IRecordValidator">
             <summary>
             Validate a new record from user input with new validate parametrs.
@@ -745,7 +804,7 @@
              Fields for creating a list of record.
             </summary>
         </member>
-        <member name="P:FileCabinetApp.RecordsSeralization.Record">
+        <member name="P:FileCabinetApp.RecordsSeralization.Records">
             <summary>
             Gets or sets a list of record.
             </summary>

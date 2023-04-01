@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
@@ -188,7 +187,7 @@ namespace FileCabinetGenerator
                         Weight = record.Weight,
                     });
 
-                    records.Record = recordNew;
+                    records.Records = recordNew;
                 }
 
                 serializer.Serialize(writer, records, ns);

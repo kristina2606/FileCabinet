@@ -31,7 +31,7 @@ namespace FileCabinetApp
             var records = (RecordsSeralization)serializer.Deserialize(this.reader);
 
             IList<FileCabinetRecord> result = new List<FileCabinetRecord>();
-            foreach (var record in records.Record)
+            foreach (var record in records.Records)
             {
                 result.Add(new FileCabinetRecord
                 {

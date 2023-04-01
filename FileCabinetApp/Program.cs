@@ -2,8 +2,6 @@
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
-using System.Reflection;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FileCabinetApp
 {
@@ -20,11 +18,13 @@ namespace FileCabinetApp
         private const string FileTypeCsv = "csv";
         private const string FileTypeXml = "xml";
         private const string FileNameFormatDatabasePath = "cabinet-records.db";
+        private const string DefaultValidationRules = "Using default validation rules.";
+        private const string CustomValidationRules = "Using default validation rules.";
 
         private static bool isRunning = true;
         private static IFileCabinetService fileCabinetService = new FileCabinetMemoryService(new DefaultValidator());
         private static IUserInputValidation inputValidation = new UserInputValidationDafault();
-        private static string validationRules = "Using default validation rules.";
+        private static string validationRules = DefaultValidationRules;
 
         private static Tuple<string, Action<string>>[] commands = new Tuple<string, Action<string>>[]
         {
@@ -71,12 +71,19 @@ namespace FileCabinetApp
                 {
                     fileCabinetService = new FileCabinetMemoryService(new CustomValidator());
                     inputValidation = new UserInputValidationCustom();
-                    validationRules = "Using custom validation rules.";
+                    validationRules = CustomValidationRules;
                 }
 
                 if ((comand[0] == "--storage" && comand[1].ToLowerInvariant() == "file") || (args[i] == "-s" && args[i + 1].ToLowerInvariant() == "file"))
                 {
-                    fileCabinetService = new FileCabinetFilesystemService(new FileStream(FileNameFormatDatabasePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None));
+                    if (validationRules == CustomValidationRules)
+                    {
+                        fileCabinetService = new FileCabinetFilesystemService(new FileStream(FileNameFormatDatabasePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None), new CustomValidator());
+                    }
+                    else
+                    {
+                        fileCabinetService = new FileCabinetFilesystemService(new FileStream(FileNameFormatDatabasePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None), new DefaultValidator());
+                    }
                 }
             }
 
@@ -349,26 +356,39 @@ namespace FileCabinetApp
             if (!File.Exists(path))
             {
                 Console.WriteLine($"Import error: {path} is not exist.");
+                return;
             }
 
             using (FileStream fs = new FileStream(path, FileMode.Open))
             {
                 FileCabinetServiceSnapshot fileCabinetServiceSnapshot = new FileCabinetServiceSnapshot();
-
-                switch (format)
+                using (StreamReader sr = new StreamReader(fs))
                 {
-                    case FileTypeCsv:
-                        fileCabinetServiceSnapshot.LoadFromCsv(new StreamReader(fs));
-                        break;
-                    case FileTypeXml:
-                        fileCabinetServiceSnapshot.LoadFromXml(new StreamReader(fs));
-                        break;
+                    switch (format)
+                    {
+                        case FileTypeCsv:
+                            fileCabinetServiceSnapshot.LoadFromCsv(sr);
+                            break;
+                        case FileTypeXml:
+                            fileCabinetServiceSnapshot.LoadFromXml(sr);
+                            break;
+                    }
                 }
 
-                Program.fileCabinetService.Restore(fileCabinetServiceSnapshot);
-            }
+                try
+                {
+                    Program.fileCabinetService.Restore(fileCabinetServiceSnapshot);
+                }
+                catch (ImportException dict)
+                {
+                    foreach (var exeption in dict.ImportExceptionByRecordId)
+                    {
+                        Console.WriteLine($"Record with id = {exeption.Key} - {exeption.Value}.");
+                    }
+                }
 
-            Console.WriteLine($"All records were imported from {path}.");
+                Console.WriteLine($"All records were imported from {path}.");
+            }
         }
 
         private static void Remove(string parameters)

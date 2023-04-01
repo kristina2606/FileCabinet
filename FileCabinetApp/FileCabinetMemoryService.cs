@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -18,14 +17,11 @@ namespace FileCabinetApp
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
 
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
-
         private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
-
         private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
 
+        private readonly IIdGenerator idGenerator = new IdGenerator();
         private readonly IRecordValidator validator;
-
-        private int currentId = 1;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetMemoryService"/> class.
@@ -49,8 +45,7 @@ namespace FileCabinetApp
         {
             this.validator.Validate(fileCabinetRecordNewData);
 
-            var id = this.GetNextId();
-            this.currentId = 1;
+            var id = this.idGenerator.GetNext();
 
             var record = new FileCabinetRecord
             {
@@ -63,12 +58,7 @@ namespace FileCabinetApp
                 Weight = fileCabinetRecordNewData.Weight,
             };
 
-            this.list.Add(record);
-
-            AddToIndex(record, this.firstNameDictionary, fileCabinetRecordNewData.FirstName.ToLowerInvariant());
-            AddToIndex(record, this.lastNameDictionary, fileCabinetRecordNewData.LastName.ToLowerInvariant());
-            AddToIndex(record, this.dateOfBirthDictionary, fileCabinetRecordNewData.DateOfBirth);
-
+            this.CreateRecord(record);
             return record.Id;
         }
 
@@ -191,20 +181,36 @@ namespace FileCabinetApp
         public void Restore(FileCabinetServiceSnapshot fileCabinetServiceSnapshot)
         {
             var records = fileCabinetServiceSnapshot.Records;
+            Dictionary<int, string> importExceptionByRecordId = new Dictionary<int, string>();
+            bool isError = false;
 
             foreach (var record in records)
             {
-                var recordNew = new FileCabinetRecordNewData(record.FirstName, record.LastName, record.DateOfBirth, record.Gender, record.Height, record.Weight);
+                this.idGenerator.SkipId(record.Id);
 
-                if (this.list.Any(x => x.Id == record.Id))
+                var recordNew = new FileCabinetRecordNewData(record.FirstName, record.LastName, record.DateOfBirth, record.Gender, record.Height, record.Weight);
+                try
                 {
-                    this.EditRecord(record.Id, recordNew);
+                    this.validator.Validate(recordNew);
+                    if (this.IsExist(record.Id))
+                    {
+                        this.EditRecord(record.Id, recordNew);
+                    }
+                    else
+                    {
+                        this.CreateRecord(record);
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    this.currentId = record.Id;
-                    this.CreateRecord(recordNew);
+                    importExceptionByRecordId.Add(record.Id, ex.Message);
+                    isError = true;
                 }
+            }
+
+            if (isError)
+            {
+                throw new ImportException(importExceptionByRecordId);
             }
         }
 
@@ -272,14 +278,13 @@ namespace FileCabinetApp
             }
         }
 
-        private int GetNextId()
+        private void CreateRecord(FileCabinetRecord record)
         {
-            while (this.list.Any(x => x.Id == this.currentId))
-            {
-                ++this.currentId;
-            }
+            this.list.Add(record);
 
-            return this.currentId;
+            AddToIndex(record, this.firstNameDictionary, record.FirstName.ToLowerInvariant());
+            AddToIndex(record, this.lastNameDictionary, record.LastName.ToLowerInvariant());
+            AddToIndex(record, this.dateOfBirthDictionary, record.DateOfBirth);
         }
     }
 }

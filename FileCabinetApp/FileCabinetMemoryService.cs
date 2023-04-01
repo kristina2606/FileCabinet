@@ -174,7 +174,7 @@ namespace FileCabinetApp
         public void Restore(FileCabinetServiceSnapshot fileCabinetServiceSnapshot)
         {
             var records = fileCabinetServiceSnapshot.Records;
-            Dictionary<int, string> importExeptions = new Dictionary<int, string>();
+            Dictionary<int, string> importExceptionByRecordId = new Dictionary<int, string>();
             bool isError = false;
 
             foreach (var record in records)
@@ -196,14 +196,14 @@ namespace FileCabinetApp
                 }
                 catch (Exception ex)
                 {
-                    importExeptions.Add(record.Id, ex.Message);
+                    importExceptionByRecordId.Add(record.Id, ex.Message);
                     isError = true;
                 }
             }
 
             if (isError)
             {
-                throw new ImportException(importExeptions);
+                throw new ImportException(importExceptionByRecordId);
             }
         }
 

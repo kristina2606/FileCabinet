@@ -9,7 +9,7 @@ namespace FileCabinetApp
     /// </summary>
     public class ImportException : Exception
     {
-        private readonly Dictionary<int, string> importExeptionsDictionary;
+        private readonly Dictionary<int, string> importExceptionByRecordId;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ImportException"/> class.
@@ -24,7 +24,7 @@ namespace FileCabinetApp
         /// <param name="dictionary">Dictionary with key 'id of rrecords' and value 'exeption'.</param>
         public ImportException(Dictionary<int, string> dictionary)
         {
-            this.importExeptionsDictionary = dictionary;
+            this.importExceptionByRecordId = dictionary;
         }
 
         /// <summary>
@@ -33,6 +33,6 @@ namespace FileCabinetApp
         /// <value>
         /// Returns dictionary with key 'id of records' and value 'exeption'.
         /// </value>
-        public ReadOnlyDictionary<int, string> Dictionary => new ReadOnlyDictionary<int, string>(this.importExeptionsDictionary);
+        public ReadOnlyDictionary<int, string> ImportExceptionByRecordId => new ReadOnlyDictionary<int, string>(this.importExceptionByRecordId);
     }
 }

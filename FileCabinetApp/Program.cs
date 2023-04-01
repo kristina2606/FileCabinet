@@ -367,7 +367,7 @@ namespace FileCabinetApp
                 }
                 catch (ImportException dict)
                 {
-                    foreach (var exeption in dict.Dictionary)
+                    foreach (var exeption in dict.ImportExceptionByRecordId)
                     {
                         Console.WriteLine($"Record with id = {exeption.Key} - {exeption.Value}.");
                     }

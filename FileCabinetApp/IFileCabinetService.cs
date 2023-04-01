@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FileCabinetApp
 {
@@ -72,5 +73,11 @@ namespace FileCabinetApp
         /// </summary>
         /// <returns>Class containing the state of an object.</returns>
         FileCabinetServiceSnapshot MakeSnapshot();
+
+        /// <summary>
+        /// Adding imported records to existing records.
+        /// </summary>
+        /// <param name="fileCabinetServiceSnapshot">Сlass instance.</param>
+        void Restore(FileCabinetServiceSnapshot fileCabinetServiceSnapshot);
     }
 }

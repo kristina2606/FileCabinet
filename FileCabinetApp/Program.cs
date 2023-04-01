@@ -18,11 +18,13 @@ namespace FileCabinetApp
         private const string FileTypeCsv = "csv";
         private const string FileTypeXml = "xml";
         private const string FileNameFormatDatabasePath = "cabinet-records.db";
+        private const string DefaultValidationRules = "Using default validation rules.";
+        private const string CustomValidationRules = "Using default validation rules.";
 
         private static bool isRunning = true;
         private static IFileCabinetService fileCabinetService = new FileCabinetMemoryService(new DefaultValidator());
         private static IUserInputValidation inputValidation = new UserInputValidationDafault();
-        private static string validationRules = "Using default validation rules.";
+        private static string validationRules = DefaultValidationRules;
 
         private static Tuple<string, Action<string>>[] commands = new Tuple<string, Action<string>>[]
         {
@@ -34,6 +36,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("edit", Edit),
             new Tuple<string, Action<string>>("find", Find),
             new Tuple<string, Action<string>>("export", Export),
+            new Tuple<string, Action<string>>("import", Import),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -45,7 +48,8 @@ namespace FileCabinetApp
             new string[] { "list", "returns a list of records.", "The 'list' returns a list of records." },
             new string[] { "edit", "editing a record by id.", "The 'edit' editing a record by id." },
             new string[] { "find", "finds all existing records by parameter.", "The 'find' finds all existing records by parameter." },
-            new string[] { "export", "exports service data to .csv or .xml file.", "The 'export_csv' exports service data to .csv or .xml file." },
+            new string[] { "export", "exports service data to .csv or .xml file.", "The 'export' exports service data to .csv or .xml file." },
+            new string[] { "import", "import data from .csv or .xml file.", "The 'import' import data from .csv or .xml file." },
         };
 
         /// <summary>
@@ -63,12 +67,19 @@ namespace FileCabinetApp
                 {
                     fileCabinetService = new FileCabinetMemoryService(new CustomValidator());
                     inputValidation = new UserInputValidationCustom();
-                    validationRules = "Using custom validation rules.";
+                    validationRules = CustomValidationRules;
                 }
 
                 if ((comand[0] == "--storage" && comand[1].ToLowerInvariant() == "file") || (args[i] == "-s" && args[i + 1].ToLowerInvariant() == "file"))
                 {
-                    fileCabinetService = new FileCabinetFilesystemService(new FileStream(FileNameFormatDatabasePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None));
+                    if (validationRules == CustomValidationRules)
+                    {
+                        fileCabinetService = new FileCabinetFilesystemService(new FileStream(FileNameFormatDatabasePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None), new CustomValidator());
+                    }
+                    else
+                    {
+                        fileCabinetService = new FileCabinetFilesystemService(new FileStream(FileNameFormatDatabasePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None), new DefaultValidator());
+                    }
                 }
             }
 
@@ -303,6 +314,8 @@ namespace FileCabinetApp
             {
                 ExportData(makeSnapshot, format, path);
             }
+
+            Console.WriteLine($"All records are exported to file {path}.");
         }
 
         private static void ExportData(FileCabinetServiceSnapshot makeSnapshot, string format, string path)
@@ -318,6 +331,58 @@ namespace FileCabinetApp
                         makeSnapshot.SaveToXml(sw);
                         break;
                 }
+            }
+        }
+
+        private static void Import(string parameters)
+        {
+            Console.Write("Enter export format (csv/xml): ");
+            var format = Console.ReadLine().ToLowerInvariant();
+
+            if (format != FileTypeCsv && format != FileTypeXml)
+            {
+                Console.WriteLine("You entered an invalid format.");
+                return;
+            }
+
+            Console.Write("Enter the import path: ");
+            var path = Console.ReadLine();
+
+            if (!File.Exists(path))
+            {
+                Console.WriteLine($"Import error: {path} is not exist.");
+                return;
+            }
+
+            using (FileStream fs = new FileStream(path, FileMode.Open))
+            {
+                FileCabinetServiceSnapshot fileCabinetServiceSnapshot = new FileCabinetServiceSnapshot();
+                using (StreamReader sr = new StreamReader(fs))
+                {
+                    switch (format)
+                    {
+                        case FileTypeCsv:
+                            fileCabinetServiceSnapshot.LoadFromCsv(sr);
+                            break;
+                        case FileTypeXml:
+                            fileCabinetServiceSnapshot.LoadFromXml(sr);
+                            break;
+                    }
+                }
+
+                try
+                {
+                    Program.fileCabinetService.Restore(fileCabinetServiceSnapshot);
+                }
+                catch (ImportException dict)
+                {
+                    foreach (var exeption in dict.ImportExceptionByRecordId)
+                    {
+                        Console.WriteLine($"Record with id = {exeption.Key} - {exeption.Value}.");
+                    }
+                }
+
+                Console.WriteLine($"All records were imported from {path}.");
             }
         }
 

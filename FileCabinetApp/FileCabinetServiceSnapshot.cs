@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.ObjectModel;
+using System.IO;
 using System.Xml;
 
 namespace FileCabinetApp
@@ -18,6 +19,21 @@ namespace FileCabinetApp
         {
             this.records = records;
         }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileCabinetServiceSnapshot"/> class.
+        /// </summary>
+        public FileCabinetServiceSnapshot()
+        {
+        }
+
+        /// <summary>
+        /// Gets all imported data from a csv file.
+        /// </summary>
+        /// <value>
+        /// All imported data from a csv file.
+        /// </value>
+        public ReadOnlyCollection<FileCabinetRecord> Records { get; private set; }
 
         /// <summary>
         /// Creates an instance of the class and call the function to write the record to the .csv file.
@@ -52,6 +68,29 @@ namespace FileCabinetApp
                 }
 
                 xmlWriter.WriteEndElement();
+            }
+        }
+
+        /// <summary>
+        /// Gets all imported data from a csv file.
+        /// </summary>
+        /// <param name="reader">Path to import a file with records.</param>
+        public void LoadFromCsv(StreamReader reader)
+        {
+            FileCabinetRecordCsvReader fileCabinetRecordCsvReader = new FileCabinetRecordCsvReader(reader);
+            this.Records = new ReadOnlyCollection<FileCabinetRecord>(fileCabinetRecordCsvReader.ReadAll());
+        }
+
+        /// <summary>
+        /// Gets all imported data from a xml file.
+        /// </summary>
+        /// <param name="reader">Path to import a file with records.</param>
+        public void LoadFromXml(StreamReader reader)
+        {
+            using (XmlReader xmlReader = XmlReader.Create(reader))
+            {
+                FileCabinetRecordXmlReader fileCabinetRecordXmlReader = new FileCabinetRecordXmlReader(xmlReader);
+                this.Records = new ReadOnlyCollection<FileCabinetRecord>(fileCabinetRecordXmlReader.ReadAll());
             }
         }
     }

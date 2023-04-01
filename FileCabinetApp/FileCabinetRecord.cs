@@ -14,7 +14,7 @@ namespace FileCabinetApp
         public int Id { get; set; }
 
         /// <summary>
-        /// Gets or sets the first name.
+        /// Gets or sets the first name of a person.
         /// </summary>
         /// <value>The first name of a person.</value>
         public string FirstName { get; set; }

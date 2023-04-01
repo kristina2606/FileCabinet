@@ -13,13 +13,10 @@ namespace FileCabinetApp
     public class FileCabinetMemoryService : IFileCabinetService
     {
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
-
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
-
         private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
-
         private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
-
+        private readonly IIdGenerator idGenerator = new IdGenerator();
         private readonly IRecordValidator validator;
 
         /// <summary>
@@ -43,9 +40,12 @@ namespace FileCabinetApp
         public int CreateRecord(FileCabinetRecordNewData fileCabinetRecordNewData)
         {
             this.validator.Validate(fileCabinetRecordNewData);
+
+            var id = this.idGenerator.GetNext();
+
             var record = new FileCabinetRecord
             {
-                Id = this.list.Count + 1,
+                Id = id,
                 FirstName = fileCabinetRecordNewData.FirstName,
                 LastName = fileCabinetRecordNewData.LastName,
                 DateOfBirth = fileCabinetRecordNewData.DateOfBirth,
@@ -54,12 +54,7 @@ namespace FileCabinetApp
                 Weight = fileCabinetRecordNewData.Weight,
             };
 
-            this.list.Add(record);
-
-            AddToIndex(record, this.firstNameDictionary, fileCabinetRecordNewData.FirstName.ToLowerInvariant());
-            AddToIndex(record, this.lastNameDictionary, fileCabinetRecordNewData.LastName.ToLowerInvariant());
-            AddToIndex(record, this.dateOfBirthDictionary, fileCabinetRecordNewData.DateOfBirth);
-
+            this.CreateRecord(record);
             return record.Id;
         }
 
@@ -89,6 +84,8 @@ namespace FileCabinetApp
         /// <exception cref="ArgumentException">if records with the specified ID do not exist.</exception>
         public void EditRecord(int id, FileCabinetRecordNewData fileCabinetRecordNewData)
         {
+            this.validator.Validate(fileCabinetRecordNewData);
+
             var result = this.list.FirstOrDefault(x => x.Id == id);
 
             if (result is null)
@@ -171,6 +168,46 @@ namespace FileCabinetApp
         }
 
         /// <summary>
+        /// Adding imported records to existing records.
+        /// </summary>
+        /// <param name="fileCabinetServiceSnapshot">Ñlass instance.</param>
+        public void Restore(FileCabinetServiceSnapshot fileCabinetServiceSnapshot)
+        {
+            var records = fileCabinetServiceSnapshot.Records;
+            Dictionary<int, string> importExceptionByRecordId = new Dictionary<int, string>();
+            bool isError = false;
+
+            foreach (var record in records)
+            {
+                this.idGenerator.SkipId(record.Id);
+
+                var recordNew = new FileCabinetRecordNewData(record.FirstName, record.LastName, record.DateOfBirth, record.Gender, record.Height, record.Weight);
+                try
+                {
+                    this.validator.Validate(recordNew);
+                    if (this.IsExist(record.Id))
+                    {
+                        this.EditRecord(record.Id, recordNew);
+                    }
+                    else
+                    {
+                        this.CreateRecord(record);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    importExceptionByRecordId.Add(record.Id, ex.Message);
+                    isError = true;
+                }
+            }
+
+            if (isError)
+            {
+                throw new ImportException(importExceptionByRecordId);
+            }
+        }
+
+        /// <summary>
         /// Checks if records with the specified id exists.
         /// </summary>
         /// <param name="id">The id entered by the user.</param>
@@ -201,6 +238,15 @@ namespace FileCabinetApp
                 List<FileCabinetRecord> valueForDictionary = new List<FileCabinetRecord>() { record };
                 dictionary.Add(key, valueForDictionary);
             }
+        }
+
+        private void CreateRecord(FileCabinetRecord record)
+        {
+            this.list.Add(record);
+
+            AddToIndex(record, this.firstNameDictionary, record.FirstName.ToLowerInvariant());
+            AddToIndex(record, this.lastNameDictionary, record.LastName.ToLowerInvariant());
+            AddToIndex(record, this.dateOfBirthDictionary, record.DateOfBirth);
         }
     }
 }

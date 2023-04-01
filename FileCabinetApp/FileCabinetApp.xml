@@ -44,6 +44,13 @@
             <param name="inputWeight">Get string from user input.</param>
             <returns>Returns information about how the validation went, the string to convert, and the converted data type.</returns>
         </member>
+        <member name="M:FileCabinetApp.Converter.IntConverter(System.String)">
+            <summary>
+            Converts a string to a integer type.
+            </summary>
+            <param name="inputNumber">Get string from user input.</param>
+            <returns>Returns information about how the validation went, the string to convert, and the converted data type.</returns>
+        </member>
         <member name="T:FileCabinetApp.CustomValidator">
             <summary>
              Validate a new record from user input with settings for adults.
@@ -77,18 +84,22 @@
             Works with binary notation.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetFilesystemService.#ctor(System.IO.FileStream)">
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.#ctor(System.IO.FileStream,FileCabinetApp.IRecordValidator)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetFilesystemService"/> class.
             </summary>
             <param name="fileStream">Open binary record stream.</param>
+            <param name="validator">Validation parameter.</param>
         </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.CreateRecord(FileCabinetApp.FileCabinetRecordNewData)">
             <summary>
-            Writes the data passed to it in a data file.
+            Creates a new record from user input.
             </summary>
             <param name="fileCabinetRecordNewData">The new date in the record.</param>
             <returns>Returns the id of the created record.</returns>
+            <exception cref="T:System.ArgumentNullException">If the firstName or lastName is equal null.</exception>
+            <exception cref="T:System.ArgumentException">The firstName or lastName length is less than 2 or greater than 60.The dateOfBirth is less than 01-Jun-1950 or greater today's date.
+            The gender isn't equal 'f' or 'm'. The height is less than 0 or greater than 250. The weight is less than 0.</exception>
         </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.EditRecord(System.Int32,FileCabinetApp.FileCabinetRecordNewData)">
             <summary>
@@ -142,6 +153,12 @@
             Passes the state of an object.
             </summary>
             <returns>Class containing the state of an object.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
+            <summary>
+            Adding imported records to existing records.
+            </summary>
+            <param name="fileCabinetServiceSnapshot">Сlass instance.</param>
         </member>
         <member name="T:FileCabinetApp.FileCabinetMemoryService">
             <summary>
@@ -212,6 +229,12 @@
             </summary>
             <returns>Class containing the state of an object.</returns>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
+            <summary>
+            Adding imported records to existing records.
+            </summary>
+            <param name="fileCabinetServiceSnapshot">Сlass instance.</param>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.IsExist(System.Int32)">
             <summary>
             Checks if records with the specified id exists.
@@ -232,7 +255,7 @@
         </member>
         <member name="P:FileCabinetApp.FileCabinetRecord.FirstName">
             <summary>
-            Gets or sets the first name.
+            Gets or sets the first name of a person.
             </summary>
             <value>The first name of a person.</value>
         </member>
@@ -265,6 +288,23 @@
             Gets or sets the weight of a person.
             </summary>
             <value>The weight of a person.</value>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetRecordCsvReader">
+            <summary>
+            Imports data from a csv file.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordCsvReader.#ctor(System.IO.StreamReader)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordCsvReader"/> class.
+            </summary>
+            <param name="reader">Path to import a csv file with records.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordCsvReader.ReadAll">
+            <summary>
+            Imports all datas from a csv file.
+            </summary>
+            <returns>Returns all datas from a csv file.</returns>
         </member>
         <member name="T:FileCabinetApp.FileCabinetRecordCsvWriter">
             <summary>
@@ -335,6 +375,80 @@
             </summary>
             <value> New weight of a person. </value>
         </member>
+        <member name="T:FileCabinetApp.FileCabinetRecordSeralization">
+            <summary>
+            Fields for creating a record.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecordSeralization.Id">
+            <summary>
+            Gets or sets record id.
+            </summary>
+            <value>Record id of a person.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecordSeralization.FullName">
+            <summary>
+            Gets or sets the full name of a person.
+            </summary>
+            <value>The full name of a person.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecordSeralization.DateOfBirth">
+            <summary>
+            Gets or sets the date of birth of a person.
+            </summary>
+            <value>The date of birth of a person.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecordSeralization.DateOfBirthString">
+            <summary>
+            Gets or sets dummy string with correct DateTime format.
+            </summary>
+            <value>
+            Dummy string with correct DateTime format.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecordSeralization.Gender">
+            <summary>
+            Gets or sets the gender of a person.
+            </summary>
+            <value>The gender of a person.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecordSeralization.GenderString">
+            <summary>
+            Gets or sets dummy string with correct char format.
+            </summary>
+            <value>
+            Dummy string with correct char format.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecordSeralization.Height">
+            <summary>
+            Gets or sets the height of a person.
+            </summary>
+            <value>The height of a person.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecordSeralization.Weight">
+            <summary>
+            Gets or sets the weight of a person.
+            </summary>
+            <value>The weight of a person.</value>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetRecordXmlReader">
+            <summary>
+            Imports data from a xml file.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlReader.#ctor(System.Xml.XmlReader)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordXmlReader"/> class.
+            </summary>
+            <param name="reader">Path to import a xml file with records.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlReader.ReadAll">
+            <summary>
+            Imports all datas from a xml file.
+            </summary>
+            <returns>Returns all datas from a xml file.</returns>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetRecordXmlWriter">
             <summary>
             Export application data to a XML file.
@@ -363,6 +477,19 @@
             </summary>
             <param name="records">All existing records.</param>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetServiceSnapshot"/> class.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetServiceSnapshot.Records">
+            <summary>
+            Gets all imported data from a csv file.
+            </summary>
+            <value>
+            All imported data from a csv file.
+            </value>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.SaveToCsv(System.IO.StreamWriter)">
             <summary>
             Creates an instance of the class and call the function to write the record to the .csv file.
@@ -374,6 +501,64 @@
             Creates an instance of the class and call the function to write the record to the .xml file.
             </summary>
             <param name="streamWriter">Path to create a file with records.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.LoadFromCsv(System.IO.StreamReader)">
+            <summary>
+            Gets all imported data from a csv file.
+            </summary>
+            <param name="reader">Path to import a file with records.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.LoadFromXml(System.IO.StreamReader)">
+            <summary>
+            Gets all imported data from a xml file.
+            </summary>
+            <param name="reader">Path to import a file with records.</param>
+        </member>
+        <member name="T:FileCabinetApp.FullNameSeralization">
+            <summary>
+            Fields for creating the full name of a person.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FullNameSeralization.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FullNameSeralization"/> class.
+            </summary>
+            <param name="firstName">The first name of a person.</param>
+            <param name="lastName">The last name of a person.</param>
+        </member>
+        <member name="M:FileCabinetApp.FullNameSeralization.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FullNameSeralization"/> class.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.FullNameSeralization.FirstName">
+            <summary>
+            Gets or sets the first name of a person.
+            </summary>
+            <value>The first name of a person.</value>
+        </member>
+        <member name="P:FileCabinetApp.FullNameSeralization.LastName">
+            <summary>
+            Gets or sets the last name of a person.
+            </summary>
+            <value>The last name of a person.</value>
+        </member>
+        <member name="T:FileCabinetApp.IdGenerator">
+            <summary>
+            Generates the following id.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.IdGenerator.GetNext">
+            <summary>
+            Generates the following id.
+            </summary>
+            <returns>Next id.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IdGenerator.SkipId(System.Int32)">
+            <summary>
+            Sets initial id.
+            </summary>
+            <param name="id">Initial id.</param>
         </member>
         <member name="T:FileCabinetApp.IFileCabinetService">
             <summary>
@@ -444,6 +629,53 @@
             </summary>
             <returns>Class containing the state of an object.</returns>
         </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
+            <summary>
+            Adding imported records to existing records.
+            </summary>
+            <param name="fileCabinetServiceSnapshot">Сlass instance.</param>
+        </member>
+        <member name="T:FileCabinetApp.IIdGenerator">
+            <summary>
+            Generates the following id.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.IIdGenerator.GetNext">
+            <summary>
+            Generates the following id.
+            </summary>
+            <returns>Next id.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IIdGenerator.SkipId(System.Int32)">
+            <summary>
+            Sets initial id.
+            </summary>
+            <param name="id">Initial id.</param>
+        </member>
+        <member name="T:FileCabinetApp.ImportException">
+            <summary>
+            An ImportException is thrown when a record fails validation.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.ImportException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.ImportException"/> class.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.ImportException.#ctor(System.Collections.Generic.Dictionary{System.Int32,System.String})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.ImportException"/> class.
+            </summary>
+            <param name="dictionary">Dictionary with key 'id of rrecords' and value 'exeption'.</param>
+        </member>
+        <member name="P:FileCabinetApp.ImportException.ImportExceptionByRecordId">
+            <summary>
+            Gets returns dictionary with key 'id of records' and value 'exeption'.
+            </summary>
+            <value>
+            Returns dictionary with key 'id of records' and value 'exeption'.
+            </value>
+        </member>
         <member name="T:FileCabinetApp.IRecordValidator">
             <summary>
             Validate a new record from user input with new validate parametrs.
@@ -512,6 +744,19 @@
             Receives a command from the user.
             </summary>
             <param name="args">Arguments of the appropriate type.</param>
+        </member>
+        <member name="T:FileCabinetApp.RecordsSeralization">
+            <summary>
+             Fields for creating a list of record.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.RecordsSeralization.Records">
+            <summary>
+            Gets or sets a list of record.
+            </summary>
+            <value>
+            A list of record.
+            </value>
         </member>
         <member name="T:FileCabinetApp.UserInputValidationCustom">
             <summary>

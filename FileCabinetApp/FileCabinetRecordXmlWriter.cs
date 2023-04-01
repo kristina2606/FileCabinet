@@ -34,7 +34,7 @@ namespace FileCabinetApp
             this.writer.WriteEndElement();
 
             this.writer.WriteStartElement("dateOfBirth");
-            this.writer.WriteString(record.DateOfBirth.ToShortDateString());
+            this.writer.WriteString(record.DateOfBirth.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture));
             this.writer.WriteEndElement();
 
             this.writer.WriteStartElement("gender");

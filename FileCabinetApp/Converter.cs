@@ -16,9 +16,9 @@ namespace FileCabinetApp
         /// <returns>Returns information about how the validation went, the string to convert, and the converted data type.</returns>
         public static Tuple<bool, string, string> StringConverter(string name)
         {
-            bool a = IsStringCorrect(name);
+            bool isConverted = IsStringCorrect(name);
 
-            return new Tuple<bool, string, string>(a, name, name);
+            return new Tuple<bool, string, string>(isConverted, name, name);
         }
 
         /// <summary>
@@ -28,9 +28,9 @@ namespace FileCabinetApp
         /// <returns>Returns information about how the validation went, the string to convert, and the converted data type.</returns>
         public static Tuple<bool, string, DateTime> DateConverter(string date)
         {
-            bool a = DateTime.TryParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var day);
+            bool isConverted = DateTime.TryParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var day);
 
-            return new Tuple<bool, string, DateTime>(a, date, day);
+            return new Tuple<bool, string, DateTime>(isConverted, date, day);
         }
 
         /// <summary>
@@ -40,9 +40,9 @@ namespace FileCabinetApp
         /// <returns>Returns information about how the validation went, the string to convert, and the converted data type.</returns>
         public static Tuple<bool, string, char> CharConverter(string inputGender)
         {
-            bool a = char.TryParse(inputGender, out var gender);
+            bool isConverted = char.TryParse(inputGender, out var gender);
 
-            return new Tuple<bool, string, char>(a, inputGender, gender);
+            return new Tuple<bool, string, char>(isConverted, inputGender, gender);
         }
 
         /// <summary>
@@ -52,9 +52,9 @@ namespace FileCabinetApp
         /// <returns>Returns information about how the validation went, the string to convert, and the converted data type.</returns>
         public static Tuple<bool, string, short> ShortConverter(string inputHeight)
         {
-            bool a = short.TryParse(inputHeight, CultureInfo.InvariantCulture, out var height);
+            bool isConverted = short.TryParse(inputHeight, CultureInfo.InvariantCulture, out var height);
 
-            return new Tuple<bool, string, short>(a, inputHeight, height);
+            return new Tuple<bool, string, short>(isConverted, inputHeight, height);
         }
 
         /// <summary>
@@ -64,16 +64,26 @@ namespace FileCabinetApp
         /// <returns>Returns information about how the validation went, the string to convert, and the converted data type.</returns>
         public static Tuple<bool, string, decimal> DecimalConverter(string inputWeight)
         {
-            bool a = short.TryParse(inputWeight, CultureInfo.InvariantCulture, out var weight);
+            bool isConverted = short.TryParse(inputWeight, CultureInfo.InvariantCulture, out var weight);
 
-            return new Tuple<bool, string, decimal>(a, inputWeight, weight);
+            return new Tuple<bool, string, decimal>(isConverted, inputWeight, weight);
+        }
+
+        /// <summary>
+        /// Converts a string to a integer type.
+        /// </summary>
+        /// <param name="inputNumber">Get string from user input.</param>
+        /// <returns>Returns information about how the validation went, the string to convert, and the converted data type.</returns>
+        public static Tuple<bool, string, int> IntConverter(string inputNumber)
+        {
+            bool isConverted = int.TryParse(inputNumber, CultureInfo.InvariantCulture, out var number);
+
+            return new Tuple<bool, string, int>(isConverted, inputNumber, number);
         }
 
         private static bool IsStringCorrect(string name)
         {
-            bool result = name.All(letter => char.IsLetter(letter));
-
-            return result;
+            return name.All(letter => char.IsLetter(letter));
         }
     }
 }

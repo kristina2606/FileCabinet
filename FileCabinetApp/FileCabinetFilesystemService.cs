@@ -15,27 +15,36 @@ namespace FileCabinetApp
         private const int LengthOfOneRecord = 157;
         private const short DefaultStatus = 0;
 
+        private readonly IIdGenerator idGenerator = new IdGenerator();
         private readonly FileStream fileStream;
+        private readonly IRecordValidator validator;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetFilesystemService"/> class.
         /// </summary>
         /// <param name="fileStream">Open binary record stream.</param>
-        public FileCabinetFilesystemService(FileStream fileStream)
+        /// <param name="validator">Validation parameter.</param>
+        public FileCabinetFilesystemService(FileStream fileStream, IRecordValidator validator)
         {
             this.fileStream = fileStream;
+            this.validator = validator;
         }
 
         /// <summary>
-        /// Writes the data passed to it in a data file.
+        /// Creates a new record from user input.
         /// </summary>
         /// <param name="fileCabinetRecordNewData">The new date in the record.</param>
         /// <returns>Returns the id of the created record.</returns>
+        /// <exception cref="ArgumentNullException">If the firstName or lastName is equal null.</exception>
+        /// <exception cref="ArgumentException">The firstName or lastName length is less than 2 or greater than 60.The dateOfBirth is less than 01-Jun-1950 or greater today's date.
+        /// The gender isn't equal 'f' or 'm'. The height is less than 0 or greater than 250. The weight is less than 0.</exception>
         public int CreateRecord(FileCabinetRecordNewData fileCabinetRecordNewData)
         {
-            int id = this.GetStat() + 1;
+            this.validator.Validate(fileCabinetRecordNewData);
 
-            this.WriteBinary(fileCabinetRecordNewData, DefaultStatus, id, this.fileStream.Length);
+            var id = this.idGenerator.GetNext();
+
+            this.CreateRecord(ConvertToFileCabinetRecord(fileCabinetRecordNewData, id));
 
             return id;
         }
@@ -47,11 +56,13 @@ namespace FileCabinetApp
         /// <param name="fileCabinetRecordNewData">The new date in the record.</param>
         public void EditRecord(int id, FileCabinetRecordNewData fileCabinetRecordNewData)
         {
+            this.validator.Validate(fileCabinetRecordNewData);
+
             foreach (var (position, record) in this.GetRecordsInternal())
             {
                 if (record.Id == id)
                 {
-                    this.WriteBinary(fileCabinetRecordNewData, DefaultStatus, id, position);
+                    this.WriteBinary(ConvertToFileCabinetRecord(fileCabinetRecordNewData, id), DefaultStatus, position);
                     break;
                 }
             }
@@ -143,6 +154,47 @@ namespace FileCabinetApp
                 .ToArray());
         }
 
+        /// <summary>
+        /// Adding imported records to existing records.
+        /// </summary>
+        /// <param name="fileCabinetServiceSnapshot">Сlass instance.</param>
+        public void Restore(FileCabinetServiceSnapshot fileCabinetServiceSnapshot)
+        {
+            var records = fileCabinetServiceSnapshot.Records;
+            Dictionary<int, string> importExceptionByRecordId = new Dictionary<int, string>();
+            bool isError = false;
+
+            foreach (var record in records)
+            {
+                this.idGenerator.SkipId(record.Id);
+                var recordNew = new FileCabinetRecordNewData(record.FirstName, record.LastName, record.DateOfBirth, record.Gender, record.Height, record.Weight);
+
+                try
+                {
+                    this.validator.Validate(recordNew);
+
+                    if (this.IsExist(record.Id))
+                    {
+                        this.EditRecord(record.Id, recordNew);
+                    }
+                    else
+                    {
+                        this.CreateRecord(record);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    importExceptionByRecordId.Add(record.Id, ex.Message);
+                    isError = true;
+                }
+            }
+
+            if (isError)
+            {
+                throw new ImportException(importExceptionByRecordId);
+            }
+        }
+
         private static char[] CreateCharArray(string name)
         {
             char[] newName = new char[60];
@@ -154,22 +206,38 @@ namespace FileCabinetApp
             return newName;
         }
 
-        private void WriteBinary(FileCabinetRecordNewData fileCabinetRecordNewData, short status, int id, long position)
+        private static FileCabinetRecord ConvertToFileCabinetRecord(FileCabinetRecordNewData fileCabinetRecordNewData, int id)
+        {
+            var record = new FileCabinetRecord
+            {
+                Id = id,
+                FirstName = fileCabinetRecordNewData.FirstName,
+                LastName = fileCabinetRecordNewData.LastName,
+                DateOfBirth = fileCabinetRecordNewData.DateOfBirth,
+                Gender = fileCabinetRecordNewData.Gender,
+                Height = fileCabinetRecordNewData.Height,
+                Weight = fileCabinetRecordNewData.Weight,
+            };
+
+            return record;
+        }
+
+        private void WriteBinary(FileCabinetRecord fileCabinetRecord, short status, long position)
         {
             using (BinaryWriter writer = new BinaryWriter(this.fileStream, Encoding.ASCII, true))
             {
                 writer.BaseStream.Seek(position, SeekOrigin.Begin);
 
                 writer.Write(status);
-                writer.Write(id);
-                writer.Write(CreateCharArray(fileCabinetRecordNewData.FirstName));
-                writer.Write(CreateCharArray(fileCabinetRecordNewData.LastName));
-                writer.Write(fileCabinetRecordNewData.DateOfBirth.Year);
-                writer.Write(fileCabinetRecordNewData.DateOfBirth.Month);
-                writer.Write(fileCabinetRecordNewData.DateOfBirth.Day);
-                writer.Write(fileCabinetRecordNewData.Gender);
-                writer.Write(fileCabinetRecordNewData.Height);
-                writer.Write(fileCabinetRecordNewData.Weight);
+                writer.Write(fileCabinetRecord.Id);
+                writer.Write(CreateCharArray(fileCabinetRecord.FirstName));
+                writer.Write(CreateCharArray(fileCabinetRecord.LastName));
+                writer.Write(fileCabinetRecord.DateOfBirth.Year);
+                writer.Write(fileCabinetRecord.DateOfBirth.Month);
+                writer.Write(fileCabinetRecord.DateOfBirth.Day);
+                writer.Write(fileCabinetRecord.Gender);
+                writer.Write(fileCabinetRecord.Height);
+                writer.Write(fileCabinetRecord.Weight);
             }
         }
 
@@ -196,6 +264,11 @@ namespace FileCabinetApp
                     yield return (position, record);
                 }
             }
+        }
+
+        private void CreateRecord(FileCabinetRecord record)
+        {
+            this.WriteBinary(record, DefaultStatus, this.fileStream.Length);
         }
     }
 }

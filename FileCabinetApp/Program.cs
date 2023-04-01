@@ -18,11 +18,13 @@ namespace FileCabinetApp
         private const string FileTypeCsv = "csv";
         private const string FileTypeXml = "xml";
         private const string FileNameFormatDatabasePath = "cabinet-records.db";
+        private const string DefaultValidationRules = "Using default validation rules.";
+        private const string CustomValidationRules = "Using default validation rules.";
 
         private static bool isRunning = true;
         private static IFileCabinetService fileCabinetService = new FileCabinetMemoryService(new DefaultValidator());
         private static IUserInputValidation inputValidation = new UserInputValidationDafault();
-        private static string validationRules = "Using default validation rules.";
+        private static string validationRules = DefaultValidationRules;
 
         private static Tuple<string, Action<string>>[] commands = new Tuple<string, Action<string>>[]
         {
@@ -65,12 +67,19 @@ namespace FileCabinetApp
                 {
                     fileCabinetService = new FileCabinetMemoryService(new CustomValidator());
                     inputValidation = new UserInputValidationCustom();
-                    validationRules = "Using custom validation rules.";
+                    validationRules = CustomValidationRules;
                 }
 
                 if ((comand[0] == "--storage" && comand[1].ToLowerInvariant() == "file") || (args[i] == "-s" && args[i + 1].ToLowerInvariant() == "file"))
                 {
-                    fileCabinetService = new FileCabinetFilesystemService(new FileStream(FileNameFormatDatabasePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None));
+                    if (validationRules == CustomValidationRules)
+                    {
+                        fileCabinetService = new FileCabinetFilesystemService(new FileStream(FileNameFormatDatabasePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None), new CustomValidator());
+                    }
+                    else
+                    {
+                        fileCabinetService = new FileCabinetFilesystemService(new FileStream(FileNameFormatDatabasePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None), new DefaultValidator());
+                    }
                 }
             }
 

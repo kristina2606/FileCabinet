@@ -17,15 +17,17 @@ namespace FileCabinetApp
 
         private readonly IIdGenerator idGenerator = new IdGenerator();
         private readonly FileStream fileStream;
-        private readonly IRecordValidator validator = new DefaultValidator();
+        private readonly IRecordValidator validator;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetFilesystemService"/> class.
         /// </summary>
         /// <param name="fileStream">Open binary record stream.</param>
-        public FileCabinetFilesystemService(FileStream fileStream)
+        /// <param name="validator">Validation parameter.</param>
+        public FileCabinetFilesystemService(FileStream fileStream, IRecordValidator validator)
         {
             this.fileStream = fileStream;
+            this.validator = validator;
         }
 
         /// <summary>

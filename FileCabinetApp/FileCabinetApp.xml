@@ -84,11 +84,12 @@
             Works with binary notation.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetFilesystemService.#ctor(System.IO.FileStream)">
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.#ctor(System.IO.FileStream,FileCabinetApp.IRecordValidator)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetFilesystemService"/> class.
             </summary>
             <param name="fileStream">Open binary record stream.</param>
+            <param name="validator">Validation parameter.</param>
         </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.CreateRecord(FileCabinetApp.FileCabinetRecordNewData)">
             <summary>

@@ -72,12 +72,12 @@ namespace FileCabinetApp
         }
 
         /// <summary>
-        /// Gets the count of all existing records.
+        /// Gets the count of all existed and deleted records.
         /// </summary>
-        /// <returns>Returns the count of all existing records.</returns>
-        public int GetStat()
+        /// <returns>Returns the count of all existed and deleted records.</returns>
+        public (int, int) GetStat()
         {
-            return this.list.Count;
+            return (this.list.Count, ValueOfDeletedRecords);
         }
 
         /// <summary>
@@ -235,16 +235,7 @@ namespace FileCabinetApp
         /// <returns>Count of purged records.Only for FileCabinetFilesystemService.</returns>
         public int Purge()
         {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Gets the count of all deleted records.
-        /// </summary>
-        /// <returns>Returns the count of all deleted records.</returns>
-        public int GetStatDeletedRecords()
-        {
-            return ValueOfDeletedRecords;
+            return default(int);
         }
 
         /// <summary>

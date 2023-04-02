@@ -14,7 +14,7 @@ namespace FileCabinetApp
     {
         private const int LengthOfOneRecord = 157;
         private const short DefaultStatus = 0;
-        private const short MaskForDelete = ~(~0 << 1) << 2;
+        private const short MaskForDelete = 0b_0000_0100;
 
         private readonly FileStream fileStream;
         private readonly IRecordValidator validator;
@@ -118,16 +118,21 @@ namespace FileCabinetApp
         /// <returns>Returns all available records from the data file.</returns>
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
-            return new ReadOnlyCollection<FileCabinetRecord>(this.GetExistingRecords());
+            return new ReadOnlyCollection<FileCabinetRecord>(this.GetExistingRecords().ToList());
         }
 
         /// <summary>
-        /// Gets the number of records stored in the file.
+        /// Gets the number of all existed and deleted records stored in the file.
         /// </summary>
-        /// <returns>Returns the number of records stored in the file.</returns>
-        public int GetStat()
+        /// <returns>Returns the number of all existed and deleted records stored in the file.</returns>
+        public (int, int) GetStat()
         {
-            return (int)this.fileStream.Length / LengthOfOneRecord;
+            var existedRecords = (int)this.fileStream.Length / LengthOfOneRecord;
+
+            var deletedRecords = this.GetRecordsInternal()
+                    .Count(x => (x.status & MaskForDelete) != 0);
+
+            return (existedRecords, deletedRecords);
         }
 
         /// <summary>
@@ -146,9 +151,7 @@ namespace FileCabinetApp
         /// <returns>Class containing the state of an object.</returns>
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
-            return new FileCabinetServiceSnapshot(this.GetRecordsInternal()
-                .Select(record => record.record)
-                .ToArray());
+            return new FileCabinetServiceSnapshot(this.GetExistingRecords().ToArray());
         }
 
         /// <summary>
@@ -220,27 +223,17 @@ namespace FileCabinetApp
         /// <returns>Count of purged records.</returns>
         public int Purge()
         {
-            var position = 0;
+            var positionForWrite = 0;
+            var count = this.GetStat();
 
             foreach (var record in this.GetExistingRecords())
             {
-                this.WriteBinary(record, DefaultStatus, position);
-                position += LengthOfOneRecord;
+                this.WriteBinary(record, DefaultStatus, positionForWrite);
+                positionForWrite += LengthOfOneRecord;
             }
 
-            this.fileStream.SetLength(position);
-
-            return this.GetExistingRecords().Count;
-        }
-
-        /// <summary>
-        /// Gets the count of all deleted records.
-        /// </summary>
-        /// <returns>Returns the count of all deleted records.</returns>
-        public int GetStatDeletedRecords()
-        {
-            return this.GetRecordsInternal()
-                .Count(x => (x.status & MaskForDelete) != 0);
+            this.fileStream.SetLength(positionForWrite);
+            return count.Item2;
         }
 
         private static char[] CreateCharArray(string name)
@@ -291,14 +284,15 @@ namespace FileCabinetApp
 
         private IEnumerable<(long position, FileCabinetRecord record, short status)> GetRecordsInternal()
         {
+            var positionForRead = 0;
+
             using (var reader = new BinaryReader(this.fileStream, Encoding.ASCII, true))
             {
-                reader.BaseStream.Seek(0, SeekOrigin.Begin);
+                reader.BaseStream.Seek(positionForRead, SeekOrigin.Begin);
 
-                while (reader.BaseStream.Position < reader.BaseStream.Length)
+                while (positionForRead < reader.BaseStream.Length)
                 {
                     FileCabinetRecord record = new FileCabinetRecord();
-                    long position = reader.BaseStream.Position;
 
                     short status = reader.ReadInt16();
                     record.Id = reader.ReadInt32();
@@ -309,7 +303,8 @@ namespace FileCabinetApp
                     record.Height = reader.ReadInt16();
                     record.Weight = reader.ReadDecimal();
 
-                    yield return (position, record, status);
+                    yield return (positionForRead, record, status);
+                    positionForRead += LengthOfOneRecord;
                 }
             }
         }
@@ -319,11 +314,11 @@ namespace FileCabinetApp
             this.WriteBinary(record, DefaultStatus, this.fileStream.Length);
         }
 
-        private List<FileCabinetRecord> GetExistingRecords()
+        private IEnumerable<FileCabinetRecord> GetExistingRecords()
         {
             return this.GetRecordsInternal()
                             .Where(x => (x.status & MaskForDelete) == 0)
-                            .Select(record => record.record).ToList();
+                            .Select(record => record.record);
         }
     }
 }

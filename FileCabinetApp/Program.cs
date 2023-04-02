@@ -161,9 +161,8 @@ namespace FileCabinetApp
 
         private static void Stat(string parameters)
         {
-            int recordsCount = Program.fileCabinetService.GetStat();
-            int recordsDeletedCount = Program.fileCabinetService.GetStatDeletedRecords();
-            Console.WriteLine($"{recordsCount} record(s), {recordsDeletedCount} of them deleted.");
+            var recordsCount = Program.fileCabinetService.GetStat();
+            Console.WriteLine($"{recordsCount.Item1} record(s), {recordsCount.Item2} of them deleted.");
         }
 
         private static void Create(string parameters)
@@ -201,14 +200,12 @@ namespace FileCabinetApp
 
         private static void Edit(string parameters)
         {
-            Console.Write("Enter the record number for editing: ");
-            var inputId = Console.ReadLine();
             int id;
-            while (!int.TryParse(inputId, out id))
+
+            if (!int.TryParse(parameters, out id))
             {
-                Console.WriteLine("You introduced an incorrect ID. Repeat the input.");
-                Console.Write("Enter the record number for editing: ");
-                inputId = Console.ReadLine();
+                Console.WriteLine("You introduced an incorrect ID.");
+                return;
             }
 
             if (Program.fileCabinetService.IsExist(id))
@@ -244,17 +241,16 @@ namespace FileCabinetApp
 
         private static void Find(string parameters)
         {
-            Console.Write("Enter search parameter: ");
-            var searchOptions = Console.ReadLine().ToLowerInvariant().Split(' ');
+            var searchParametrs = parameters.ToLowerInvariant().Split(' ');
 
-            if (searchOptions.Length != 2)
+            if (searchParametrs.Length != 2)
             {
                 Console.WriteLine("You have entered an invalid search parameter. Two are needed.");
                 return;
             }
 
-            var searchParameter = searchOptions[1].Trim('"');
-            switch (searchOptions[0])
+            var searchParameter = searchParametrs[1].Trim('"');
+            switch (searchParametrs[0])
             {
                 case "firstname":
                     OutputToTheConsoleDataFromTheList(Program.fileCabinetService.FindByFirstName(searchParameter));
@@ -284,31 +280,33 @@ namespace FileCabinetApp
         {
             var makeSnapshot = Program.fileCabinetService.MakeSnapshot();
 
-            Console.Write("Enter export format (csv/xml): ");
-            var format = Console.ReadLine().ToLowerInvariant();
+            var searchParametrs = parameters.Split(' ');
 
-            if (format != FileTypeCsv && format != FileTypeXml)
+            if (searchParametrs.Length != 2)
+            {
+                Console.WriteLine("You have entered an invalid export parameter. Two are needed.");
+                return;
+            }
+
+            if (searchParametrs[0] != FileTypeCsv && searchParametrs[0] != FileTypeXml)
             {
                 Console.WriteLine("You entered an invalid format.");
                 return;
             }
 
-            Console.Write("Enter the export path: ");
-            var path = Console.ReadLine();
-
-            var folder = Path.GetDirectoryName(path);
+            var folder = Path.GetDirectoryName(searchParametrs[1]);
             if (!Directory.Exists(folder))
             {
-                Console.WriteLine($"Export failed: can't open file {path}.");
+                Console.WriteLine($"Export failed: can't open file {searchParametrs[1]}.");
             }
-            else if (File.Exists(path))
+            else if (File.Exists(searchParametrs[1]))
             {
-                Console.Write($"File is exist - rewrite {path}? [Y/n] ");
+                Console.Write($"File is exist - rewrite {searchParametrs[1]}? [Y/n] ");
                 var fileRewrite = Console.ReadLine().ToLowerInvariant();
 
                 if (fileRewrite == "y" || string.IsNullOrEmpty(fileRewrite))
                 {
-                    ExportData(makeSnapshot, format, path);
+                    ExportData(makeSnapshot, searchParametrs[0], searchParametrs[1]);
                 }
                 else if (fileRewrite != "n")
                 {
@@ -317,10 +315,10 @@ namespace FileCabinetApp
             }
             else
             {
-                ExportData(makeSnapshot, format, path);
+                ExportData(makeSnapshot, searchParametrs[0], searchParametrs[1]);
             }
 
-            Console.WriteLine($"All records are exported to file {path}.");
+            Console.WriteLine($"All records are exported to file {searchParametrs[1]}.");
         }
 
         private static void ExportData(FileCabinetServiceSnapshot makeSnapshot, string format, string path)
@@ -341,30 +339,32 @@ namespace FileCabinetApp
 
         private static void Import(string parameters)
         {
-            Console.Write("Enter export format (csv/xml): ");
-            var format = Console.ReadLine().ToLowerInvariant();
+            var searchParametrs = parameters.Split(' ');
 
-            if (format != FileTypeCsv && format != FileTypeXml)
+            if (searchParametrs.Length != 2)
+            {
+                Console.WriteLine("You have entered an invalid export parameter. Two are needed.");
+                return;
+            }
+
+            if (searchParametrs[0] != FileTypeCsv && searchParametrs[0] != FileTypeXml)
             {
                 Console.WriteLine("You entered an invalid format.");
                 return;
             }
 
-            Console.Write("Enter the import path: ");
-            var path = Console.ReadLine();
-
-            if (!File.Exists(path))
+            if (!File.Exists(searchParametrs[1]))
             {
-                Console.WriteLine($"Import error: {path} is not exist.");
+                Console.WriteLine($"Import error: {searchParametrs[1]} is not exist.");
                 return;
             }
 
-            using (FileStream fs = new FileStream(path, FileMode.Open))
+            using (FileStream fs = new FileStream(searchParametrs[1], FileMode.Open))
             {
                 FileCabinetServiceSnapshot fileCabinetServiceSnapshot = new FileCabinetServiceSnapshot();
                 using (StreamReader sr = new StreamReader(fs))
                 {
-                    switch (format)
+                    switch (searchParametrs[0])
                     {
                         case FileTypeCsv:
                             fileCabinetServiceSnapshot.LoadFromCsv(sr);
@@ -387,16 +387,14 @@ namespace FileCabinetApp
                     }
                 }
 
-                Console.WriteLine($"All records were imported from {path}.");
+                Console.WriteLine($"All records were imported from {searchParametrs[1]}.");
             }
         }
 
         private static void Remove(string parameters)
         {
-            Console.Write("Enter the record number for remove: ");
-            var inputId = Console.ReadLine();
             int id;
-            if (!int.TryParse(inputId, out id))
+            if (!int.TryParse(parameters, out id))
             {
                 Console.WriteLine("You introduced an incorrect ID.");
                 return;
@@ -422,7 +420,7 @@ namespace FileCabinetApp
             {
                 var countOfCorrectRecords = fileCabinetService.Purge();
 
-                Console.WriteLine($"Data file processing is completed: {countOfRecords - countOfCorrectRecords} of {countOfRecords} records were purged.");
+                Console.WriteLine($"Data file processing is completed: {countOfCorrectRecords} of {countOfRecords.Item1} records were purged.");
             }
         }
 

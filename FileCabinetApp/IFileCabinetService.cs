@@ -27,10 +27,10 @@ namespace FileCabinetApp
         ReadOnlyCollection<FileCabinetRecord> GetRecords();
 
         /// <summary>
-        /// Gets the count of all existing records.
+        /// Gets the count of all existed and deleted records.
         /// </summary>
         /// <returns>Returns the count of all existing records.</returns>
-        int GetStat();
+        (int, int) GetStat();
 
         /// <summary>
         /// Edits an already existing entry by id.
@@ -90,12 +90,6 @@ namespace FileCabinetApp
         /// Defragments the data file.
         /// </summary>
         /// <returns>Count of purged records. Only for FileCabinetFilesystemService.</returns>
-        public int Purge();
-
-        /// <summary>
-        /// Gets the count of all deleted records.
-        /// </summary>
-        /// <returns>Returns the count of all deleted records.</returns>
-        int GetStatDeletedRecords();
+        int Purge();
     }
 }

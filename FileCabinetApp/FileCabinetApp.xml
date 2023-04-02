@@ -141,13 +141,6 @@
             </summary>
             <returns>Returns the number of all existed and deleted records stored in the file.</returns>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetFilesystemService.IsExist(System.Int32)">
-            <summary>
-            Checks if records with the specified id exists.
-            </summary>
-            <param name="id">The id entered by the user.</param>
-            <returns>True if records exists and false if records don't exist.</returns>
-        </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.MakeSnapshot">
             <summary>
             Passes the state of an object.
@@ -171,6 +164,13 @@
             Defragments the data file.
             </summary>
             <returns>Count of purged records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.IsExist(System.Int32)">
+            <summary>
+            Checks if records with the specified id exists.
+            </summary>
+            <param name="id">The id entered by the user.</param>
+            <returns>True if records exists and false if records don't exist.</returns>
         </member>
         <member name="T:FileCabinetApp.FileCabinetMemoryService">
             <summary>
@@ -640,13 +640,6 @@
             <param name="dateOfBirth">The parameter by which you want to find all existing records.</param>
             <returns>Returns all records by date of birth.</returns>
         </member>
-        <member name="M:FileCabinetApp.IFileCabinetService.IsExist(System.Int32)">
-            <summary>
-            Checks if records with the specified id exists.
-            </summary>
-            <param name="id">The id entered by the user.</param>
-            <returns>True if records exists and false if records don't exist.</returns>
-        </member>
         <member name="M:FileCabinetApp.IFileCabinetService.MakeSnapshot">
             <summary>
             Passes the state of an object.
@@ -658,6 +651,13 @@
             Adding imported records to existing records.
             </summary>
             <param name="fileCabinetServiceSnapshot">Сlass instance.</param>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.IsExist(System.Int32)">
+            <summary>
+            Checks if records with the specified id exists.
+            </summary>
+            <param name="id">The id entered by the user.</param>
+            <returns>True if records exists and false if records don't exist.</returns>
         </member>
         <member name="M:FileCabinetApp.IFileCabinetService.Remove(System.Int32)">
             <summary>

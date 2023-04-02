@@ -393,20 +393,19 @@ namespace FileCabinetApp
 
         private static void Remove(string parameters)
         {
-            int id;
-            if (!int.TryParse(parameters, out id))
+            if (!int.TryParse(parameters, out int id))
             {
                 Console.WriteLine("You introduced an incorrect ID.");
                 return;
             }
 
-            if (Program.fileCabinetService.IsExist(id))
+            try
             {
                 Program.fileCabinetService.Remove(id);
 
                 Console.WriteLine($"Record #{id} is removed.");
             }
-            else
+            catch
             {
                 Console.WriteLine($"Record #{id} doesn't exists.");
             }
@@ -416,12 +415,9 @@ namespace FileCabinetApp
         {
             var countOfRecords = fileCabinetService.GetStat();
 
-            if (fileCabinetService is FileCabinetFilesystemService)
-            {
-                var countOfCorrectRecords = fileCabinetService.Purge();
+            var purgedRecordsCount = fileCabinetService.Purge();
 
-                Console.WriteLine($"Data file processing is completed: {countOfCorrectRecords} of {countOfRecords.Item1} records were purged.");
-            }
+            Console.WriteLine($"Data file processing is completed: {purgedRecordsCount} of {countOfRecords.Item1} records were purged.");
         }
 
         private static void OutputToTheConsoleDataFromTheList(ReadOnlyCollection<FileCabinetRecord> list)

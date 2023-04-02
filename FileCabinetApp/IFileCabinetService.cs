@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FileCabinetApp
 {
@@ -62,13 +60,6 @@ namespace FileCabinetApp
         ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth);
 
         /// <summary>
-        /// Checks if records with the specified id exists.
-        /// </summary>
-        /// <param name="id">The id entered by the user.</param>
-        /// <returns>True if records exists and false if records don't exist.</returns>
-        bool IsExist(int id);
-
-        /// <summary>
         /// Passes the state of an object.
         /// </summary>
         /// <returns>Class containing the state of an object.</returns>
@@ -79,6 +70,13 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="fileCabinetServiceSnapshot">Сlass instance.</param>
         void Restore(FileCabinetServiceSnapshot fileCabinetServiceSnapshot);
+
+        /// <summary>
+        /// Checks if records with the specified id exists.
+        /// </summary>
+        /// <param name="id">The id entered by the user.</param>
+        /// <returns>True if records exists and false if records don't exist.</returns>
+        bool IsExist(int id);
 
         /// <summary>
         /// Remove record by id.

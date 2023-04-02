@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 [assembly: CLSCompliant(true)]
 
@@ -13,6 +14,7 @@ namespace FileCabinetApp
     public class FileCabinetMemoryService : IFileCabinetService
     {
         private const int ValueOfDeletedRecords = 0;
+        private const int ValueForCommandThatNoWork = 0;
 
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
 
@@ -88,30 +90,37 @@ namespace FileCabinetApp
         /// <exception cref="ArgumentException">if records with the specified ID do not exist.</exception>
         public void EditRecord(int id, FileCabinetRecordNewData fileCabinetRecordNewData)
         {
-            this.validator.Validate(fileCabinetRecordNewData);
-
-            var result = this.list.FirstOrDefault(x => x.Id == id);
-
-            if (result is null)
+            if (this.IsExist(id))
             {
-                throw new ArgumentException("records with the specified ID do not exist.");
+                this.validator.Validate(fileCabinetRecordNewData);
+
+                var result = this.list.FirstOrDefault(x => x.Id == id);
+
+                if (result is null)
+                {
+                    throw new ArgumentException("records with the specified ID do not exist.");
+                }
+
+                RemoveFromDictionary(this.firstNameDictionary, result.FirstName.ToLowerInvariant(), result);
+                AddToIndex(result, this.firstNameDictionary, fileCabinetRecordNewData.FirstName.ToLowerInvariant());
+
+                RemoveFromDictionary(this.lastNameDictionary, result.LastName.ToLowerInvariant(), result);
+                AddToIndex(result, this.lastNameDictionary, fileCabinetRecordNewData.LastName.ToLowerInvariant());
+
+                RemoveFromDictionary(this.dateOfBirthDictionary, result.DateOfBirth, result);
+                AddToIndex(result, this.dateOfBirthDictionary, fileCabinetRecordNewData.DateOfBirth);
+
+                result.FirstName = fileCabinetRecordNewData.FirstName;
+                result.LastName = fileCabinetRecordNewData.LastName;
+                result.DateOfBirth = fileCabinetRecordNewData.DateOfBirth;
+                result.Gender = fileCabinetRecordNewData.Gender;
+                result.Height = fileCabinetRecordNewData.Height;
+                result.Weight = fileCabinetRecordNewData.Weight;
             }
-
-            RemoveFromDictionary(this.firstNameDictionary, result.FirstName.ToLowerInvariant(), result);
-            AddToIndex(result, this.firstNameDictionary, fileCabinetRecordNewData.FirstName.ToLowerInvariant());
-
-            RemoveFromDictionary(this.lastNameDictionary, result.LastName.ToLowerInvariant(), result);
-            AddToIndex(result, this.lastNameDictionary, fileCabinetRecordNewData.LastName.ToLowerInvariant());
-
-            RemoveFromDictionary(this.dateOfBirthDictionary, result.DateOfBirth, result);
-            AddToIndex(result, this.dateOfBirthDictionary, fileCabinetRecordNewData.DateOfBirth);
-
-            result.FirstName = fileCabinetRecordNewData.FirstName;
-            result.LastName = fileCabinetRecordNewData.LastName;
-            result.DateOfBirth = fileCabinetRecordNewData.DateOfBirth;
-            result.Gender = fileCabinetRecordNewData.Gender;
-            result.Height = fileCabinetRecordNewData.Height;
-            result.Weight = fileCabinetRecordNewData.Weight;
+            else
+            {
+                throw new ArgumentException("Record's id isn't exist.");
+            }
         }
 
         /// <summary>
@@ -220,13 +229,20 @@ namespace FileCabinetApp
         /// <param name="id">Record id to remove.</param>
         public void Remove(int id)
         {
-            var valueForRemove = this.list.Find(x => x.Id == id);
+            if (this.IsExist(id))
+            {
+                var valueForRemove = this.list.Find(x => x.Id == id);
 
-            this.list.Remove(valueForRemove);
+                this.list.Remove(valueForRemove);
 
-            RemoveFromDictionary(this.firstNameDictionary, valueForRemove.FirstName.ToLowerInvariant(), valueForRemove);
-            RemoveFromDictionary(this.lastNameDictionary, valueForRemove.LastName.ToLowerInvariant(), valueForRemove);
-            RemoveFromDictionary(this.dateOfBirthDictionary, valueForRemove.DateOfBirth, valueForRemove);
+                RemoveFromDictionary(this.firstNameDictionary, valueForRemove.FirstName.ToLowerInvariant(), valueForRemove);
+                RemoveFromDictionary(this.lastNameDictionary, valueForRemove.LastName.ToLowerInvariant(), valueForRemove);
+                RemoveFromDictionary(this.dateOfBirthDictionary, valueForRemove.DateOfBirth, valueForRemove);
+            }
+            else
+            {
+                throw new ArgumentException("Record's id isn't exist.");
+            }
         }
 
         /// <summary>
@@ -235,7 +251,7 @@ namespace FileCabinetApp
         /// <returns>Count of purged records.Only for FileCabinetFilesystemService.</returns>
         public int Purge()
         {
-            return default(int);
+            return ValueForCommandThatNoWork;
         }
 
         /// <summary>

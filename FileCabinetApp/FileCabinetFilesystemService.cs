@@ -58,15 +58,22 @@ namespace FileCabinetApp
         /// <param name="fileCabinetRecordNewData">The new date in the record.</param>
         public void EditRecord(int id, FileCabinetRecordNewData fileCabinetRecordNewData)
         {
-            this.validator.Validate(fileCabinetRecordNewData);
-
-            foreach (var (position, record, status) in this.GetRecordsInternal())
+            if (this.IsExist(id))
             {
-                if (record.Id == id && (status & MaskForDelete) == 0)
+                this.validator.Validate(fileCabinetRecordNewData);
+
+                foreach (var (position, record, status) in this.GetRecordsInternal())
                 {
-                    this.WriteBinary(ConvertToFileCabinetRecord(fileCabinetRecordNewData, id), DefaultStatus, position);
-                    break;
+                    if (record.Id == id && (status & MaskForDelete) == 0)
+                    {
+                        this.WriteBinary(ConvertToFileCabinetRecord(fileCabinetRecordNewData, id), DefaultStatus, position);
+                        break;
+                    }
                 }
+            }
+            else
+            {
+                throw new ArgumentException("Record's id isn't exist.");
             }
         }
 
@@ -136,16 +143,6 @@ namespace FileCabinetApp
         }
 
         /// <summary>
-        /// Checks if records with the specified id exists.
-        /// </summary>
-        /// <param name="id">The id entered by the user.</param>
-        /// <returns>True if records exists and false if records don't exist.</returns>
-        public bool IsExist(int id)
-        {
-            return this.GetRecordsInternal().Any(x => x.record.Id == id && (x.status & MaskForDelete) == 0);
-        }
-
-        /// <summary>
         /// Passes the state of an object.
         /// </summary>
         /// <returns>Class containing the state of an object.</returns>
@@ -201,19 +198,26 @@ namespace FileCabinetApp
         /// <param name="id">Record id to remove.</param>
         public void Remove(int id)
         {
-            foreach (var (position, record, status) in this.GetRecordsInternal())
+            if (this.IsExist(id))
             {
-                if (record.Id == id)
+                foreach (var (position, record, status) in this.GetRecordsInternal())
                 {
-                    using (BinaryWriter writer = new BinaryWriter(this.fileStream, Encoding.ASCII, true))
+                    if (record.Id == id)
                     {
-                        writer.BaseStream.Seek(position, SeekOrigin.Begin);
+                        using (BinaryWriter writer = new BinaryWriter(this.fileStream, Encoding.ASCII, true))
+                        {
+                            writer.BaseStream.Seek(position, SeekOrigin.Begin);
 
-                        writer.Write(MaskForDelete | status);
+                            writer.Write(MaskForDelete | status);
+                        }
+
+                        break;
                     }
-
-                    break;
                 }
+            }
+            else
+            {
+                throw new ArgumentException("Record's id isn't exist.");
             }
         }
 
@@ -234,6 +238,16 @@ namespace FileCabinetApp
 
             this.fileStream.SetLength(positionForWrite);
             return count.Item2;
+        }
+
+        /// <summary>
+        /// Checks if records with the specified id exists.
+        /// </summary>
+        /// <param name="id">The id entered by the user.</param>
+        /// <returns>True if records exists and false if records don't exist.</returns>
+        public bool IsExist(int id)
+        {
+            return this.GetExistingRecords().Any(x => x.Id == id);
         }
 
         private static char[] CreateCharArray(string name)
@@ -288,10 +302,9 @@ namespace FileCabinetApp
 
             using (var reader = new BinaryReader(this.fileStream, Encoding.ASCII, true))
             {
-                reader.BaseStream.Seek(positionForRead, SeekOrigin.Begin);
-
                 while (positionForRead < reader.BaseStream.Length)
                 {
+                    reader.BaseStream.Seek(positionForRead, SeekOrigin.Begin);
                     FileCabinetRecord record = new FileCabinetRecord();
 
                     short status = reader.ReadInt16();

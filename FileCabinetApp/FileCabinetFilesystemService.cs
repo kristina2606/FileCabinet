@@ -46,6 +46,11 @@ namespace FileCabinetApp
 
             var id = this.idGenerator.GetNext();
 
+            while (this.IsExist(id))
+            {
+                id = this.idGenerator.GetNext();
+            }
+
             this.CreateRecord(ConvertToFileCabinetRecord(fileCabinetRecordNewData, id));
 
             return id;
@@ -58,22 +63,20 @@ namespace FileCabinetApp
         /// <param name="fileCabinetRecordNewData">The new date in the record.</param>
         public void EditRecord(int id, FileCabinetRecordNewData fileCabinetRecordNewData)
         {
-            if (this.IsExist(id))
-            {
-                this.validator.Validate(fileCabinetRecordNewData);
-
-                foreach (var (position, record, status) in this.GetRecordsInternal())
-                {
-                    if (record.Id == id && (status & MaskForDelete) == 0)
-                    {
-                        this.WriteBinary(ConvertToFileCabinetRecord(fileCabinetRecordNewData, id), DefaultStatus, position);
-                        break;
-                    }
-                }
-            }
-            else
+            if (!this.IsExist(id))
             {
                 throw new ArgumentException("Record's id isn't exist.");
+            }
+
+            this.validator.Validate(fileCabinetRecordNewData);
+
+            foreach (var (position, record, status) in this.GetRecordsInternal())
+            {
+                if (record.Id == id && (status & MaskForDelete) == 0)
+                {
+                    this.WriteBinary(ConvertToFileCabinetRecord(fileCabinetRecordNewData, id), DefaultStatus, position);
+                    break;
+                }
             }
         }
 
@@ -132,14 +135,14 @@ namespace FileCabinetApp
         /// Gets the number of all existed and deleted records stored in the file.
         /// </summary>
         /// <returns>Returns the number of all existed and deleted records stored in the file.</returns>
-        public (int, int) GetStat()
+        public (int activeRecords, int deletedRecords) GetStat()
         {
-            var existedRecords = (int)this.fileStream.Length / LengthOfOneRecord;
+            var activeRecords = (int)this.fileStream.Length / LengthOfOneRecord;
 
             var deletedRecords = this.GetRecordsInternal()
                     .Count(x => (x.status & MaskForDelete) != 0);
 
-            return (existedRecords, deletedRecords);
+            return (activeRecords, deletedRecords);
         }
 
         /// <summary>
@@ -198,26 +201,24 @@ namespace FileCabinetApp
         /// <param name="id">Record id to remove.</param>
         public void Remove(int id)
         {
-            if (this.IsExist(id))
-            {
-                foreach (var (position, record, status) in this.GetRecordsInternal())
-                {
-                    if (record.Id == id)
-                    {
-                        using (BinaryWriter writer = new BinaryWriter(this.fileStream, Encoding.ASCII, true))
-                        {
-                            writer.BaseStream.Seek(position, SeekOrigin.Begin);
-
-                            writer.Write(MaskForDelete | status);
-                        }
-
-                        break;
-                    }
-                }
-            }
-            else
+            if (!this.IsExist(id))
             {
                 throw new ArgumentException("Record's id isn't exist.");
+            }
+
+            foreach (var (position, record, status) in this.GetRecordsInternal())
+            {
+                if (record.Id == id)
+                {
+                    using (BinaryWriter writer = new BinaryWriter(this.fileStream, Encoding.ASCII, true))
+                    {
+                        writer.BaseStream.Seek(position, SeekOrigin.Begin);
+
+                        writer.Write(MaskForDelete | status);
+                    }
+
+                    break;
+                }
             }
         }
 
@@ -228,7 +229,6 @@ namespace FileCabinetApp
         public int Purge()
         {
             var positionForWrite = 0;
-            var count = this.GetStat();
 
             foreach (var record in this.GetExistingRecords())
             {
@@ -237,7 +237,7 @@ namespace FileCabinetApp
             }
 
             this.fileStream.SetLength(positionForWrite);
-            return count.Item2;
+            return this.GetStat().deletedRecords;
         }
 
         /// <summary>

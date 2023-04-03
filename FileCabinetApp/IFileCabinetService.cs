@@ -28,7 +28,7 @@ namespace FileCabinetApp
         /// Gets the count of all existed and deleted records.
         /// </summary>
         /// <returns>Returns the count of all existing records.</returns>
-        (int, int) GetStat();
+        (int activeRecords, int deletedRecords) GetStat();
 
         /// <summary>
         /// Edits an already existing entry by id.

@@ -162,7 +162,7 @@ namespace FileCabinetApp
         private static void Stat(string parameters)
         {
             var recordsCount = Program.fileCabinetService.GetStat();
-            Console.WriteLine($"{recordsCount.Item1} record(s), {recordsCount.Item2} of them deleted.");
+            Console.WriteLine($"{recordsCount.activeRecords} record(s), {recordsCount.deletedRecords} of them deleted.");
         }
 
         private static void Create(string parameters)
@@ -200,9 +200,7 @@ namespace FileCabinetApp
 
         private static void Edit(string parameters)
         {
-            int id;
-
-            if (!int.TryParse(parameters, out id))
+            if (!int.TryParse(parameters, out int id))
             {
                 Console.WriteLine("You introduced an incorrect ID.");
                 return;
@@ -288,25 +286,28 @@ namespace FileCabinetApp
                 return;
             }
 
-            if (searchParametrs[0] != FileTypeCsv && searchParametrs[0] != FileTypeXml)
+            var format = searchParametrs[0];
+            var path = searchParametrs[1];
+
+            if (format != FileTypeCsv && format != FileTypeXml)
             {
                 Console.WriteLine("You entered an invalid format.");
                 return;
             }
 
-            var folder = Path.GetDirectoryName(searchParametrs[1]);
+            var folder = Path.GetDirectoryName(path);
             if (!Directory.Exists(folder))
             {
-                Console.WriteLine($"Export failed: can't open file {searchParametrs[1]}.");
+                Console.WriteLine($"Export failed: can't open file {path}.");
             }
-            else if (File.Exists(searchParametrs[1]))
+            else if (File.Exists(path))
             {
-                Console.Write($"File is exist - rewrite {searchParametrs[1]}? [Y/n] ");
+                Console.Write($"File is exist - rewrite {path}? [Y/n] ");
                 var fileRewrite = Console.ReadLine().ToLowerInvariant();
 
                 if (fileRewrite == "y" || string.IsNullOrEmpty(fileRewrite))
                 {
-                    ExportData(makeSnapshot, searchParametrs[0], searchParametrs[1]);
+                    ExportData(makeSnapshot, format, path);
                 }
                 else if (fileRewrite != "n")
                 {
@@ -315,10 +316,10 @@ namespace FileCabinetApp
             }
             else
             {
-                ExportData(makeSnapshot, searchParametrs[0], searchParametrs[1]);
+                ExportData(makeSnapshot, format, path);
             }
 
-            Console.WriteLine($"All records are exported to file {searchParametrs[1]}.");
+            Console.WriteLine($"All records are exported to file {path}.");
         }
 
         private static void ExportData(FileCabinetServiceSnapshot makeSnapshot, string format, string path)
@@ -347,24 +348,27 @@ namespace FileCabinetApp
                 return;
             }
 
-            if (searchParametrs[0] != FileTypeCsv && searchParametrs[0] != FileTypeXml)
+            var format = searchParametrs[0];
+            var path = searchParametrs[1];
+
+            if (format != FileTypeCsv && format != FileTypeXml)
             {
                 Console.WriteLine("You entered an invalid format.");
                 return;
             }
 
-            if (!File.Exists(searchParametrs[1]))
+            if (!File.Exists(path))
             {
-                Console.WriteLine($"Import error: {searchParametrs[1]} is not exist.");
+                Console.WriteLine($"Import error: {path} is not exist.");
                 return;
             }
 
-            using (FileStream fs = new FileStream(searchParametrs[1], FileMode.Open))
+            using (FileStream fs = new FileStream(path, FileMode.Open))
             {
                 FileCabinetServiceSnapshot fileCabinetServiceSnapshot = new FileCabinetServiceSnapshot();
                 using (StreamReader sr = new StreamReader(fs))
                 {
-                    switch (searchParametrs[0])
+                    switch (format)
                     {
                         case FileTypeCsv:
                             fileCabinetServiceSnapshot.LoadFromCsv(sr);
@@ -387,7 +391,7 @@ namespace FileCabinetApp
                     }
                 }
 
-                Console.WriteLine($"All records were imported from {searchParametrs[1]}.");
+                Console.WriteLine($"All records were imported from {path}.");
             }
         }
 
@@ -417,7 +421,7 @@ namespace FileCabinetApp
 
             var purgedRecordsCount = fileCabinetService.Purge();
 
-            Console.WriteLine($"Data file processing is completed: {purgedRecordsCount} of {countOfRecords.Item1} records were purged.");
+            Console.WriteLine($"Data file processing is completed: {purgedRecordsCount} of {countOfRecords.activeRecords} records were purged.");
         }
 
         private static void OutputToTheConsoleDataFromTheList(ReadOnlyCollection<FileCabinetRecord> list)

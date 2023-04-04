@@ -140,7 +140,7 @@ namespace FileCabinetApp
         /// <returns>Returns the number of all existed and deleted records stored in the file.</returns>
         public (int activeRecords, int deletedRecords) GetStat()
         {
-            var activeRecords = (int)this.fileStream.Length / LengthOfOneRecord;
+            var activeRecords = this.GetExistingRecords().Count();
 
             var deletedRecords = this.GetRecordsInternal()
                     .Count(x => (x.status & MaskForDelete) != 0);
@@ -232,6 +232,7 @@ namespace FileCabinetApp
         public int Purge()
         {
             var positionForWrite = 0;
+            var countOfrecordsForPurge = this.GetStat().deletedRecords;
 
             foreach (var record in this.GetExistingRecords())
             {
@@ -240,7 +241,7 @@ namespace FileCabinetApp
             }
 
             this.fileStream.SetLength(positionForWrite);
-            return this.GetStat().deletedRecords;
+            return countOfrecordsForPurge;
         }
 
         /// <summary>

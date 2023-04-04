@@ -162,7 +162,7 @@ namespace FileCabinetApp
         private static void Stat(string parameters)
         {
             var (activeRecords, deletedRecords) = Program.fileCabinetService.GetStat();
-            Console.WriteLine($"{activeRecords} record(s), {deletedRecords} of them deleted.");
+            Console.WriteLine($"{activeRecords + deletedRecords} record(s), {deletedRecords} of them deleted.");
         }
 
         private static void Create(string parameters)

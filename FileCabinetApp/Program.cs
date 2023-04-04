@@ -161,8 +161,8 @@ namespace FileCabinetApp
 
         private static void Stat(string parameters)
         {
-            var recordsCount = Program.fileCabinetService.GetStat();
-            Console.WriteLine($"{recordsCount.activeRecords} record(s), {recordsCount.deletedRecords} of them deleted.");
+            var (activeRecords, deletedRecords) = Program.fileCabinetService.GetStat();
+            Console.WriteLine($"{activeRecords} record(s), {deletedRecords} of them deleted.");
         }
 
         private static void Create(string parameters)
@@ -247,8 +247,10 @@ namespace FileCabinetApp
                 return;
             }
 
+            var searchСategory = searchParametrs[0];
             var searchParameter = searchParametrs[1].Trim('"');
-            switch (searchParametrs[0])
+
+            switch (searchСategory)
             {
                 case "firstname":
                     OutputToTheConsoleDataFromTheList(Program.fileCabinetService.FindByFirstName(searchParameter));
@@ -278,16 +280,16 @@ namespace FileCabinetApp
         {
             var makeSnapshot = Program.fileCabinetService.MakeSnapshot();
 
-            var searchParametrs = parameters.Split(' ');
+            var exportParametrs = parameters.Split(' ');
 
-            if (searchParametrs.Length != 2)
+            if (exportParametrs.Length != 2)
             {
                 Console.WriteLine("You have entered an invalid export parameter. Two are needed.");
                 return;
             }
 
-            var format = searchParametrs[0];
-            var path = searchParametrs[1];
+            var format = exportParametrs[0];
+            var path = exportParametrs[1];
 
             if (format != FileTypeCsv && format != FileTypeXml)
             {
@@ -340,16 +342,16 @@ namespace FileCabinetApp
 
         private static void Import(string parameters)
         {
-            var searchParametrs = parameters.Split(' ');
+            var importParametrs = parameters.Split(' ');
 
-            if (searchParametrs.Length != 2)
+            if (importParametrs.Length != 2)
             {
                 Console.WriteLine("You have entered an invalid export parameter. Two are needed.");
                 return;
             }
 
-            var format = searchParametrs[0];
-            var path = searchParametrs[1];
+            var format = importParametrs[0];
+            var path = importParametrs[1];
 
             if (format != FileTypeCsv && format != FileTypeXml)
             {
@@ -417,11 +419,11 @@ namespace FileCabinetApp
 
         private static void Purge(string parameters)
         {
-            var countOfRecords = fileCabinetService.GetStat();
+            var (activeRecords, _) = fileCabinetService.GetStat();
 
             var purgedRecordsCount = fileCabinetService.Purge();
 
-            Console.WriteLine($"Data file processing is completed: {purgedRecordsCount} of {countOfRecords.activeRecords} records were purged.");
+            Console.WriteLine($"Data file processing is completed: {purgedRecordsCount} of {activeRecords} records were purged.");
         }
 
         private static void OutputToTheConsoleDataFromTheList(ReadOnlyCollection<FileCabinetRecord> list)

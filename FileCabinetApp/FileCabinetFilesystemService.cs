@@ -15,6 +15,7 @@ namespace FileCabinetApp
         private const int LengthOfOneRecord = 157;
         private const short DefaultStatus = 0;
         private const short MaskForDelete = 0b_0000_0100;
+        private const StringComparison ScType = StringComparison.InvariantCultureIgnoreCase;
 
         private readonly FileStream fileStream;
         private readonly IRecordValidator validator;
@@ -46,8 +47,10 @@ namespace FileCabinetApp
 
             var id = this.idGenerator.GetNext();
 
-            while (this.IsExist(id))
+            if (this.IsExist(id))
             {
+                this.idGenerator.SkipId(this.GetExistingRecords().Max(x => x.Id));
+
                 id = this.idGenerator.GetNext();
             }
 
@@ -102,7 +105,7 @@ namespace FileCabinetApp
         public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
         {
             var list = this.GetExistingRecords()
-                .Where(record => record.FirstName.ToLowerInvariant() == firstName.ToLowerInvariant())
+                .Where(record => record.FirstName.Equals(firstName, ScType))
                 .ToList();
 
             return new ReadOnlyCollection<FileCabinetRecord>(list);
@@ -116,7 +119,7 @@ namespace FileCabinetApp
         public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
         {
             var list = this.GetExistingRecords()
-                .Where(record => record.LastName.ToLowerInvariant() == lastName.ToLowerInvariant())
+                .Where(record => record.LastName.Equals(lastName, ScType))
                 .ToList();
 
             return new ReadOnlyCollection<FileCabinetRecord>(list);

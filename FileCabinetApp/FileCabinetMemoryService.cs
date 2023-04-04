@@ -12,8 +12,6 @@ namespace FileCabinetApp
     /// </summary>
     public class FileCabinetMemoryService : IFileCabinetService
     {
-        private const int ValueOfDeletedRecords = 0;
-
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
 
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
@@ -77,7 +75,7 @@ namespace FileCabinetApp
         /// <returns>Returns the count of all existed and deleted records.</returns>
         public (int activeRecords, int deletedRecords) GetStat()
         {
-            return (this.list.Count, ValueOfDeletedRecords);
+            return (this.list.Count, 0);
         }
 
         /// <summary>

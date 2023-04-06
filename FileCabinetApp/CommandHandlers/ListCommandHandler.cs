@@ -9,13 +9,17 @@ namespace FileCabinetApp.CommandHandlers
     /// </summary>
     public class ListCommandHandler : ServiceCommandHandlerBase
     {
+        private readonly IRecordPrinter printer;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ListCommandHandler"/> class.
         /// </summary>
         /// <param name="service">Interface instance IFileCabinetServise.</param>
-        public ListCommandHandler(IFileCabinetService service)
+        /// <param name="printer">Screen print style.</param>
+        public ListCommandHandler(IFileCabinetService service, IRecordPrinter printer)
             : base(service)
         {
+            this.printer = printer;
         }
 
         /// <summary>
@@ -28,27 +32,11 @@ namespace FileCabinetApp.CommandHandlers
             {
                 ReadOnlyCollection<FileCabinetRecord> list = this.service.GetRecords();
 
-                OutputToTheConsoleDataFromTheList(list);
+                this.printer.Print(list);
             }
             else if (appCommand.Command != null)
             {
                 base.Handle(appCommand);
-            }
-        }
-
-        private static void OutputToTheConsoleDataFromTheList(ReadOnlyCollection<FileCabinetRecord> list)
-        {
-            foreach (var record in list)
-            {
-                var id = record.Id;
-                var firstName = record.FirstName;
-                var lastName = record.LastName;
-                var dateOfBirth = record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture);
-                var gender = record.Gender;
-                var height = record.Height;
-                var weight = record.Weight;
-
-                Console.WriteLine($"#{id}, {firstName}, {lastName}, {dateOfBirth}, {gender}, {height}, {weight}");
             }
         }
     }

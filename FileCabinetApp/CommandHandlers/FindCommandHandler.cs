@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.Globalization;
 
 namespace FileCabinetApp.CommandHandlers
@@ -9,13 +8,17 @@ namespace FileCabinetApp.CommandHandlers
     /// </summary>
     public class FindCommandHandler : ServiceCommandHandlerBase
     {
+        private readonly IRecordPrinter printer;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="FindCommandHandler"/> class.
         /// </summary>
         /// <param name="service">Interface instance IFileCabinetServise.</param>
-        public FindCommandHandler(IFileCabinetService service)
+        /// <param name="printer">Screen print style.</param>
+        public FindCommandHandler(IFileCabinetService service, IRecordPrinter printer)
             : base(service)
         {
+            this.printer = printer;
         }
 
         /// <summary>
@@ -40,15 +43,16 @@ namespace FileCabinetApp.CommandHandlers
                 switch (searchСategory)
                 {
                     case "firstname":
-                        OutputToTheConsoleDataFromTheList(this.service.FindByFirstName(searchParameter));
+                        this.printer.Print(this.service.FindByFirstName(searchParameter));
                         break;
                     case "lastname":
-                        OutputToTheConsoleDataFromTheList(this.service.FindByLastName(searchParameter));
+
+                        this.printer.Print(this.service.FindByLastName(searchParameter));
                         break;
                     case "dateofbirth":
                         if (DateTime.TryParseExact(searchParameter, "yyyy-MMM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateOfBirth))
                         {
-                            OutputToTheConsoleDataFromTheList(this.service.FindByDateOfBirth(dateOfBirth));
+                            this.printer.Print(this.service.FindByDateOfBirth(dateOfBirth));
                             break;
                         }
                         else
@@ -65,22 +69,6 @@ namespace FileCabinetApp.CommandHandlers
             else if (appCommand.Command != null)
             {
                 base.Handle(appCommand);
-            }
-        }
-
-        private static void OutputToTheConsoleDataFromTheList(ReadOnlyCollection<FileCabinetRecord> list)
-        {
-            foreach (var record in list)
-            {
-                var id = record.Id;
-                var firstName = record.FirstName;
-                var lastName = record.LastName;
-                var dateOfBirth = record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture);
-                var gender = record.Gender;
-                var height = record.Height;
-                var weight = record.Weight;
-
-                Console.WriteLine($"#{id}, {firstName}, {lastName}, {dateOfBirth}, {gender}, {height}, {weight}");
             }
         }
     }

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using FileCabinetApp.CommandHandlers;
 
@@ -88,16 +90,30 @@ namespace FileCabinetApp
             isRunning = exit;
         }
 
+        private static void DefaultRecordPrint(IEnumerable<FileCabinetRecord> records)
+        {
+            foreach (var record in records)
+            {
+                var id = record.Id;
+                var firstName = record.FirstName;
+                var lastName = record.LastName;
+                var dateOfBirth = record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture);
+                var gender = record.Gender;
+                var height = record.Height;
+                var weight = record.Weight;
+
+                Console.WriteLine($"#{id}, {firstName}, {lastName}, {dateOfBirth}, {gender}, {height}, {weight}");
+            }
+        }
+
         private static ICommandHandler CreateCommandHandlers()
         {
-            var recordPrinter = new DefaultRecordPrinter();
-
             var helpHandler = new HelpCommandHandler();
             var createHandler = new CreateCommandHandler(Program.fileCabinetService, Program.inputValidation);
             var editHandler = new EditCommandHandler(Program.fileCabinetService, Program.inputValidation);
-            var listHandler = new ListCommandHandler(Program.fileCabinetService, recordPrinter);
+            var listHandler = new ListCommandHandler(Program.fileCabinetService, DefaultRecordPrint);
             var statHandler = new StatCommandHandler(Program.fileCabinetService);
-            var findHandler = new FindCommandHandler(Program.fileCabinetService, recordPrinter);
+            var findHandler = new FindCommandHandler(Program.fileCabinetService, DefaultRecordPrint);
             var exportHandler = new ExportCommandHandler(Program.fileCabinetService);
             var importHandler = new ImportCommandHandler(Program.fileCabinetService);
             var removeHandler = new RemoveCommandHandler(Program.fileCabinetService);

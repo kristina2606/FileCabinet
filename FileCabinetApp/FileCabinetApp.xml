@@ -67,17 +67,6 @@
             </summary>
             <param name="appCommand">>Configuratiion the application command and options.</param>
         </member>
-        <member name="T:FileCabinetApp.CommandHandlers.DefaultRecordPrinter">
-            <summary>
-            Print with screen print default style.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.DefaultRecordPrinter.Print(System.Collections.Generic.IEnumerable{FileCabinetApp.FileCabinetRecord})">
-            <summary>
-            Print with screen print default style.
-            </summary>
-            <param name="records">All exiting records.</param>
-        </member>
         <member name="T:FileCabinetApp.CommandHandlers.EditCommandHandler">
             <summary>
             Contain code for handling edit requests.
@@ -135,7 +124,7 @@
             Contain code for handling find requests.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.FindCommandHandler.#ctor(FileCabinetApp.IFileCabinetService,FileCabinetApp.CommandHandlers.IRecordPrinter)">
+        <member name="M:FileCabinetApp.CommandHandlers.FindCommandHandler.#ctor(FileCabinetApp.IFileCabinetService,System.Action{System.Collections.Generic.IEnumerable{FileCabinetApp.FileCabinetRecord}})">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.FindCommandHandler"/> class.
             </summary>
@@ -193,23 +182,12 @@
             </summary>
             <param name="appCommand">>Configuratiion the application command and options.</param>
         </member>
-        <member name="T:FileCabinetApp.CommandHandlers.IRecordPrinter">
-            <summary>
-            Print with screen print style.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.IRecordPrinter.Print(System.Collections.Generic.IEnumerable{FileCabinetApp.FileCabinetRecord})">
-            <summary>
-            Print with screen print style.
-            </summary>
-            <param name="records">All exiting records.</param>
-        </member>
         <member name="T:FileCabinetApp.CommandHandlers.ListCommandHandler">
             <summary>
             Contain code for handling list requests.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.ListCommandHandler.#ctor(FileCabinetApp.IFileCabinetService,FileCabinetApp.CommandHandlers.IRecordPrinter)">
+        <member name="M:FileCabinetApp.CommandHandlers.ListCommandHandler.#ctor(FileCabinetApp.IFileCabinetService,System.Action{System.Collections.Generic.IEnumerable{FileCabinetApp.FileCabinetRecord}})">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ListCommandHandler"/> class.
             </summary>

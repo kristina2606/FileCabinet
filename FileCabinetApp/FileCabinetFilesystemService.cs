@@ -140,12 +140,10 @@ namespace FileCabinetApp
         /// <returns>Returns the number of all existed and deleted records stored in the file.</returns>
         public (int activeRecords, int deletedRecords) GetStat()
         {
-            var activeRecords = this.GetExistingRecords().Count();
+            int allRecords = (int)this.fileStream.Length / LengthOfOneRecord;
+            int activeRecords = this.GetExistingRecords().Count();
 
-            var deletedRecords = this.GetRecordsInternal()
-                    .Count(x => (x.status & MaskForDelete) != 0);
-
-            return (activeRecords, deletedRecords);
+            return (activeRecords, allRecords - activeRecords);
         }
 
         /// <summary>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 
 namespace FileCabinetApp.CommandHandlers
@@ -8,14 +9,14 @@ namespace FileCabinetApp.CommandHandlers
     /// </summary>
     public class FindCommandHandler : ServiceCommandHandlerBase
     {
-        private readonly IRecordPrinter printer;
+        private readonly Action<IEnumerable<FileCabinetRecord>> printer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FindCommandHandler"/> class.
         /// </summary>
         /// <param name="service">Interface instance IFileCabinetServise.</param>
         /// <param name="printer">Screen print style.</param>
-        public FindCommandHandler(IFileCabinetService service, IRecordPrinter printer)
+        public FindCommandHandler(IFileCabinetService service, Action<IEnumerable<FileCabinetRecord>> printer)
             : base(service)
         {
             this.printer = printer;
@@ -43,16 +44,16 @@ namespace FileCabinetApp.CommandHandlers
                 switch (searchСategory)
                 {
                     case "firstname":
-                        this.printer.Print(this.service.FindByFirstName(searchParameter));
+                        this.printer(this.service.FindByFirstName(searchParameter));
                         break;
                     case "lastname":
 
-                        this.printer.Print(this.service.FindByLastName(searchParameter));
+                        this.printer(this.service.FindByLastName(searchParameter));
                         break;
                     case "dateofbirth":
                         if (DateTime.TryParseExact(searchParameter, "yyyy-MMM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateOfBirth))
                         {
-                            this.printer.Print(this.service.FindByDateOfBirth(dateOfBirth));
+                            this.printer(this.service.FindByDateOfBirth(dateOfBirth));
                             break;
                         }
                         else

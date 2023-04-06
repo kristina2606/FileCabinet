@@ -24,11 +24,11 @@ namespace FileCabinetApp.CommandHandlers
         {
             if (appCommand.Command.Equals("purge", StringComparison.InvariantCultureIgnoreCase))
             {
-                var (activeRecords, _) = this.service.GetStat();
+                var (activeRecords, deletedRecords) = this.service.GetStat();
 
                 var purgedRecordsCount = this.service.Purge();
 
-                Console.WriteLine($"Data file processing is completed: {purgedRecordsCount} of {activeRecords} records were purged.");
+                Console.WriteLine($"Data file processing is completed: {purgedRecordsCount} of {activeRecords + deletedRecords} records were purged.");
             }
             else if (appCommand.Command != null)
             {

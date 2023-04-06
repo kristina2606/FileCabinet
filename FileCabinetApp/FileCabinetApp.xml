@@ -330,7 +330,7 @@
              Validate a new record from user input with settings for adults.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.CustomValidator.Validate(FileCabinetApp.FileCabinetRecordNewData)">
+        <member name="M:FileCabinetApp.CustomValidator.ValidateParametrs(FileCabinetApp.FileCabinetRecordNewData)">
             <summary>
             Validate a new record from user input withsettings for adults.
             </summary>
@@ -344,7 +344,7 @@
             Validate a new record from user input.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.DefaultValidator.Validate(FileCabinetApp.FileCabinetRecordNewData)">
+        <member name="M:FileCabinetApp.DefaultValidator.ValidateParametrs(FileCabinetApp.FileCabinetRecordNewData)">
             <summary>
             Validate a new record from user input.
             </summary>
@@ -991,7 +991,7 @@
             Validate a new record from user input with new validate parametrs.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.IRecordValidator.Validate(FileCabinetApp.FileCabinetRecordNewData)">
+        <member name="M:FileCabinetApp.IRecordValidator.ValidateParametrs(FileCabinetApp.FileCabinetRecordNewData)">
             <summary>
             Validate a new record from user input with new validate parametrs.
             </summary>

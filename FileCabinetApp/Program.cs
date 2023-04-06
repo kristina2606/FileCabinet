@@ -419,11 +419,11 @@ namespace FileCabinetApp
 
         private static void Purge(string parameters)
         {
-            var (activeRecords, _) = fileCabinetService.GetStat();
+            var (activeRecords, deletedRecords) = fileCabinetService.GetStat();
 
             var purgedRecordsCount = fileCabinetService.Purge();
 
-            Console.WriteLine($"Data file processing is completed: {purgedRecordsCount} of {activeRecords} records were purged.");
+            Console.WriteLine($"Data file processing is completed: {purgedRecordsCount} of {activeRecords + deletedRecords} records were purged.");
         }
 
         private static void OutputToTheConsoleDataFromTheList(ReadOnlyCollection<FileCabinetRecord> list)

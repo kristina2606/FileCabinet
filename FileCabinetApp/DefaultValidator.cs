@@ -5,7 +5,7 @@ namespace FileCabinetApp
     /// <summary>
     /// Validate a new record from user input.
     /// </summary>
-    public class DefaultValidator : DefaultFirstNameValidator, IRecordValidator
+    public class DefaultValidator : IRecordValidator
     {
         /// <summary>
         /// Validate a new record from user input.
@@ -16,12 +16,12 @@ namespace FileCabinetApp
         /// The gender isn't equal 'f' or 'm'. The height is less than 0 or greater than 250. The weight is less than 0.</exception>
         public void ValidateParametrs(FileCabinetRecordNewData fileCabinetRecordNewData)
         {
-            new DefaultFirstNameValidator().ValidateParametrs(fileCabinetRecordNewData);
-            new DefaultLastNameValidator().ValidateParametrs(fileCabinetRecordNewData);
-            new DefaultDateOfBirthValidator().ValidateParametrs(fileCabinetRecordNewData);
-            new DefaultGenderValidator().ValidateParametrs(fileCabinetRecordNewData);
-            new DefaultHeightValidator().ValidateParametrs(fileCabinetRecordNewData);
-            new DefaultWeightValidator().ValidateParametrs(fileCabinetRecordNewData);
+            new FirstNameValidator(2, 60).ValidateParametrs(fileCabinetRecordNewData);
+            new LastNameValidator(2, 60).ValidateParametrs(fileCabinetRecordNewData);
+            new DateOfBirthValidator(0, 75).ValidateParametrs(fileCabinetRecordNewData);
+            new GenderValidator('f', 'm', StringComparison.InvariantCulture).ValidateParametrs(fileCabinetRecordNewData);
+            new HeightValidator(0, 250).ValidateParametrs(fileCabinetRecordNewData);
+            new WeightValidator(0, 300).ValidateParametrs(fileCabinetRecordNewData);
         }
     }
 }

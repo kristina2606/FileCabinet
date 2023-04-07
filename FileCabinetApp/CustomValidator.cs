@@ -16,12 +16,12 @@ namespace FileCabinetApp
         /// The gender isn't equal 'f','F' or 'm','M'. The height is less than 145 or greater than 250. The weight is less than 40.</exception>
         public void ValidateParametrs(FileCabinetRecordNewData fileCabinetRecordNewData)
         {
-            new CustomFirstNameValidator().ValidateParametrs(fileCabinetRecordNewData);
-            new CustomLastNameValidator().ValidateParametrs(fileCabinetRecordNewData);
-            new CustomDateOfBirthValidator().ValidateParametrs(fileCabinetRecordNewData);
-            new CustomGenderValidator().ValidateParametrs(fileCabinetRecordNewData);
-            new CustomHeightValidator().ValidateParametrs(fileCabinetRecordNewData);
-            new CustomWeightValidator().ValidateParametrs(fileCabinetRecordNewData);
+            new FirstNameValidator(2, 15).ValidateParametrs(fileCabinetRecordNewData);
+            new LastNameValidator(2, 20).ValidateParametrs(fileCabinetRecordNewData);
+            new DateOfBirthValidator(18, 150).ValidateParametrs(fileCabinetRecordNewData);
+            new GenderValidator('f', 'm', StringComparison.InvariantCultureIgnoreCase).ValidateParametrs(fileCabinetRecordNewData);
+            new HeightValidator(145, 250).ValidateParametrs(fileCabinetRecordNewData);
+            new WeightValidator(40, 300).ValidateParametrs(fileCabinetRecordNewData);
         }
     }
 }

@@ -325,26 +325,6 @@
             <param name="inputNumber">Get string from user input.</param>
             <returns>Returns information about how the validation went, the string to convert, and the converted data type.</returns>
         </member>
-        <member name="T:FileCabinetApp.CustomValidator">
-            <summary>
-             Validate a new record from user input with settings for adults.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.CustomValidator.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.CustomValidator"/> class.
-            </summary>
-        </member>
-        <member name="T:FileCabinetApp.DefaultValidator">
-            <summary>
-            Validate a new record from user input.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.DefaultValidator.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.DefaultValidator"/> class.
-            </summary>
-        </member>
         <member name="T:FileCabinetApp.FileCabinetFilesystemService">
             <summary>
             Works with binary notation.

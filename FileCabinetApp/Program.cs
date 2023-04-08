@@ -18,7 +18,26 @@ namespace FileCabinetApp
         private const string CustomValidationRules = "Using default validation rules.";
 
         private static bool isRunning = true;
-        private static IFileCabinetService fileCabinetService = new FileCabinetMemoryService(new DefaultValidator());
+
+        private static IRecordValidator defaultValidator = new ValidatorBuilder()
+            .ValidateFirstName(2, 60)
+            .ValidateLastName(2, 60)
+            .ValidateDateOfBirth(0, 75)
+            .ValidateGender('f', 'm', StringComparison.InvariantCulture)
+            .ValidateHeight(0, 250)
+            .ValidateWeight(0, 300)
+            .Create();
+
+        private static IRecordValidator customValidator = new ValidatorBuilder()
+             .ValidateFirstName(2, 15)
+             .ValidateLastName(2, 20)
+             .ValidateDateOfBirth(18, 150)
+             .ValidateGender('f', 'm', StringComparison.InvariantCultureIgnoreCase)
+             .ValidateHeight(145, 250)
+             .ValidateWeight(40, 300)
+             .Create();
+
+        private static IFileCabinetService fileCabinetService = new FileCabinetMemoryService(defaultValidator);
         private static IUserInputValidation inputValidation = new UserInputValidationDafault();
         private static string validationRules = DefaultValidationRules;
 
@@ -37,7 +56,7 @@ namespace FileCabinetApp
                 var comand = args[i].Split('=');
                 if ((comand[0] == "--validation-rules" && comand[1].ToLowerInvariant() == "custom") || (args[i] == "-v" && args[i + 1].ToLowerInvariant() == "custom"))
                 {
-                    fileCabinetService = new FileCabinetMemoryService(new CustomValidator());
+                    fileCabinetService = new FileCabinetMemoryService(customValidator);
                     inputValidation = new UserInputValidationCustom();
                     validationRules = CustomValidationRules;
                 }
@@ -46,11 +65,11 @@ namespace FileCabinetApp
                 {
                     if (validationRules == CustomValidationRules)
                     {
-                        fileCabinetService = new FileCabinetFilesystemService(new FileStream(FileNameFormatDatabasePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None), new CustomValidator());
+                        fileCabinetService = new FileCabinetFilesystemService(new FileStream(FileNameFormatDatabasePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None), customValidator);
                     }
                     else
                     {
-                        fileCabinetService = new FileCabinetFilesystemService(new FileStream(FileNameFormatDatabasePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None), new DefaultValidator());
+                        fileCabinetService = new FileCabinetFilesystemService(new FileStream(FileNameFormatDatabasePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None), defaultValidator);
                     }
                 }
             }

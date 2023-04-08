@@ -3,11 +3,11 @@ using System.Linq;
 
 namespace FileCabinetApp
 {
-    public abstract class CompositeValidator : IRecordValidator
+    public class CompositeValidator : IRecordValidator
     {
         private readonly List<IRecordValidator> validators;
 
-        protected CompositeValidator(IEnumerable<IRecordValidator> validators)
+        public CompositeValidator(IEnumerable<IRecordValidator> validators)
         {
             this.validators = validators.ToList();
         }

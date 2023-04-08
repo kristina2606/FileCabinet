@@ -53,5 +53,33 @@ namespace FileCabinetApp
         {
             return new CompositeValidator(this.validators);
         }
+
+        public IRecordValidator CreateDefault()
+        {
+            IRecordValidator defaultValidator = new ValidatorBuilder()
+            .ValidateFirstName(2, 60)
+            .ValidateLastName(2, 60)
+            .ValidateDateOfBirth(0, 75)
+            .ValidateGender('f', 'm', StringComparison.InvariantCulture)
+            .ValidateHeight(0, 250)
+            .ValidateWeight(0, 300)
+            .Create();
+
+            return defaultValidator;
+        }
+
+        public IRecordValidator CreateCustom()
+        {
+            IRecordValidator customValidator = new ValidatorBuilder()
+            .ValidateFirstName(2, 15)
+            .ValidateLastName(2, 20)
+            .ValidateDateOfBirth(18, 150)
+            .ValidateGender('f', 'm', StringComparison.InvariantCultureIgnoreCase)
+            .ValidateHeight(145, 250)
+            .ValidateWeight(40, 300)
+            .Create();
+
+            return customValidator;
+        }
     }
 }

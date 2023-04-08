@@ -330,28 +330,20 @@
              Validate a new record from user input with settings for adults.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.CustomValidator.ValidateParametrs(FileCabinetApp.FileCabinetRecordNewData)">
+        <member name="M:FileCabinetApp.CustomValidator.#ctor">
             <summary>
-            Validate a new record from user input withsettings for adults.
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CustomValidator"/> class.
             </summary>
-            <param name="fileCabinetRecordNewData">The new date in the recocrd.</param>
-            <exception cref="T:System.ArgumentNullException">If the firstName or lastName is equal null.</exception>
-            <exception cref="T:System.ArgumentException">The firstName or lastName length is less than 2 or greater than 15.The age is less than 18 or greater 150.
-            The gender isn't equal 'f','F' or 'm','M'. The height is less than 145 or greater than 250. The weight is less than 40.</exception>
         </member>
         <member name="T:FileCabinetApp.DefaultValidator">
             <summary>
             Validate a new record from user input.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.DefaultValidator.ValidateParametrs(FileCabinetApp.FileCabinetRecordNewData)">
+        <member name="M:FileCabinetApp.DefaultValidator.#ctor">
             <summary>
-            Validate a new record from user input.
+            Initializes a new instance of the <see cref="T:FileCabinetApp.DefaultValidator"/> class.
             </summary>
-            <param name="fileCabinetRecordNewData">The new date in the record.</param>
-            <exception cref="T:System.ArgumentNullException">If the firstName or lastName is equal null.</exception>
-            <exception cref="T:System.ArgumentException">The firstName or lastName length is less than 2 or greater than 60.The dateOfBirth is less than 01-Jun-1950 or greater today's date.
-            The gender isn't equal 'f' or 'm'. The height is less than 0 or greater than 250. The weight is less than 0.</exception>
         </member>
         <member name="T:FileCabinetApp.FileCabinetFilesystemService">
             <summary>

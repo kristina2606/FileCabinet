@@ -37,6 +37,8 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("find", Find),
             new Tuple<string, Action<string>>("export", Export),
             new Tuple<string, Action<string>>("import", Import),
+            new Tuple<string, Action<string>>("remove", Remove),
+            new Tuple<string, Action<string>>("purge", Purge),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -50,6 +52,8 @@ namespace FileCabinetApp
             new string[] { "find", "finds all existing records by parameter.", "The 'find' finds all existing records by parameter." },
             new string[] { "export", "exports service data to .csv or .xml file.", "The 'export' exports service data to .csv or .xml file." },
             new string[] { "import", "import data from .csv or .xml file.", "The 'import' import data from .csv or .xml file." },
+            new string[] { "remove", "remove record by id.", "The 'remove' remove record by id." },
+            new string[] { "purge", "The command defragments the data file.", "The 'purge' command defragments the data file." },
         };
 
         /// <summary>
@@ -157,8 +161,8 @@ namespace FileCabinetApp
 
         private static void Stat(string parameters)
         {
-            int recordsCount = Program.fileCabinetService.GetStat();
-            Console.WriteLine($"{recordsCount} record(s).");
+            var (activeRecords, deletedRecords) = Program.fileCabinetService.GetStat();
+            Console.WriteLine($"{activeRecords + deletedRecords} record(s), {deletedRecords} of them deleted.");
         }
 
         private static void Create(string parameters)
@@ -196,14 +200,10 @@ namespace FileCabinetApp
 
         private static void Edit(string parameters)
         {
-            Console.Write("Enter the record number for editing: ");
-            var inputId = Console.ReadLine();
-            int id;
-            while (!int.TryParse(inputId, out id))
+            if (!int.TryParse(parameters, out int id))
             {
-                Console.WriteLine("You introduced an incorrect ID. Repeat the input.");
-                Console.Write("Enter the record number for editing: ");
-                inputId = Console.ReadLine();
+                Console.WriteLine("You introduced an incorrect ID.");
+                return;
             }
 
             if (Program.fileCabinetService.IsExist(id))
@@ -239,17 +239,18 @@ namespace FileCabinetApp
 
         private static void Find(string parameters)
         {
-            Console.Write("Enter search parameter: ");
-            var searchOptions = Console.ReadLine().ToLowerInvariant().Split(' ');
+            var searchParametrs = parameters.ToLowerInvariant().Split(' ');
 
-            if (searchOptions.Length != 2)
+            if (searchParametrs.Length != 2)
             {
                 Console.WriteLine("You have entered an invalid search parameter. Two are needed.");
                 return;
             }
 
-            var searchParameter = searchOptions[1].Trim('"');
-            switch (searchOptions[0])
+            var searchСategory = searchParametrs[0];
+            var searchParameter = searchParametrs[1].Trim('"');
+
+            switch (searchСategory)
             {
                 case "firstname":
                     OutputToTheConsoleDataFromTheList(Program.fileCabinetService.FindByFirstName(searchParameter));
@@ -279,17 +280,22 @@ namespace FileCabinetApp
         {
             var makeSnapshot = Program.fileCabinetService.MakeSnapshot();
 
-            Console.Write("Enter export format (csv/xml): ");
-            var format = Console.ReadLine().ToLowerInvariant();
+            var exportParametrs = parameters.Split(' ');
+
+            if (exportParametrs.Length != 2)
+            {
+                Console.WriteLine("You have entered an invalid export parameter. Two are needed.");
+                return;
+            }
+
+            var format = exportParametrs[0];
+            var path = exportParametrs[1];
 
             if (format != FileTypeCsv && format != FileTypeXml)
             {
                 Console.WriteLine("You entered an invalid format.");
                 return;
             }
-
-            Console.Write("Enter the export path: ");
-            var path = Console.ReadLine();
 
             var folder = Path.GetDirectoryName(path);
             if (!Directory.Exists(folder))
@@ -336,17 +342,22 @@ namespace FileCabinetApp
 
         private static void Import(string parameters)
         {
-            Console.Write("Enter export format (csv/xml): ");
-            var format = Console.ReadLine().ToLowerInvariant();
+            var importParametrs = parameters.Split(' ');
+
+            if (importParametrs.Length != 2)
+            {
+                Console.WriteLine("You have entered an invalid export parameter. Two are needed.");
+                return;
+            }
+
+            var format = importParametrs[0];
+            var path = importParametrs[1];
 
             if (format != FileTypeCsv && format != FileTypeXml)
             {
                 Console.WriteLine("You entered an invalid format.");
                 return;
             }
-
-            Console.Write("Enter the import path: ");
-            var path = Console.ReadLine();
 
             if (!File.Exists(path))
             {
@@ -384,6 +395,35 @@ namespace FileCabinetApp
 
                 Console.WriteLine($"All records were imported from {path}.");
             }
+        }
+
+        private static void Remove(string parameters)
+        {
+            if (!int.TryParse(parameters, out int id))
+            {
+                Console.WriteLine("You introduced an incorrect ID.");
+                return;
+            }
+
+            try
+            {
+                Program.fileCabinetService.Remove(id);
+
+                Console.WriteLine($"Record #{id} is removed.");
+            }
+            catch
+            {
+                Console.WriteLine($"Record #{id} doesn't exists.");
+            }
+        }
+
+        private static void Purge(string parameters)
+        {
+            var (activeRecords, deletedRecords) = fileCabinetService.GetStat();
+
+            var purgedRecordsCount = fileCabinetService.Purge();
+
+            Console.WriteLine($"Data file processing is completed: {purgedRecordsCount} of {activeRecords + deletedRecords} records were purged.");
         }
 
         private static void OutputToTheConsoleDataFromTheList(ReadOnlyCollection<FileCabinetRecord> list)

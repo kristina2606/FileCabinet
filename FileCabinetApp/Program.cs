@@ -22,8 +22,6 @@ namespace FileCabinetApp
         private static IUserInputValidation inputValidation = new UserInputValidationDafault();
         private static string validationRules = DefaultValidationRules;
 
-        private static Action<bool> onExited;
-
         /// <summary>
         /// Receives a command from the user.
         /// </summary>
@@ -59,7 +57,6 @@ namespace FileCabinetApp
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
 
-            onExited += Exit;
             var commandHandler = CreateCommandHandlers();
 
             do
@@ -87,7 +84,7 @@ namespace FileCabinetApp
         private static void Exit(bool exit)
         {
             Console.WriteLine("Exiting an application...");
-            isRunning = exit;
+            isRunning = !exit;
         }
 
         private static void DefaultRecordPrint(IEnumerable<FileCabinetRecord> records)
@@ -118,7 +115,7 @@ namespace FileCabinetApp
             var importHandler = new ImportCommandHandler(Program.fileCabinetService);
             var removeHandler = new RemoveCommandHandler(Program.fileCabinetService);
             var purgeHandler = new PurgeCommandHandler(Program.fileCabinetService);
-            var exitHandler = new ExitCommandHandler(onExited);
+            var exitHandler = new ExitCommandHandler(Exit);
             var missHandler = new MissCommandHandler();
 
             helpHandler.SetNext(createHandler);

@@ -30,7 +30,7 @@ namespace FileCabinetApp.CommandHandlers
 
                 Console.WriteLine($"Data file processing is completed: {purgedRecordsCount} of {activeRecords + deletedRecords} records were purged.");
             }
-            else if (appCommand.Command != null)
+            else
             {
                 base.Handle(appCommand);
             }

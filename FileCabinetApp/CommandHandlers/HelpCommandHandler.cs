@@ -11,7 +11,7 @@ namespace FileCabinetApp.CommandHandlers
         private const int DescriptionHelpIndex = 1;
         private const int ExplanationHelpIndex = 2;
 
-        private static string[][] helpMessages = new string[][]
+        private readonly string[][] helpMessages = new string[][]
 {
             new string[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
@@ -36,10 +36,10 @@ namespace FileCabinetApp.CommandHandlers
             {
                 if (!string.IsNullOrEmpty(appCommand.Parameters))
                 {
-                    var index = Array.FindIndex(helpMessages, 0, helpMessages.Length, i => string.Equals(i[CommandHelpIndex], appCommand.Parameters, StringComparison.InvariantCultureIgnoreCase));
+                    var index = Array.FindIndex(this.helpMessages, 0, this.helpMessages.Length, i => string.Equals(i[CommandHelpIndex], appCommand.Parameters, StringComparison.InvariantCultureIgnoreCase));
                     if (index >= 0)
                     {
-                        Console.WriteLine(helpMessages[index][ExplanationHelpIndex]);
+                        Console.WriteLine(this.helpMessages[index][ExplanationHelpIndex]);
                     }
                     else
                     {
@@ -50,7 +50,7 @@ namespace FileCabinetApp.CommandHandlers
                 {
                     Console.WriteLine("Available commands:");
 
-                    foreach (var helpMessage in helpMessages)
+                    foreach (var helpMessage in this.helpMessages)
                     {
                         Console.WriteLine("\t{0}\t- {1}", helpMessage[CommandHelpIndex], helpMessage[DescriptionHelpIndex]);
                     }
@@ -58,7 +58,7 @@ namespace FileCabinetApp.CommandHandlers
 
                 Console.WriteLine();
             }
-            else if (appCommand.Command != null)
+            else
             {
                 base.Handle(appCommand);
             }

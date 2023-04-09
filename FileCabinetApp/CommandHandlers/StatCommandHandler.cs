@@ -27,7 +27,7 @@ namespace FileCabinetApp.CommandHandlers
                 var (activeRecords, deletedRecords) = this.service.GetStat();
                 Console.WriteLine($"{activeRecords + deletedRecords} record(s), {deletedRecords} of them deleted.");
             }
-            else if (appCommand.Command != null)
+            else
             {
                 base.Handle(appCommand);
             }

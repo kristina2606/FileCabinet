@@ -82,7 +82,7 @@ namespace FileCabinetApp.CommandHandlers
                     Console.WriteLine($"All records were imported from {path}.");
                 }
             }
-            else if (appCommand.Command != null)
+            else
             {
                 base.Handle(appCommand);
             }

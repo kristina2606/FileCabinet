@@ -7,7 +7,7 @@ namespace FileCabinetApp.CommandHandlers
     /// </summary>
     public class ExitCommandHandler : CommandHandlerBase
     {
-        private readonly Action<bool> onExited;
+        private readonly Action<bool> exit;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ExitCommandHandler"/> class.
@@ -15,7 +15,7 @@ namespace FileCabinetApp.CommandHandlers
         /// <param name="isRunning">Application settings(on/off).</param>
         public ExitCommandHandler(Action<bool> isRunning)
         {
-            this.onExited = isRunning;
+            this.exit = isRunning;
         }
 
         /// <summary>
@@ -26,9 +26,9 @@ namespace FileCabinetApp.CommandHandlers
         {
             if (appCommand.Command.Equals("exit", StringComparison.InvariantCultureIgnoreCase))
             {
-                this.onExited(false);
+                this.exit(true);
             }
-            else if (appCommand.Command != null)
+            else
             {
                 base.Handle(appCommand);
             }

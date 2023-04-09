@@ -73,7 +73,7 @@ namespace FileCabinetApp.CommandHandlers
 
                 Console.WriteLine($"All records are exported to file {path}.");
             }
-            else if (appCommand.Command != null)
+            else
             {
                 base.Handle(appCommand);
             }

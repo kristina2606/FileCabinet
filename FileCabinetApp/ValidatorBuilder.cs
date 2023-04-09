@@ -42,9 +42,22 @@ namespace FileCabinetApp
         /// <param name="from">Min date of birth.</param>
         /// <param name="to">Max date of birth.</param>
         /// <returns>Returns ValidatorBuilder type.</returns>
-        public ValidatorBuilder ValidateDateOfBirth(int from, int to)
+        public ValidatorBuilder ValidateDateOfBirth(DateTime from, DateTime to)
         {
             var dateOfBirth = new DateOfBirthValidator(from, to);
+            this.validators.Add(dateOfBirth);
+            return this;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DateOfBirthValidator"/> class.
+        /// </summary>
+        /// <param name="minAge">Min age.</param>
+        /// <param name="maxAge">Max age.</param>
+        /// <returns>Returns ValidatorBuilder type.</returns>
+        public ValidatorBuilder ValidateDateOfBirth(int minAge, int maxAge)
+        {
+            var dateOfBirth = new DateOfBirthValidator(minAge, maxAge);
             this.validators.Add(dateOfBirth);
             return this;
         }
@@ -96,42 +109,6 @@ namespace FileCabinetApp
         public IRecordValidator Create()
         {
             return new CompositeValidator(this.validators);
-        }
-
-        /// <summary>
-        /// Crerate a set of default validator.
-        /// </summary>
-        /// <returns>Returns a set of default validator.</returns>
-        public IRecordValidator CreateDefault()
-        {
-            IRecordValidator defaultValidator = new ValidatorBuilder()
-            .ValidateFirstName(2, 60)
-            .ValidateLastName(2, 60)
-            .ValidateDateOfBirth(0, 75)
-            .ValidateGender('f', 'm', StringComparison.InvariantCulture)
-            .ValidateHeight(0, 250)
-            .ValidateWeight(0, 300)
-            .Create();
-
-            return defaultValidator;
-        }
-
-        /// <summary>
-        /// Crerate a set of custom validator.
-        /// </summary>
-        /// <returns>Returns a set of custom validator.</returns>
-        public IRecordValidator CreateCustom()
-        {
-            IRecordValidator customValidator = new ValidatorBuilder()
-            .ValidateFirstName(2, 15)
-            .ValidateLastName(2, 20)
-            .ValidateDateOfBirth(18, 150)
-            .ValidateGender('f', 'm', StringComparison.InvariantCultureIgnoreCase)
-            .ValidateHeight(145, 250)
-            .ValidateWeight(40, 300)
-            .Create();
-
-            return customValidator;
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Globalization;
 
 namespace FileCabinetApp.CommandHandlers
 {
@@ -35,7 +34,7 @@ namespace FileCabinetApp.CommandHandlers
 
                 this.printer(list);
             }
-            else if (appCommand.Command != null)
+            else
             {
                 base.Handle(appCommand);
             }

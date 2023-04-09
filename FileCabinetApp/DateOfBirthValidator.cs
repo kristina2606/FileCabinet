@@ -7,18 +7,29 @@ namespace FileCabinetApp
     /// </summary>
     public class DateOfBirthValidator : IRecordValidator
     {
-        private readonly int from;
-        private readonly int to;
+        private readonly DateTime from;
+        private readonly DateTime to;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DateOfBirthValidator"/> class.
         /// </summary>
         /// <param name="from">Min date of birth.</param>
         /// <param name="to">Max date of birth.</param>
-        public DateOfBirthValidator(int from, int to)
+        public DateOfBirthValidator(DateTime from, DateTime to)
         {
             this.from = from;
             this.to = to;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DateOfBirthValidator"/> class.
+        /// </summary>
+        /// <param name="minAge">Min age.</param>
+        /// <param name="maxAge">Max age.</param>
+        public DateOfBirthValidator(int minAge, int maxAge)
+        {
+            this.from = DateTime.Now.AddYears(-minAge);
+            this.to = DateTime.Now.AddYears(-maxAge);
         }
 
         /// <summary>
@@ -28,9 +39,9 @@ namespace FileCabinetApp
         /// <exception cref="ArgumentException">Exception if the incoming entry does not match the parameters.</exception>
         public void ValidateParametrs(FileCabinetRecordNewData fileCabinetRecordNewData)
         {
-            if (DateTime.Now.Year - fileCabinetRecordNewData.DateOfBirth.Year < this.from || DateTime.Now.Year - fileCabinetRecordNewData.DateOfBirth.Year > this.to)
+            if (fileCabinetRecordNewData.DateOfBirth < this.from || fileCabinetRecordNewData.DateOfBirth > this.to)
             {
-                throw new ArgumentException($"not yet {this.from} years old or over {this.to}.");
+                throw new ArgumentException($"date of birth less than {this.from.ToShortDateString()} or greater than {this.to.ToShortDateString()}");
             }
         }
     }

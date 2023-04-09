@@ -18,7 +18,7 @@ namespace FileCabinetApp.CommandHandlers
                 Console.WriteLine($"There is no '{appCommand.Command}' command.");
                 Console.WriteLine();
             }
-            else if (appCommand.Command != null)
+            else
             {
                 base.Handle(appCommand);
             }

@@ -29,61 +29,32 @@ namespace FileCabinetApp.CommandHandlers
             if (appCommand.Command.Equals("create", StringComparison.InvariantCultureIgnoreCase))
             {
                 Console.Write("First name: ");
-                var firstName = ReadInput(Converter.StringConverter, this.validationRules.ValidateFirstName);
+                var firstName = UserInputValidation.ReadInput(Converter.StringConverter, this.validationRules.ValidateFirstName);
 
                 Console.Write("Last name: ");
-                var lastName = ReadInput(Converter.StringConverter, this.validationRules.ValidateLastName);
+                var lastName = UserInputValidation.ReadInput(Converter.StringConverter, this.validationRules.ValidateLastName);
 
                 Console.Write("Date of birth: ");
-                var dateOfBirth = ReadInput(Converter.DateConverter, this.validationRules.ValidateDateOfBirth);
+                var dateOfBirth = UserInputValidation.ReadInput(Converter.DateConverter, this.validationRules.ValidateDateOfBirth);
 
                 Console.Write("Gender (man - 'm' or woman - 'f'): ");
-                var gender = ReadInput(Converter.CharConverter, this.validationRules.ValidateGender);
+                var gender = UserInputValidation.ReadInput(Converter.CharConverter, this.validationRules.ValidateGender);
 
                 Console.Write("Height: ");
-                var height = ReadInput(Converter.ShortConverter, this.validationRules.ValidateHeight);
+                var height = UserInputValidation.ReadInput(Converter.ShortConverter, this.validationRules.ValidateHeight);
 
                 Console.Write("Weight: ");
-                var weight = ReadInput(Converter.DecimalConverter, this.validationRules.ValidateWeight);
+                var weight = UserInputValidation.ReadInput(Converter.DecimalConverter, this.validationRules.ValidateWeight);
 
                 FileCabinetRecordNewData fileCabinetRecordNewData = new FileCabinetRecordNewData(firstName, lastName, dateOfBirth, gender, height, weight);
                 int recordId = this.service.CreateRecord(fileCabinetRecordNewData);
 
                 Console.WriteLine($"Record #{recordId} is created.");
             }
-            else if (appCommand.Command != null)
+            else
             {
                 base.Handle(appCommand);
             }
-        }
-
-        private static T ReadInput<T>(Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator)
-        {
-            do
-            {
-                T value;
-
-                var input = Console.ReadLine();
-                var conversionResult = converter(input);
-
-                if (!conversionResult.Item1)
-                {
-                    Console.WriteLine($"Conversion failed: {conversionResult.Item2}. Please, correct your input.");
-                    continue;
-                }
-
-                value = conversionResult.Item3;
-
-                var validationResult = validator(value);
-                if (!validationResult.Item1)
-                {
-                    Console.WriteLine($"Validation failed: {validationResult.Item2}. Please, correct your input.");
-                    continue;
-                }
-
-                return value;
-            }
-            while (true);
         }
     }
 }

@@ -41,7 +41,7 @@ namespace FileCabinetApp.CommandHandlers
                     Console.WriteLine($"Record #{id} doesn't exists.");
                 }
             }
-            else if (appCommand.Command != null)
+            else
             {
                 base.Handle(appCommand);
             }

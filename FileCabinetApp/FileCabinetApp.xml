@@ -278,6 +278,20 @@
             </summary>
             <param name="appCommand">>Configuratiion the application command and options.</param>
         </member>
+        <member name="T:FileCabinetApp.CommandHandlers.UserInputValidation">
+            <summary>
+            User input validation.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.UserInputValidation.ReadInput``1(System.Func{System.String,System.Tuple{System.Boolean,System.String,``0}},System.Func{``0,System.Tuple{System.Boolean,System.String}})">
+            <summary>
+            Validate user input.
+            </summary>
+            <typeparam name="T">Generic types.</typeparam>
+            <param name="converter">Converts a string to a value of the required type.</param>
+            <param name="validator">Checks the value against the criteria.</param>
+            <returns>Resulting value.</returns>
+        </member>
         <member name="T:FileCabinetApp.CompositeValidator">
             <summary>
             Сontains a set of different validators.
@@ -347,12 +361,19 @@
             Validate a new record from user input with 'date of birth' validate parametrs.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.DateOfBirthValidator.#ctor(System.Int32,System.Int32)">
+        <member name="M:FileCabinetApp.DateOfBirthValidator.#ctor(System.DateTime,System.DateTime)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.DateOfBirthValidator"/> class.
             </summary>
             <param name="from">Min date of birth.</param>
             <param name="to">Max date of birth.</param>
+        </member>
+        <member name="M:FileCabinetApp.DateOfBirthValidator.#ctor(System.Int32,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.DateOfBirthValidator"/> class.
+            </summary>
+            <param name="minAge">Min age.</param>
+            <param name="maxAge">Max age.</param>
         </member>
         <member name="M:FileCabinetApp.DateOfBirthValidator.ValidateParametrs(FileCabinetApp.FileCabinetRecordNewData)">
             <summary>
@@ -1270,12 +1291,20 @@
             <param name="maxLenght">Max lenght of last name.</param>
             <returns>Returns ValidatorBuilder type.</returns>
         </member>
-        <member name="M:FileCabinetApp.ValidatorBuilder.ValidateDateOfBirth(System.Int32,System.Int32)">
+        <member name="M:FileCabinetApp.ValidatorBuilder.ValidateDateOfBirth(System.DateTime,System.DateTime)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.DateOfBirthValidator"/> class.
             </summary>
             <param name="from">Min date of birth.</param>
             <param name="to">Max date of birth.</param>
+            <returns>Returns ValidatorBuilder type.</returns>
+        </member>
+        <member name="M:FileCabinetApp.ValidatorBuilder.ValidateDateOfBirth(System.Int32,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.DateOfBirthValidator"/> class.
+            </summary>
+            <param name="minAge">Min age.</param>
+            <param name="maxAge">Max age.</param>
             <returns>Returns ValidatorBuilder type.</returns>
         </member>
         <member name="M:FileCabinetApp.ValidatorBuilder.ValidateGender(System.Char,System.Char,System.StringComparison)">
@@ -1309,16 +1338,23 @@
             </summary>
             <returns>Returns a set of validator.</returns>
         </member>
-        <member name="M:FileCabinetApp.ValidatorBuilder.CreateDefault">
+        <member name="T:FileCabinetApp.ValidatorCreation">
+            <summary>
+            Define extension methods for ValidatorBuilder.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.ValidatorCreation.CreateDefault(FileCabinetApp.ValidatorBuilder)">
             <summary>
             Crerate a set of default validator.
             </summary>
+            <param name="validatorBuilder">The class to which the extension method belongs.</param>
             <returns>Returns a set of default validator.</returns>
         </member>
-        <member name="M:FileCabinetApp.ValidatorBuilder.CreateCustom">
+        <member name="M:FileCabinetApp.ValidatorCreation.CreateCustom(FileCabinetApp.ValidatorBuilder)">
             <summary>
             Crerate a set of custom validator.
             </summary>
+            <param name="validatorBuilder">The class to which the extension method belongs.</param>
             <returns>Returns a set of custom validator.</returns>
         </member>
         <member name="T:FileCabinetApp.WeightValidator">

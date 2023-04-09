@@ -47,7 +47,6 @@ namespace FileCabinetApp.CommandHandlers
                         this.printer(this.service.FindByFirstName(searchParameter));
                         break;
                     case "lastname":
-
                         this.printer(this.service.FindByLastName(searchParameter));
                         break;
                     case "dateofbirth":
@@ -67,7 +66,7 @@ namespace FileCabinetApp.CommandHandlers
                         break;
                 }
             }
-            else if (appCommand.Command != null)
+            else
             {
                 base.Handle(appCommand);
             }

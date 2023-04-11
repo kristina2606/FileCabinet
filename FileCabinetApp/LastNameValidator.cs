@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 
 namespace FileCabinetApp
 {
@@ -14,7 +15,8 @@ namespace FileCabinetApp
         /// Initializes a new instance of the <see cref="LastNameValidator"/> class.
         /// </summary>
         /// <param name="minLenght">Min lenght of last name.</param>
-        /// <param name="maxLenght">Max lenght of last name.</param>
+        /// <param name="maxLenght">Max lenght of last name.</param>s
+        [JsonConstructor]
         public LastNameValidator(int minLenght, int maxLenght)
         {
             this.minLenght = minLenght;

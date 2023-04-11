@@ -1142,7 +1142,7 @@
             Initializes a new instance of the <see cref="T:FileCabinetApp.LastNameValidator"/> class.
             </summary>
             <param name="minLenght">Min lenght of last name.</param>
-            <param name="maxLenght">Max lenght of last name.</param>
+            <param name="maxLenght">Max lenght of last name.</param>s
         </member>
         <member name="M:FileCabinetApp.LastNameValidator.ValidateParametrs(FileCabinetApp.FileCabinetRecordNewData)">
             <summary>

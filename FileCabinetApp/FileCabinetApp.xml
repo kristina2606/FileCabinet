@@ -1142,7 +1142,7 @@
             Initializes a new instance of the <see cref="T:FileCabinetApp.LastNameValidator"/> class.
             </summary>
             <param name="minLenght">Min lenght of last name.</param>
-            <param name="maxLenght">Max lenght of last name.</param>s
+            <param name="maxLenght">Max lenght of last name.</param>
         </member>
         <member name="M:FileCabinetApp.LastNameValidator.ValidateParametrs(FileCabinetApp.FileCabinetRecordNewData)">
             <summary>
@@ -1175,6 +1175,184 @@
             <value>
             A list of record.
             </value>
+        </member>
+        <member name="T:FileCabinetApp.ServiceLogger">
+            <summary>
+            Saves information about service method calls and passed parameters to a text file.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.#ctor(FileCabinetApp.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.ServiceLogger"/> class.
+            </summary>
+            <param name="service">Interface instance IFileCabinetServise.</param>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.CreateRecord(FileCabinetApp.FileCabinetRecordNewData)">
+            <summary>
+            Creates a new record from user input and saves information about service method calls and passed parameters to a text file.
+            </summary>
+            <param name="fileCabinetRecordNewData">The new date in the record.</param>
+            <returns>Returns the id of the created record.</returns>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.EditRecord(System.Int32,FileCabinetApp.FileCabinetRecordNewData)">
+            <summary>
+            Edits an already existing entry by id and saves information about service method calls and passed parameters to a text file.
+            </summary>
+            <param name="id">The id of the record to be modified.</param>
+            <param name="fileCabinetRecordNewData">The new date in the record.</param>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.FindByDateOfBirth(System.DateTime)">
+            <summary>
+            Finds all records by date of birth and saves information about service method calls and passed parameters to a text file.
+            </summary>
+            <param name="dateOfBirth">The parameter by which you want to find all existing records.</param>
+            <returns>Returns all records by date of birth.</returns>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.FindByFirstName(System.String)">
+            <summary>
+            Finds all records by first name and saves information about service method calls and passed parameters to a text file.
+            </summary>
+            <param name="firstName">The parameter by which you want to find all existing records.</param>
+            <returns>Returns  all records by first name.</returns>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.FindByLastName(System.String)">
+            <summary>
+            Finds all records by last name and saves information about service method calls and passed parameters to a text file.
+            </summary>
+            <param name="lastName">The parameter by which you want to find all existing records.</param>
+            <returns>Returns all records by last name.</returns>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.GetRecords">
+            <summary>
+            Gets all existing records and saves information about service method calls and passed parameters to a text file.
+            </summary>
+            <returns>Returns all existing records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.GetStat">
+            <summary>
+            Gets the count of all existed and deleted records and saves information about service method calls and passed parameters to a text file.
+            </summary>
+            <returns>Returns the count of all existing records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.IsExist(System.Int32)">
+            <summary>
+            Checks if records with the specified id exists and saves information about service method calls and passed parameters to a text file.
+            </summary>
+            <param name="id">The id entered by the user.</param>
+            <returns>True if records exists and false if records don't exist.</returns>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.MakeSnapshot">
+            <summary>
+            Passes the state of an object and saves information about service method calls and passed parameters to a text file.
+            </summary>
+            <returns>Class containing the state of an object.</returns>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.Purge">
+            <summary>
+            Defragments the data file and saves information about service method calls and passed parameters to a text file.
+            </summary>
+            <returns>Count of purged records. Only for FileCabinetFilesystemService.</returns>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.Remove(System.Int32)">
+            <summary>
+            Remove record by id and saves information about service method calls and passed parameters to a text file.
+            </summary>
+            <param name="id">Record id to remove.</param>
+        </member>
+        <member name="M:FileCabinetApp.ServiceLogger.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
+            <summary>
+            Adding imported records to existing records and saves information about service method calls and passed parameters to a text file.
+            </summary>
+            <param name="fileCabinetServiceSnapshot">Сlass instance.</param>
+        </member>
+        <member name="T:FileCabinetApp.ServiceMeter">
+            <summary>
+            Measures the running time of service methods and displays them on the screen.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.#ctor(FileCabinetApp.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.ServiceMeter"/> class.
+            </summary>
+            <param name="service">Interface instance IFileCabinetServise.</param>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.CreateRecord(FileCabinetApp.FileCabinetRecordNewData)">
+            <summary>
+            Creates a new record from user input and measures the running time of service methods and displays them on the screen.
+            </summary>
+            <param name="fileCabinetRecordNewData">The new date in the record.</param>
+            <returns>Returns the id of the created record.</returns>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.EditRecord(System.Int32,FileCabinetApp.FileCabinetRecordNewData)">
+            <summary>
+            Edits an already existing entry by id and measures the running time of service methods and displays them on the screen.
+            </summary>
+            <param name="id">The id of the record to be modified.</param>
+            <param name="fileCabinetRecordNewData">The new date in the record.</param>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.FindByDateOfBirth(System.DateTime)">
+            <summary>
+            Finds all records by date of birth and measures the running time of service methods and displays them on the screen.
+            </summary>
+            <param name="dateOfBirth">The parameter by which you want to find all existing records.</param>
+            <returns>Returns all records by date of birth.</returns>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.FindByFirstName(System.String)">
+            <summary>
+            Finds all records by first name and measures the running time of service methods and displays them on the screen.
+            </summary>
+            <param name="firstName">The parameter by which you want to find all existing records.</param>
+            <returns>Returns  all records by first name.</returns>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.FindByLastName(System.String)">
+            <summary>
+            Finds all records by last name and measures the running time of service methods and displays them on the screen.
+            </summary>
+            <param name="lastName">The parameter by which you want to find all existing records.</param>
+            <returns>Returns all records by last name.</returns>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.GetRecords">
+            <summary>
+            Gets all existing records and measures the running time of service methods and displays them on the screen.
+            </summary>
+            <returns>Returns all existing records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.GetStat">
+            <summary>
+            Gets the count of all existed and deleted records and measures the running time of service methods and displays them on the screen.
+            </summary>
+            <returns>Returns the count of all existing records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.IsExist(System.Int32)">
+            <summary>
+            Checks if records with the specified id exists and measures the running time of service methods and displays them on the screen.
+            </summary>
+            <param name="id">The id entered by the user.</param>
+            <returns>True if records exists and false if records don't exist.</returns>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.MakeSnapshot">
+            <summary>
+            Passes the state of an object and measures the running time of service methods and displays them on the screen.
+            </summary>
+            <returns>Class containing the state of an object.</returns>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.Purge">
+            <summary>
+            Defragments the data file and measures the running time of service methods and displays them on the screen.
+            </summary>
+            <returns>Count of purged records. Only for FileCabinetFilesystemService.</returns>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.Remove(System.Int32)">
+            <summary>
+            Remove record by id and measures the running time of service methods and displays them on the screen.
+            </summary>
+            <param name="id">Record id to remove.</param>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
+            <summary>
+            Adding imported records to existing records and measures the running time of service methods and displays them on the screen.
+            </summary>
+            <param name="fileCabinetServiceSnapshot">Сlass instance.</param>
         </member>
         <member name="T:FileCabinetApp.UserInputValidationCustom">
             <summary>
@@ -1269,6 +1447,172 @@
             </summary>
             <param name="weight">Weight of a person.</param>
             <returns>Returns information about how the validation went and the value being validated.</returns>
+        </member>
+        <member name="T:FileCabinetApp.ValidationConfig">
+            <summary>
+            Create validation from .json configuration file.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.ValidationConfig.Default">
+            <summary>
+            Gets or sets default validation parametrs.
+            </summary>
+            <value>
+            Default validation parametrs.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.ValidationConfig.Custom">
+            <summary>
+            Gets or sets custom validation parametrs.
+            </summary>
+            <value>
+            Custom validation parametrs.
+            </value>
+        </member>
+        <member name="T:FileCabinetApp.ValidationConfigAnthropometry">
+            <summary>
+            Create anthropometry parametr fron .json configuration file.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.ValidationConfigAnthropometry.MinValue">
+            <summary>
+            Gets or sets minimum anthropometry value validation parametrs.
+            </summary>
+            <value>
+            First name validation parametrs.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.ValidationConfigAnthropometry.MaxValue">
+            <summary>
+            Gets or sets maximum anthropometry value validation parametrs.
+            </summary>
+            <value>
+            First name validation parametrs.
+            </value>
+        </member>
+        <member name="T:FileCabinetApp.ValidationConfigDateOfBirth">
+            <summary>
+            Create date of birth parametr fron .json configuration file.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.ValidationConfigDateOfBirth.From">
+            <summary>
+            Gets or sets minimum date of birth validation parametrs.
+            </summary>
+            <value>
+            First name validation parametrs.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.ValidationConfigDateOfBirth.To">
+            <summary>
+            Gets or sets maximum date of birth validation parametrs.
+            </summary>
+            <value>
+            First name validation parametrs.
+            </value>
+        </member>
+        <member name="T:FileCabinetApp.ValidationConfigGender">
+            <summary>
+            Create gender parametr fron .json configuration file.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.ValidationConfigGender.RequiredFirstValue">
+            <summary>
+            Gets or sets required first value validation parametrs.
+            </summary>
+            <value>
+            First name validation parametrs.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.ValidationConfigGender.RequiredSecondValue">
+            <summary>
+            Gets or sets required second value validation parametrs.
+            </summary>
+            <value>
+            First name validation parametrs.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.ValidationConfigGender.StringComparison">
+            <summary>
+            Gets or sets StringComparison validation parametrs.
+            </summary>
+            <value>
+            First name validation parametrs.
+            </value>
+        </member>
+        <member name="T:FileCabinetApp.ValidationConfigName">
+            <summary>
+            Create name parametr fron .json configuration file.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.ValidationConfigName.MinLenght">
+            <summary>
+            Gets or sets minimum name length validation parametrs.
+            </summary>
+            <value>
+            First name validation parametrs.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.ValidationConfigName.MaxLenght">
+            <summary>
+            Gets or sets maximum name length validation parametrs.
+            </summary>
+            <value>
+            First name validation parametrs.
+            </value>
+        </member>
+        <member name="T:FileCabinetApp.ValidationConfigValidatorStructure">
+            <summary>
+            Create structure to validation parametrs fron .json configuration file.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.ValidationConfigValidatorStructure.FirstName">
+            <summary>
+            Gets or sets first name validation parametrs.
+            </summary>
+            <value>
+            First name validation parametrs.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.ValidationConfigValidatorStructure.LastName">
+            <summary>
+            Gets or sets last name validation parametrs.
+            </summary>
+            <value>
+            Last name validation parametrs.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.ValidationConfigValidatorStructure.DateOfBirth">
+            <summary>
+            Gets or sets date of birth validation parametrs.
+            </summary>
+            <value>
+            Date of birth name validation parametrs.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.ValidationConfigValidatorStructure.Gender">
+            <summary>
+            Gets or sets gender validation parametrs.
+            </summary>
+            <value>
+            Gender validation parametrs.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.ValidationConfigValidatorStructure.Height">
+            <summary>
+            Gets or sets height validation parametrs.
+            </summary>
+            <value>
+            Height validation parametrs.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.ValidationConfigValidatorStructure.Weight">
+            <summary>
+            Gets or sets weight validation parametrs.
+            </summary>
+            <value>
+            Weight validation parametrs.
+            </value>
         </member>
         <member name="T:FileCabinetApp.ValidatorBuilder">
             <summary>

@@ -46,7 +46,7 @@ namespace FileCabinetApp
                             .Build();
         }
 
-        private static IRecordValidator CreateConfiguration(ValidatorBuilder validatorBuilder, ValidatorStructure config)
+        private static IRecordValidator CreateConfiguration(ValidatorBuilder validatorBuilder, ValidationConfigValidatorStructure config)
         {
             string genderParametrStringComparison = config.Gender.StringComparison;
 

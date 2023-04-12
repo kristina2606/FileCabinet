@@ -250,10 +250,13 @@
             Create interface instance IFileCabinetServise.
             </summary>
         </member>
-        <member name="F:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase.service">
+        <member name="P:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase.Service">
             <summary>
-            Contain interface instance IFileCabinetServise.
+            Gets contain interface instance IFileCabinetServise.
             </summary>
+            <value>
+            Interface instance IFileCabinetServise.
+            </value>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase.#ctor(FileCabinetApp.IFileCabinetService)">
             <summary>
@@ -278,12 +281,12 @@
             </summary>
             <param name="appCommand">>Configuratiion the application command and options.</param>
         </member>
-        <member name="T:FileCabinetApp.CommandHandlers.UserInputValidation">
+        <member name="T:FileCabinetApp.CommandHandlers.UserInputHelpers">
             <summary>
             User input validation.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.UserInputValidation.ReadInput``1(System.Func{System.String,System.Tuple{System.Boolean,System.String,``0}},System.Func{``0,System.Tuple{System.Boolean,System.String}})">
+        <member name="M:FileCabinetApp.CommandHandlers.UserInputHelpers.ReadInput``1(System.Func{System.String,System.Tuple{System.Boolean,System.String,``0}},System.Func{``0,System.Tuple{System.Boolean,System.String}})">
             <summary>
             Validate user input.
             </summary>

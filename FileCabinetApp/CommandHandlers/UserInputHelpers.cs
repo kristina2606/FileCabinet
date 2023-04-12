@@ -5,7 +5,7 @@ namespace FileCabinetApp.CommandHandlers
     /// <summary>
     /// User input validation.
     /// </summary>
-    public static class UserInputValidation
+    public static class UserInputHelpers
     {
         /// <summary>
         /// Validate user input.

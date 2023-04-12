@@ -28,7 +28,7 @@ namespace FileCabinetApp.CommandHandlers
         {
             if (appCommand.Command.Equals("export", StringComparison.InvariantCultureIgnoreCase))
             {
-                var makeSnapshot = this.service.MakeSnapshot();
+                var makeSnapshot = this.Service.MakeSnapshot();
 
                 var exportParametrs = appCommand.Parameters.Split(' ');
 
@@ -55,28 +55,34 @@ namespace FileCabinetApp.CommandHandlers
                 else if (File.Exists(path))
                 {
                     Console.Write($"File is exist - rewrite {path}? [Y/n] ");
-                    var fileRewrite = Console.ReadLine().ToLowerInvariant();
-
-                    if (fileRewrite == "y" || string.IsNullOrEmpty(fileRewrite))
+                    if (ReadYesOrNo(Console.ReadLine().ToLowerInvariant(), false))
                     {
                         ExportData(makeSnapshot, format, path);
-                    }
-                    else if (fileRewrite != "n")
-                    {
-                        Console.WriteLine("You entered an invalid character.");
                     }
                 }
                 else
                 {
                     ExportData(makeSnapshot, format, path);
                 }
-
-                Console.WriteLine($"All records are exported to file {path}.");
             }
             else
             {
                 base.Handle(appCommand);
             }
+        }
+
+        private static bool ReadYesOrNo(string prompt, bool defaultAnswer)
+        {
+            if (prompt == "y" || string.IsNullOrEmpty(prompt))
+            {
+                defaultAnswer = true;
+            }
+            else if (prompt != "n")
+            {
+                Console.WriteLine("You entered an invalid character.");
+            }
+
+            return defaultAnswer;
         }
 
         private static void ExportData(FileCabinetServiceSnapshot makeSnapshot, string format, string path)
@@ -93,6 +99,8 @@ namespace FileCabinetApp.CommandHandlers
                         break;
                 }
             }
+
+            Console.WriteLine($"All records are exported to file {path}.");
         }
     }
 }

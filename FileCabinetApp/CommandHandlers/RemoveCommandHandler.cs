@@ -32,7 +32,7 @@ namespace FileCabinetApp.CommandHandlers
 
                 try
                 {
-                    this.service.Remove(id);
+                    this.Service.Remove(id);
 
                     Console.WriteLine($"Record #{id} is removed.");
                 }

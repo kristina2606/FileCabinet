@@ -30,7 +30,7 @@ namespace FileCabinetApp.CommandHandlers
         {
             if (appCommand.Command.Equals("list", StringComparison.InvariantCultureIgnoreCase))
             {
-                ReadOnlyCollection<FileCabinetRecord> list = this.service.GetRecords();
+                ReadOnlyCollection<FileCabinetRecord> list = this.Service.GetRecords();
 
                 this.printer(list);
             }

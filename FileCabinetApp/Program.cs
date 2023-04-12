@@ -15,12 +15,13 @@ namespace FileCabinetApp
         private const string HintMessage = "Enter your command, or enter 'help' to get help.";
         private const string FileNameFormatDatabasePath = "cabinet-records.db";
         private const string DefaultValidationRules = "Using default validation rules.";
-        private const string CustomValidationRules = "Using default validation rules.";
+        private const string CustomValidationRules = "Using custom validation rules.";
 
         private static bool isRunning = true;
         private static IFileCabinetService fileCabinetService = new FileCabinetMemoryService(new ValidatorBuilder().CreateDefault());
         private static IUserInputValidation inputValidation = new UserInputValidationDafault();
         private static string validationRules = DefaultValidationRules;
+        private static IFileCabinetService servise = new FileCabinetMemoryService(new ValidatorBuilder().CreateDefault());
 
         /// <summary>
         /// Receives a command from the user.
@@ -37,6 +38,7 @@ namespace FileCabinetApp
                 {
                     fileCabinetService = new FileCabinetMemoryService(new ValidatorBuilder().CreateCustom());
                     inputValidation = new UserInputValidationCustom();
+                    servise = new FileCabinetMemoryService(new ValidatorBuilder().CreateCustom());
                     validationRules = CustomValidationRules;
                 }
 
@@ -45,11 +47,18 @@ namespace FileCabinetApp
                     if (validationRules == CustomValidationRules)
                     {
                         fileCabinetService = new FileCabinetFilesystemService(new FileStream(FileNameFormatDatabasePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None), new ValidatorBuilder().CreateCustom());
+                        servise = new FileCabinetFilesystemService(new FileStream(FileNameFormatDatabasePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None), new ValidatorBuilder().CreateCustom());
                     }
                     else
                     {
                         fileCabinetService = new FileCabinetFilesystemService(new FileStream(FileNameFormatDatabasePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None), new ValidatorBuilder().CreateDefault());
+                        servise = new FileCabinetFilesystemService(new FileStream(FileNameFormatDatabasePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None), new ValidatorBuilder().CreateDefault());
                     }
+                }
+
+                if (args[i] == "-" && args[i + 1].ToLowerInvariant() == "use-stopwatch")
+                {
+                    fileCabinetService = new ServiceMeter(servise);
                 }
             }
 

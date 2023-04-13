@@ -5,7 +5,7 @@ namespace FileCabinetApp
     /// <summary>
     /// Create gender parametr fron .json configuration file.
     /// </summary>
-    public class ValidationConfigGender
+    public class GenderValidationRule
     {
         /// <summary>
         /// Gets or sets required first value validation parametrs.

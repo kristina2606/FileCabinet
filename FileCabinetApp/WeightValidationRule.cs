@@ -5,10 +5,10 @@ namespace FileCabinetApp
     /// <summary>
     /// Create anthropometry parametr fron .json configuration file.
     /// </summary>
-    public class ValidationConfigAnthropometry
+    public class WeightValidationRule
     {
         /// <summary>
-        /// Gets or sets minimum anthropometry value validation parametrs.
+        /// Gets or sets minimum weight value validation parametrs.
         /// </summary>
         /// <value>
         /// First name validation parametrs.
@@ -17,7 +17,7 @@ namespace FileCabinetApp
         public int MinValue { get; set; }
 
         /// <summary>
-        /// Gets or sets maximum anthropometry value validation parametrs.
+        /// Gets or sets maximum weight value validation parametrs.
         /// </summary>
         /// <value>
         /// First name validation parametrs.

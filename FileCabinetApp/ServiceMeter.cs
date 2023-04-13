@@ -27,15 +27,17 @@ namespace FileCabinetApp
         /// <returns>Returns the id of the created record.</returns>
         public int CreateRecord(FileCabinetRecordNewData fileCabinetRecordNewData)
         {
-            Stopwatch stopWatch = new Stopwatch();
-            stopWatch.Start();
+            int id;
 
-            int id = this.service.CreateRecord(fileCabinetRecordNewData);
-
-            stopWatch.Stop();
-
-            TimeSpan ts = stopWatch.Elapsed;
-            Console.WriteLine($"Create method execution duration is {ts.Ticks} ticks.");
+            Stopwatch stopWatch = Stopwatch.StartNew();
+            try
+            {
+                id = this.service.CreateRecord(fileCabinetRecordNewData);
+            }
+            finally
+            {
+                MeasuringExecutionTime("Create", stopWatch);
+            }
 
             return id;
         }
@@ -47,15 +49,15 @@ namespace FileCabinetApp
         /// <param name="fileCabinetRecordNewData">The new date in the record.</param>
         public void EditRecord(int id, FileCabinetRecordNewData fileCabinetRecordNewData)
         {
-            Stopwatch stopWatch = new Stopwatch();
-            stopWatch.Start();
-
-            this.service.EditRecord(id, fileCabinetRecordNewData);
-
-            stopWatch.Stop();
-
-            TimeSpan ts = stopWatch.Elapsed;
-            Console.WriteLine($"Edit method execution duration is {ts.Ticks} ticks.");
+            Stopwatch stopWatch = Stopwatch.StartNew();
+            try
+            {
+                this.service.EditRecord(id, fileCabinetRecordNewData);
+            }
+            finally
+            {
+                MeasuringExecutionTime("Edit", stopWatch);
+            }
         }
 
         /// <summary>
@@ -65,15 +67,17 @@ namespace FileCabinetApp
         /// <returns>Returns all records by date of birth.</returns>
         public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
         {
-            Stopwatch stopWatch = new Stopwatch();
-            stopWatch.Start();
+            ReadOnlyCollection<FileCabinetRecord> findedRecords;
 
-            var findedRecords = this.service.FindByDateOfBirth(dateOfBirth);
-
-            stopWatch.Stop();
-
-            TimeSpan ts = stopWatch.Elapsed;
-            Console.WriteLine($"Find by date of birth method execution duration is {ts.Ticks} ticks.");
+            Stopwatch stopWatch = Stopwatch.StartNew();
+            try
+            {
+                findedRecords = this.service.FindByDateOfBirth(dateOfBirth);
+            }
+            finally
+            {
+                MeasuringExecutionTime("Find by dateOfBirth", stopWatch);
+            }
 
             return findedRecords;
         }
@@ -85,15 +89,17 @@ namespace FileCabinetApp
         /// <returns>Returns  all records by first name.</returns>
         public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
         {
-            Stopwatch stopWatch = new Stopwatch();
-            stopWatch.Start();
+            ReadOnlyCollection<FileCabinetRecord> findedRecords;
 
-            var findedRecords = this.service.FindByFirstName(firstName);
-
-            stopWatch.Stop();
-
-            TimeSpan ts = stopWatch.Elapsed;
-            Console.WriteLine($"Find by first name method execution duration is {ts.Ticks} ticks.");
+            Stopwatch stopWatch = Stopwatch.StartNew();
+            try
+            {
+                findedRecords = this.service.FindByFirstName(firstName);
+            }
+            finally
+            {
+                MeasuringExecutionTime("Find by firstName", stopWatch);
+            }
 
             return findedRecords;
         }
@@ -105,15 +111,17 @@ namespace FileCabinetApp
         /// <returns>Returns all records by last name.</returns>
         public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
         {
-            Stopwatch stopWatch = new Stopwatch();
-            stopWatch.Start();
+            ReadOnlyCollection<FileCabinetRecord> findedRecords;
 
-            var findedRecords = this.service.FindByLastName(lastName);
-
-            stopWatch.Stop();
-
-            TimeSpan ts = stopWatch.Elapsed;
-            Console.WriteLine($"Find by last name method execution duration is {ts.Ticks} ticks.");
+            Stopwatch stopWatch = Stopwatch.StartNew();
+            try
+            {
+                findedRecords = this.service.FindByLastName(lastName);
+            }
+            finally
+            {
+                MeasuringExecutionTime("Find by lastName", stopWatch);
+            }
 
             return findedRecords;
         }
@@ -124,15 +132,17 @@ namespace FileCabinetApp
         /// <returns>Returns all existing records.</returns>
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
-            Stopwatch stopWatch = new Stopwatch();
-            stopWatch.Start();
+            ReadOnlyCollection<FileCabinetRecord> allRecords;
 
-            var allRecords = this.service.GetRecords();
-
-            stopWatch.Stop();
-
-            TimeSpan ts = stopWatch.Elapsed;
-            Console.WriteLine($"List records method execution duration is {ts.Ticks} ticks.");
+            Stopwatch stopWatch = Stopwatch.StartNew();
+            try
+            {
+                allRecords = this.service.GetRecords();
+            }
+            finally
+            {
+                MeasuringExecutionTime("List", stopWatch);
+            }
 
             return allRecords;
         }
@@ -143,15 +153,17 @@ namespace FileCabinetApp
         /// <returns>Returns the count of all existing records.</returns>
         public (int activeRecords, int deletedRecords) GetStat()
         {
-            Stopwatch stopWatch = new Stopwatch();
-            stopWatch.Start();
+            int activeRecords, deletedRecords;
 
-            (int activeRecords, int deletedRecords) = this.service.GetStat();
-
-            stopWatch.Stop();
-
-            TimeSpan ts = stopWatch.Elapsed;
-            Console.WriteLine($"Stat method execution duration is {ts.Ticks} ticks.");
+            Stopwatch stopWatch = Stopwatch.StartNew();
+            try
+            {
+                (activeRecords, deletedRecords) = this.service.GetStat();
+            }
+            finally
+            {
+                MeasuringExecutionTime("Stat", stopWatch);
+            }
 
             return (activeRecords, deletedRecords);
         }
@@ -163,15 +175,17 @@ namespace FileCabinetApp
         /// <returns>True if records exists and false if records don't exist.</returns>
         public bool IsExist(int id)
         {
-            Stopwatch stopWatch = new Stopwatch();
-            stopWatch.Start();
+            bool status;
 
-            var status = this.service.IsExist(id);
-
-            stopWatch.Stop();
-
-            TimeSpan ts = stopWatch.Elapsed;
-            Console.WriteLine($"Is exist method execution duration is {ts.Ticks} ticks.");
+            Stopwatch stopWatch = Stopwatch.StartNew();
+            try
+            {
+                status = this.service.IsExist(id);
+            }
+            finally
+            {
+                MeasuringExecutionTime("IsExist", stopWatch);
+            }
 
             return status;
         }
@@ -182,15 +196,17 @@ namespace FileCabinetApp
         /// <returns>Class containing the state of an object.</returns>
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
-            Stopwatch stopWatch = new Stopwatch();
-            stopWatch.Start();
+            FileCabinetServiceSnapshot snapshot;
 
-            var snapshot = this.service.MakeSnapshot();
-
-            stopWatch.Stop();
-
-            TimeSpan ts = stopWatch.Elapsed;
-            Console.WriteLine($"Export method execution duration is {ts.Ticks} ticks.");
+            Stopwatch stopWatch = Stopwatch.StartNew();
+            try
+            {
+                snapshot = this.service.MakeSnapshot();
+            }
+            finally
+            {
+                MeasuringExecutionTime("Export", stopWatch);
+            }
 
             return snapshot;
         }
@@ -201,15 +217,17 @@ namespace FileCabinetApp
         /// <returns>Count of purged records. Only for FileCabinetFilesystemService.</returns>
         public int Purge()
         {
-            Stopwatch stopWatch = new Stopwatch();
-            stopWatch.Start();
+            int countPurgedRecords;
 
-            var countPurgedRecords = this.service.Purge();
-
-            stopWatch.Stop();
-
-            TimeSpan ts = stopWatch.Elapsed;
-            Console.WriteLine($"Purge method execution duration is {ts.Ticks} ticks.");
+            Stopwatch stopWatch = Stopwatch.StartNew();
+            try
+            {
+                countPurgedRecords = this.service.Purge();
+            }
+            finally
+            {
+                MeasuringExecutionTime("Purge", stopWatch);
+            }
 
             return countPurgedRecords;
         }
@@ -220,15 +238,15 @@ namespace FileCabinetApp
         /// <param name="id">Record id to remove.</param>
         public void Remove(int id)
         {
-            Stopwatch stopWatch = new Stopwatch();
-            stopWatch.Start();
-
-            this.service.Remove(id);
-
-            stopWatch.Stop();
-
-            TimeSpan ts = stopWatch.Elapsed;
-            Console.WriteLine($"Remove method execution duration is {ts.Ticks} ticks.");
+            Stopwatch stopWatch = Stopwatch.StartNew();
+            try
+            {
+                this.service.Remove(id);
+            }
+            finally
+            {
+                MeasuringExecutionTime("Remove", stopWatch);
+            }
         }
 
         /// <summary>
@@ -237,19 +255,23 @@ namespace FileCabinetApp
         /// <param name="fileCabinetServiceSnapshot">Сlass instance.</param>
         public void Restore(FileCabinetServiceSnapshot fileCabinetServiceSnapshot)
         {
-            Stopwatch stopWatch = new Stopwatch();
-            stopWatch.Start();
+            Stopwatch stopWatch = Stopwatch.StartNew();
             try
             {
                 this.service.Restore(fileCabinetServiceSnapshot);
             }
             finally
             {
-                stopWatch.Stop();
-
-                TimeSpan ts = stopWatch.Elapsed;
-                Console.WriteLine($"Import method execution duration is {ts.Ticks} ticks.");
+                MeasuringExecutionTime("Import", stopWatch);
             }
+        }
+
+        private static void MeasuringExecutionTime(string methodName, Stopwatch stopWatch)
+        {
+            stopWatch.Stop();
+            var ticks = stopWatch.ElapsedTicks;
+
+            Console.WriteLine($"{methodName} method execution duration is {ticks} ticks.");
         }
     }
 }

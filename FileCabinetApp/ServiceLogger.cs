@@ -10,16 +10,18 @@ namespace FileCabinetApp
     /// </summary>
     public class ServiceLogger : IFileCabinetService
     {
-        private const string DateTimeFormat = "MM/dd/yyyy HH:mm";
         private readonly IFileCabinetService service;
+        private readonly StreamWriter streamWriter;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ServiceLogger"/> class.
         /// </summary>
         /// <param name="service">Interface instance IFileCabinetServise.</param>
-        public ServiceLogger(IFileCabinetService service)
+        /// <param name="streamWriter">Stream to write text file.</param>
+        public ServiceLogger(IFileCabinetService service, StreamWriter streamWriter)
         {
             this.service = service;
+            this.streamWriter = streamWriter;
         }
 
         /// <summary>
@@ -29,17 +31,18 @@ namespace FileCabinetApp
         /// <returns>Returns the id of the created record.</returns>
         public int CreateRecord(FileCabinetRecordNewData fileCabinetRecordNewData)
         {
-            int id;
+            int id = 0;
 
-            using (StreamWriter sw = new StreamWriter("command.txt", true))
+            this.WriteDateAndTime();
+            this.streamWriter.WriteLine($"Calling Create() with FirstName = '{fileCabinetRecordNewData.FirstName}', LastName = '{fileCabinetRecordNewData.LastName}', DateOfBirth = '{fileCabinetRecordNewData.DateOfBirth.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)}', Gender = '{fileCabinetRecordNewData.Gender}', Height = '{fileCabinetRecordNewData.Height}', weight = '{fileCabinetRecordNewData.Weight}'.");
+            try
             {
-                sw.Write(DateTime.Now.ToString(DateTimeFormat, CultureInfo.InvariantCulture) + " ");
-                sw.WriteLine($"Calling Create() with FirstName = '{fileCabinetRecordNewData.FirstName}', LastName = '{fileCabinetRecordNewData.LastName}', DateOfBirth = '{fileCabinetRecordNewData.DateOfBirth.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)}', Gender = '{fileCabinetRecordNewData.Gender}', Height = '{fileCabinetRecordNewData.Height}', weight = '{fileCabinetRecordNewData.Weight}'.");
-
                 id = this.service.CreateRecord(fileCabinetRecordNewData);
-
-                sw.Write(DateTime.Now.ToString(DateTimeFormat, CultureInfo.InvariantCulture) + " ");
-                sw.WriteLine($"Create() returned '{id}'.");
+            }
+            finally
+            {
+                this.WriteDateAndTime();
+                this.streamWriter.WriteLine($"Create() returned '{id}'.");
             }
 
             return id;
@@ -52,15 +55,16 @@ namespace FileCabinetApp
         /// <param name="fileCabinetRecordNewData">The new date in the record.</param>
         public void EditRecord(int id, FileCabinetRecordNewData fileCabinetRecordNewData)
         {
-            using (StreamWriter sw = new StreamWriter("command.txt", true))
+            this.WriteDateAndTime();
+            this.streamWriter.WriteLine($"Calling Edit() to record {id} with new datas FirstName = '{fileCabinetRecordNewData.FirstName}', LastName = '{fileCabinetRecordNewData.LastName}', DateOfBirth = '{fileCabinetRecordNewData.DateOfBirth.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)}', Gender = '{fileCabinetRecordNewData.Gender}', Height = '{fileCabinetRecordNewData.Height}', weight = '{fileCabinetRecordNewData.Weight}'.");
+            try
             {
-                sw.Write(DateTime.Now.ToString(DateTimeFormat, CultureInfo.InvariantCulture) + " ");
-                sw.WriteLine($"Calling Edit() to record {id} with new datas FirstName = '{fileCabinetRecordNewData.FirstName}', LastName = '{fileCabinetRecordNewData.LastName}', DateOfBirth = '{fileCabinetRecordNewData.DateOfBirth.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)}', Gender = '{fileCabinetRecordNewData.Gender}', Height = '{fileCabinetRecordNewData.Height}', weight = '{fileCabinetRecordNewData.Weight}'.");
-
                 this.service.EditRecord(id, fileCabinetRecordNewData);
-
-                sw.Write(DateTime.Now.ToString(DateTimeFormat, CultureInfo.InvariantCulture) + " ");
-                sw.WriteLine($"Edit() edited record {id}.");
+            }
+            finally
+            {
+                this.WriteDateAndTime();
+                this.streamWriter.WriteLine($"Edit() edited record {id}.");
             }
         }
 
@@ -73,15 +77,16 @@ namespace FileCabinetApp
         {
             ReadOnlyCollection<FileCabinetRecord> findedRecords;
 
-            using (StreamWriter sw = new StreamWriter("command.txt", true))
+            this.WriteDateAndTime();
+            this.streamWriter.WriteLine($"Calling Find() by date of birth  DateOfBirth = '{dateOfBirth.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)}'.");
+            try
             {
-                sw.Write(DateTime.Now.ToString(DateTimeFormat, CultureInfo.InvariantCulture) + " ");
-                sw.WriteLine($"Calling Find() by date of birth  DateOfBirth = '{dateOfBirth.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)}'.");
-
                 findedRecords = this.service.FindByDateOfBirth(dateOfBirth);
-
-                sw.Write(DateTime.Now.ToString(DateTimeFormat, CultureInfo.InvariantCulture) + " ");
-                sw.WriteLine($"Find() by date of birth returned list with finded records.");
+            }
+            finally
+            {
+                this.WriteDateAndTime();
+                this.streamWriter.WriteLine($"Find() by date of birth returned list with finded records.");
             }
 
             return findedRecords;
@@ -96,15 +101,16 @@ namespace FileCabinetApp
         {
             ReadOnlyCollection<FileCabinetRecord> findedRecords;
 
-            using (StreamWriter sw = new StreamWriter("command.txt", true))
+            this.WriteDateAndTime();
+            this.streamWriter.WriteLine($"Calling Find() by first name FirstName = '{firstName}'.");
+            try
             {
-                sw.Write(DateTime.Now.ToString(DateTimeFormat, CultureInfo.InvariantCulture) + " ");
-                sw.WriteLine($"Calling Find() by first name FirstName = '{firstName}'.");
-
                 findedRecords = this.service.FindByFirstName(firstName);
-
-                sw.Write(DateTime.Now.ToString(DateTimeFormat, CultureInfo.InvariantCulture) + " ");
-                sw.WriteLine($"Find() by first name returned list with finded records.");
+            }
+            finally
+            {
+                this.WriteDateAndTime();
+                this.streamWriter.WriteLine($"Find() by first name returned list with finded records.");
             }
 
             return findedRecords;
@@ -119,15 +125,16 @@ namespace FileCabinetApp
         {
             ReadOnlyCollection<FileCabinetRecord> findedRecords;
 
-            using (StreamWriter sw = new StreamWriter("command.txt", true))
+            this.WriteDateAndTime();
+            this.streamWriter.WriteLine($"Calling Find() by last name LastName = '{lastName}'.");
+            try
             {
-                sw.Write(DateTime.Now.ToString(DateTimeFormat, CultureInfo.InvariantCulture) + " ");
-                sw.WriteLine($"Calling Find() by last name LastName = '{lastName}'.");
-
                 findedRecords = this.service.FindByLastName(lastName);
-
-                sw.Write(DateTime.Now.ToString(DateTimeFormat, CultureInfo.InvariantCulture) + " ");
-                sw.WriteLine($"Find() by last name returned list with finded records.");
+            }
+            finally
+            {
+                this.WriteDateAndTime();
+                this.streamWriter.WriteLine($"Find() by last name returned list with finded records.");
             }
 
             return findedRecords;
@@ -141,15 +148,16 @@ namespace FileCabinetApp
         {
             ReadOnlyCollection<FileCabinetRecord> allRecords;
 
-            using (StreamWriter sw = new StreamWriter("command.txt", true))
+            this.WriteDateAndTime();
+            this.streamWriter.WriteLine($"Calling List().");
+            try
             {
-                sw.Write(DateTime.Now.ToString(DateTimeFormat, CultureInfo.InvariantCulture) + " ");
-                sw.WriteLine($"Calling List().");
-
                 allRecords = this.service.GetRecords();
-
-                sw.Write(DateTime.Now.ToString(DateTimeFormat, CultureInfo.InvariantCulture) + " ");
-                sw.WriteLine($"List() returned all existing records.");
+            }
+            finally
+            {
+                this.WriteDateAndTime();
+                this.streamWriter.WriteLine($"List() returned all existing records.");
             }
 
             return allRecords;
@@ -161,17 +169,18 @@ namespace FileCabinetApp
         /// <returns>Returns the count of all existing records.</returns>
         public (int activeRecords, int deletedRecords) GetStat()
         {
-            int activeRecords, deletedRecords;
+            int activeRecords = 0, deletedRecords = 0;
 
-            using (StreamWriter sw = new StreamWriter("command.txt", true))
+            this.WriteDateAndTime();
+            this.streamWriter.WriteLine($"Calling Stat().");
+            try
             {
-                sw.Write(DateTime.Now.ToString(DateTimeFormat, CultureInfo.InvariantCulture) + " ");
-                sw.WriteLine($"Calling Stat().");
-
                 (activeRecords, deletedRecords) = this.service.GetStat();
-
-                sw.Write(DateTime.Now.ToString(DateTimeFormat, CultureInfo.InvariantCulture) + " ");
-                sw.WriteLine($"Stat() returned count of all active records {activeRecords} and all deleted records {deletedRecords}.");
+            }
+            finally
+            {
+                this.WriteDateAndTime();
+                this.streamWriter.WriteLine($"Stat() returned count of all active records {activeRecords} and all deleted records {deletedRecords}.");
             }
 
             return (activeRecords, deletedRecords);
@@ -184,17 +193,18 @@ namespace FileCabinetApp
         /// <returns>True if records exists and false if records don't exist.</returns>
         public bool IsExist(int id)
         {
-            bool status;
+            bool status = false;
 
-            using (StreamWriter sw = new StreamWriter("command.txt", true))
+            this.WriteDateAndTime();
+            this.streamWriter.WriteLine($"Calling IsExist() for record {id}.");
+            try
             {
-                sw.Write(DateTime.Now.ToString(DateTimeFormat, CultureInfo.InvariantCulture) + " ");
-                sw.WriteLine($"Calling IsExist() for record {id}.");
-
                 status = this.service.IsExist(id);
-
-                sw.Write(DateTime.Now.ToString(DateTimeFormat, CultureInfo.InvariantCulture) + " ");
-                sw.WriteLine($"IsExist() returned status of records '{status}'.");
+            }
+            finally
+            {
+                this.WriteDateAndTime();
+                this.streamWriter.WriteLine($"IsExist() returned status of records '{status}'.");
             }
 
             return status;
@@ -208,15 +218,16 @@ namespace FileCabinetApp
         {
             FileCabinetServiceSnapshot snapshot;
 
-            using (StreamWriter sw = new StreamWriter("command.txt", true))
+            this.WriteDateAndTime();
+            this.streamWriter.WriteLine($"Calling Export().");
+            try
             {
-                sw.Write(DateTime.Now.ToString(DateTimeFormat, CultureInfo.InvariantCulture) + " ");
-                sw.WriteLine($"Calling Export().");
-
                 snapshot = this.service.MakeSnapshot();
-
-                sw.Write(DateTime.Now.ToString(DateTimeFormat, CultureInfo.InvariantCulture) + " ");
-                sw.WriteLine($"Export() returned an instance of the class.");
+            }
+            finally
+            {
+                this.WriteDateAndTime();
+                this.streamWriter.WriteLine($"Export() returned an instance of the class.");
             }
 
             return snapshot;
@@ -228,17 +239,18 @@ namespace FileCabinetApp
         /// <returns>Count of purged records. Only for FileCabinetFilesystemService.</returns>
         public int Purge()
         {
-            int countPurgedRecords;
+            int countPurgedRecords = 0;
 
-            using (StreamWriter sw = new StreamWriter("command.txt", true))
+            this.WriteDateAndTime();
+            this.streamWriter.WriteLine($"Calling Purge().");
+            try
             {
-                sw.Write(DateTime.Now.ToString(DateTimeFormat, CultureInfo.InvariantCulture) + " ");
-                sw.WriteLine($"Calling Purge().");
-
                 countPurgedRecords = this.service.Purge();
-
-                sw.Write(DateTime.Now.ToString(DateTimeFormat, CultureInfo.InvariantCulture) + " ");
-                sw.WriteLine($"Purge() returned a count of purged records {countPurgedRecords}.");
+            }
+            finally
+            {
+                this.WriteDateAndTime();
+                this.streamWriter.WriteLine($"Purge() returned a count of purged records {countPurgedRecords}.");
             }
 
             return countPurgedRecords;
@@ -250,15 +262,16 @@ namespace FileCabinetApp
         /// <param name="id">Record id to remove.</param>
         public void Remove(int id)
         {
-            using (StreamWriter sw = new StreamWriter("command.txt", true))
+            this.WriteDateAndTime();
+            this.streamWriter.WriteLine($"Calling Remove().");
+            try
             {
-                sw.Write(DateTime.Now.ToString(DateTimeFormat, CultureInfo.InvariantCulture) + " ");
-                sw.WriteLine($"Calling Remove().");
-
                 this.service.Remove(id);
-
-                sw.Write(DateTime.Now.ToString(DateTimeFormat, CultureInfo.InvariantCulture) + " ");
-                sw.WriteLine($"Remove() deleted the record {id}.");
+            }
+            finally
+            {
+                this.WriteDateAndTime();
+                this.streamWriter.WriteLine($"Remove() deleted the record {id}.");
             }
         }
 
@@ -268,20 +281,23 @@ namespace FileCabinetApp
         /// <param name="fileCabinetServiceSnapshot">Сlass instance.</param>
         public void Restore(FileCabinetServiceSnapshot fileCabinetServiceSnapshot)
         {
-            using (StreamWriter sw = new StreamWriter("command.txt", true))
+            this.WriteDateAndTime();
+            this.streamWriter.WriteLine($"Calling Import().");
+
+            try
             {
-                sw.Write(DateTime.Now.ToString(DateTimeFormat, CultureInfo.InvariantCulture) + " ");
-                sw.WriteLine($"Calling Import().");
-                try
-                {
-                    this.service.Restore(fileCabinetServiceSnapshot);
-                }
-                finally
-                {
-                    sw.Write(DateTime.Now.ToString(DateTimeFormat, CultureInfo.InvariantCulture) + " ");
-                    sw.WriteLine($"Import() all records.");
-                }
+                this.service.Restore(fileCabinetServiceSnapshot);
             }
+            finally
+            {
+                this.WriteDateAndTime();
+                this.streamWriter.WriteLine($"Import() all records.");
+            }
+        }
+
+        private void WriteDateAndTime()
+        {
+            this.streamWriter.Write(DateTime.Now.ToString("MM/dd/yyyy HH:mm", CultureInfo.InvariantCulture) + " ");
         }
     }
 }

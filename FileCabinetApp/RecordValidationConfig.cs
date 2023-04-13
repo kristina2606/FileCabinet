@@ -5,7 +5,7 @@ namespace FileCabinetApp
     /// <summary>
     /// Create structure to validation parametrs fron .json configuration file.
     /// </summary>
-    public class ValidationConfigValidatorStructure
+    public class RecordValidationConfig
     {
         /// <summary>
         /// Gets or sets first name validation parametrs.
@@ -14,7 +14,7 @@ namespace FileCabinetApp
         /// First name validation parametrs.
         /// </value>
         [JsonProperty("firstName")]
-        public ValidationConfigName FirstName { get; set; }
+        public NameValidationRule FirstName { get; set; }
 
         /// <summary>
         /// Gets or sets last name validation parametrs.
@@ -23,7 +23,7 @@ namespace FileCabinetApp
         /// Last name validation parametrs.
         /// </value>
         [JsonProperty("lastName")]
-        public ValidationConfigName LastName { get; set; }
+        public NameValidationRule LastName { get; set; }
 
         /// <summary>
         /// Gets or sets date of birth validation parametrs.
@@ -32,7 +32,7 @@ namespace FileCabinetApp
         /// Date of birth name validation parametrs.
         /// </value>
         [JsonProperty("dateOfBirth")]
-        public ValidationConfigDateOfBirth DateOfBirth { get; set; }
+        public DateOfBirthValidationRule DateOfBirth { get; set; }
 
         /// <summary>
         /// Gets or sets gender validation parametrs.
@@ -41,7 +41,7 @@ namespace FileCabinetApp
         /// Gender validation parametrs.
         /// </value>
         [JsonProperty("gender")]
-        public ValidationConfigGender Gender { get; set; }
+        public GenderValidationRule Gender { get; set; }
 
         /// <summary>
         /// Gets or sets height validation parametrs.
@@ -50,7 +50,7 @@ namespace FileCabinetApp
         /// Height validation parametrs.
         /// </value>
         [JsonProperty("height")]
-        public ValidationConfigAnthropometry Height { get; set; }
+        public HeightValidationRule Height { get; set; }
 
         /// <summary>
         /// Gets or sets weight validation parametrs.
@@ -59,6 +59,6 @@ namespace FileCabinetApp
         /// Weight validation parametrs.
         /// </value>
         [JsonProperty("weight")]
-        public ValidationConfigAnthropometry Weight { get; set; }
+        public WeightValidationRule Weight { get; set; }
     }
 }

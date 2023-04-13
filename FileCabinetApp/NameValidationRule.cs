@@ -5,7 +5,7 @@ namespace FileCabinetApp
     /// <summary>
     /// Create name parametr fron .json configuration file.
     /// </summary>
-    public class ValidationConfigName
+    public class NameValidationRule
     {
         /// <summary>
         /// Gets or sets minimum name length validation parametrs.

@@ -16,7 +16,10 @@ namespace FileCabinetApp
         private const string FileNameFormatDatabasePath = "cabinet-records.db";
         private const string DefaultValidationRules = "Using default validation rules.";
         private const string CustomValidationRules = "Using custom validation rules.";
+        private const string FileNameFormatTxt = "used-command.txt";
 
+        private static StreamWriter streamWriter = new StreamWriter(FileNameFormatTxt, true);
+        private static FileStream fileStream = new FileStream(FileNameFormatDatabasePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
         private static bool isRunning = true;
         private static IFileCabinetService fileCabinetService = new FileCabinetMemoryService(new ValidatorBuilder().CreateDefault());
         private static IUserInputValidation inputValidation = new UserInputValidationDafault();
@@ -44,11 +47,11 @@ namespace FileCabinetApp
                 {
                     if (validationRules == CustomValidationRules)
                     {
-                        fileCabinetService = new FileCabinetFilesystemService(new FileStream(FileNameFormatDatabasePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None), new ValidatorBuilder().CreateCustom());
+                        fileCabinetService = new FileCabinetFilesystemService(fileStream, new ValidatorBuilder().CreateCustom());
                     }
                     else
                     {
-                        fileCabinetService = new FileCabinetFilesystemService(new FileStream(FileNameFormatDatabasePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None), new ValidatorBuilder().CreateDefault());
+                        fileCabinetService = new FileCabinetFilesystemService(fileStream, new ValidatorBuilder().CreateDefault());
                     }
                 }
 
@@ -59,11 +62,10 @@ namespace FileCabinetApp
 
                 if (args[i] == "-" && args[i + 1].ToLowerInvariant() == "use-logger")
                 {
-                    fileCabinetService = new ServiceLogger(fileCabinetService);
+                    fileCabinetService = new ServiceLogger(fileCabinetService, streamWriter);
                 }
             }
 
-            fileCabinetService = new ServiceLogger(fileCabinetService);
             Console.WriteLine(Program.validationRules);
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
@@ -96,6 +98,8 @@ namespace FileCabinetApp
         {
             Console.WriteLine("Exiting an application...");
             isRunning = !exit;
+            fileStream.Close();
+            streamWriter.Close();
         }
 
         private static void DefaultRecordPrint(IEnumerable<FileCabinetRecord> records)

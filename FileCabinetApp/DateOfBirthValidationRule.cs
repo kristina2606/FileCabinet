@@ -6,7 +6,7 @@ namespace FileCabinetApp
     /// <summary>
     /// Create date of birth parametr fron .json configuration file.
     /// </summary>
-    public class ValidationConfigDateOfBirth
+    public class DateOfBirthValidationRule
     {
         /// <summary>
         /// Gets or sets minimum date of birth validation parametrs.

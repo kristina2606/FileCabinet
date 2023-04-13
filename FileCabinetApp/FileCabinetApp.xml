@@ -367,6 +367,27 @@
             <param name="inputNumber">Get string from user input.</param>
             <returns>Returns information about how the validation went, the string to convert, and the converted data type.</returns>
         </member>
+        <member name="T:FileCabinetApp.DateOfBirthValidationRule">
+            <summary>
+            Create date of birth parametr fron .json configuration file.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.DateOfBirthValidationRule.From">
+            <summary>
+            Gets or sets minimum date of birth validation parametrs.
+            </summary>
+            <value>
+            First name validation parametrs.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.DateOfBirthValidationRule.To">
+            <summary>
+            Gets or sets maximum date of birth validation parametrs.
+            </summary>
+            <value>
+            First name validation parametrs.
+            </value>
+        </member>
         <member name="T:FileCabinetApp.DateOfBirthValidator">
             <summary>
             Validate a new record from user input with 'date of birth' validate parametrs.
@@ -901,6 +922,35 @@
             </summary>
             <value>The last name of a person.</value>
         </member>
+        <member name="T:FileCabinetApp.GenderValidationRule">
+            <summary>
+            Create gender parametr fron .json configuration file.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.GenderValidationRule.RequiredFirstValue">
+            <summary>
+            Gets or sets required first value validation parametrs.
+            </summary>
+            <value>
+            First name validation parametrs.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.GenderValidationRule.RequiredSecondValue">
+            <summary>
+            Gets or sets required second value validation parametrs.
+            </summary>
+            <value>
+            First name validation parametrs.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.GenderValidationRule.StringComparison">
+            <summary>
+            Gets or sets StringComparison validation parametrs.
+            </summary>
+            <value>
+            First name validation parametrs.
+            </value>
+        </member>
         <member name="T:FileCabinetApp.GenderValidator">
             <summary>
             Validate a new record from user input with 'gender' validate parametrs.
@@ -920,6 +970,27 @@
             </summary>
             <param name="fileCabinetRecordNewData">The new date in the record.</param>
             <exception cref="T:System.ArgumentException">Exception if the incoming entry does not match the parameters.</exception>
+        </member>
+        <member name="T:FileCabinetApp.HeightValidationRule">
+            <summary>
+            Create anthropometry parametr fron .json configuration file.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.HeightValidationRule.MinValue">
+            <summary>
+            Gets or sets minimum height value validation parametrs.
+            </summary>
+            <value>
+            First name validation parametrs.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.HeightValidationRule.MaxValue">
+            <summary>
+            Gets or sets maximum height value validation parametrs.
+            </summary>
+            <value>
+            First name validation parametrs.
+            </value>
         </member>
         <member name="T:FileCabinetApp.HeightValidator">
             <summary>
@@ -1163,6 +1234,27 @@
             <exception cref="T:System.ArgumentException">Exception if the incoming entry does not match the parameters.</exception>
             <exception cref="T:System.ArgumentNullException">Exception if the incoming entry is null.</exception>
         </member>
+        <member name="T:FileCabinetApp.NameValidationRule">
+            <summary>
+            Create name parametr fron .json configuration file.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.NameValidationRule.MinLenght">
+            <summary>
+            Gets or sets minimum name length validation parametrs.
+            </summary>
+            <value>
+            First name validation parametrs.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.NameValidationRule.MaxLenght">
+            <summary>
+            Gets or sets maximum name length validation parametrs.
+            </summary>
+            <value>
+            First name validation parametrs.
+            </value>
+        </member>
         <member name="T:FileCabinetApp.Program">
             <summary>
             Works with user input when working with records.
@@ -1187,16 +1279,70 @@
             A list of record.
             </value>
         </member>
+        <member name="T:FileCabinetApp.RecordValidationConfig">
+            <summary>
+            Create structure to validation parametrs fron .json configuration file.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.RecordValidationConfig.FirstName">
+            <summary>
+            Gets or sets first name validation parametrs.
+            </summary>
+            <value>
+            First name validation parametrs.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.RecordValidationConfig.LastName">
+            <summary>
+            Gets or sets last name validation parametrs.
+            </summary>
+            <value>
+            Last name validation parametrs.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.RecordValidationConfig.DateOfBirth">
+            <summary>
+            Gets or sets date of birth validation parametrs.
+            </summary>
+            <value>
+            Date of birth name validation parametrs.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.RecordValidationConfig.Gender">
+            <summary>
+            Gets or sets gender validation parametrs.
+            </summary>
+            <value>
+            Gender validation parametrs.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.RecordValidationConfig.Height">
+            <summary>
+            Gets or sets height validation parametrs.
+            </summary>
+            <value>
+            Height validation parametrs.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.RecordValidationConfig.Weight">
+            <summary>
+            Gets or sets weight validation parametrs.
+            </summary>
+            <value>
+            Weight validation parametrs.
+            </value>
+        </member>
         <member name="T:FileCabinetApp.ServiceLogger">
             <summary>
             Saves information about service method calls and passed parameters to a text file.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.ServiceLogger.#ctor(FileCabinetApp.IFileCabinetService)">
+        <member name="M:FileCabinetApp.ServiceLogger.#ctor(FileCabinetApp.IFileCabinetService,System.IO.StreamWriter)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.ServiceLogger"/> class.
             </summary>
             <param name="service">Interface instance IFileCabinetServise.</param>
+            <param name="streamWriter">Stream to write text file.</param>
         </member>
         <member name="M:FileCabinetApp.ServiceLogger.CreateRecord(FileCabinetApp.FileCabinetRecordNewData)">
             <summary>
@@ -1459,172 +1605,6 @@
             <param name="weight">Weight of a person.</param>
             <returns>Returns information about how the validation went and the value being validated.</returns>
         </member>
-        <member name="T:FileCabinetApp.ValidationConfig">
-            <summary>
-            Create validation from .json configuration file.
-            </summary>
-        </member>
-        <member name="P:FileCabinetApp.ValidationConfig.Default">
-            <summary>
-            Gets or sets default validation parametrs.
-            </summary>
-            <value>
-            Default validation parametrs.
-            </value>
-        </member>
-        <member name="P:FileCabinetApp.ValidationConfig.Custom">
-            <summary>
-            Gets or sets custom validation parametrs.
-            </summary>
-            <value>
-            Custom validation parametrs.
-            </value>
-        </member>
-        <member name="T:FileCabinetApp.ValidationConfigAnthropometry">
-            <summary>
-            Create anthropometry parametr fron .json configuration file.
-            </summary>
-        </member>
-        <member name="P:FileCabinetApp.ValidationConfigAnthropometry.MinValue">
-            <summary>
-            Gets or sets minimum anthropometry value validation parametrs.
-            </summary>
-            <value>
-            First name validation parametrs.
-            </value>
-        </member>
-        <member name="P:FileCabinetApp.ValidationConfigAnthropometry.MaxValue">
-            <summary>
-            Gets or sets maximum anthropometry value validation parametrs.
-            </summary>
-            <value>
-            First name validation parametrs.
-            </value>
-        </member>
-        <member name="T:FileCabinetApp.ValidationConfigDateOfBirth">
-            <summary>
-            Create date of birth parametr fron .json configuration file.
-            </summary>
-        </member>
-        <member name="P:FileCabinetApp.ValidationConfigDateOfBirth.From">
-            <summary>
-            Gets or sets minimum date of birth validation parametrs.
-            </summary>
-            <value>
-            First name validation parametrs.
-            </value>
-        </member>
-        <member name="P:FileCabinetApp.ValidationConfigDateOfBirth.To">
-            <summary>
-            Gets or sets maximum date of birth validation parametrs.
-            </summary>
-            <value>
-            First name validation parametrs.
-            </value>
-        </member>
-        <member name="T:FileCabinetApp.ValidationConfigGender">
-            <summary>
-            Create gender parametr fron .json configuration file.
-            </summary>
-        </member>
-        <member name="P:FileCabinetApp.ValidationConfigGender.RequiredFirstValue">
-            <summary>
-            Gets or sets required first value validation parametrs.
-            </summary>
-            <value>
-            First name validation parametrs.
-            </value>
-        </member>
-        <member name="P:FileCabinetApp.ValidationConfigGender.RequiredSecondValue">
-            <summary>
-            Gets or sets required second value validation parametrs.
-            </summary>
-            <value>
-            First name validation parametrs.
-            </value>
-        </member>
-        <member name="P:FileCabinetApp.ValidationConfigGender.StringComparison">
-            <summary>
-            Gets or sets StringComparison validation parametrs.
-            </summary>
-            <value>
-            First name validation parametrs.
-            </value>
-        </member>
-        <member name="T:FileCabinetApp.ValidationConfigName">
-            <summary>
-            Create name parametr fron .json configuration file.
-            </summary>
-        </member>
-        <member name="P:FileCabinetApp.ValidationConfigName.MinLenght">
-            <summary>
-            Gets or sets minimum name length validation parametrs.
-            </summary>
-            <value>
-            First name validation parametrs.
-            </value>
-        </member>
-        <member name="P:FileCabinetApp.ValidationConfigName.MaxLenght">
-            <summary>
-            Gets or sets maximum name length validation parametrs.
-            </summary>
-            <value>
-            First name validation parametrs.
-            </value>
-        </member>
-        <member name="T:FileCabinetApp.ValidationConfigValidatorStructure">
-            <summary>
-            Create structure to validation parametrs fron .json configuration file.
-            </summary>
-        </member>
-        <member name="P:FileCabinetApp.ValidationConfigValidatorStructure.FirstName">
-            <summary>
-            Gets or sets first name validation parametrs.
-            </summary>
-            <value>
-            First name validation parametrs.
-            </value>
-        </member>
-        <member name="P:FileCabinetApp.ValidationConfigValidatorStructure.LastName">
-            <summary>
-            Gets or sets last name validation parametrs.
-            </summary>
-            <value>
-            Last name validation parametrs.
-            </value>
-        </member>
-        <member name="P:FileCabinetApp.ValidationConfigValidatorStructure.DateOfBirth">
-            <summary>
-            Gets or sets date of birth validation parametrs.
-            </summary>
-            <value>
-            Date of birth name validation parametrs.
-            </value>
-        </member>
-        <member name="P:FileCabinetApp.ValidationConfigValidatorStructure.Gender">
-            <summary>
-            Gets or sets gender validation parametrs.
-            </summary>
-            <value>
-            Gender validation parametrs.
-            </value>
-        </member>
-        <member name="P:FileCabinetApp.ValidationConfigValidatorStructure.Height">
-            <summary>
-            Gets or sets height validation parametrs.
-            </summary>
-            <value>
-            Height validation parametrs.
-            </value>
-        </member>
-        <member name="P:FileCabinetApp.ValidationConfigValidatorStructure.Weight">
-            <summary>
-            Gets or sets weight validation parametrs.
-            </summary>
-            <value>
-            Weight validation parametrs.
-            </value>
-        </member>
         <member name="T:FileCabinetApp.ValidatorBuilder">
             <summary>
             Сreates certain validation criteria depending on the user's choice.
@@ -1711,6 +1691,27 @@
             </summary>
             <param name="validatorBuilder">The class to which the extension method belongs.</param>
             <returns>Returns a set of custom validator.</returns>
+        </member>
+        <member name="T:FileCabinetApp.WeightValidationRule">
+            <summary>
+            Create anthropometry parametr fron .json configuration file.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.WeightValidationRule.MinValue">
+            <summary>
+            Gets or sets minimum weight value validation parametrs.
+            </summary>
+            <value>
+            First name validation parametrs.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.WeightValidationRule.MaxValue">
+            <summary>
+            Gets or sets maximum weight value validation parametrs.
+            </summary>
+            <value>
+            First name validation parametrs.
+            </value>
         </member>
         <member name="T:FileCabinetApp.WeightValidator">
             <summary>

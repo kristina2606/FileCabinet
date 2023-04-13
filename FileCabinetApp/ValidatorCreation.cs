@@ -1,7 +1,5 @@
 ﻿using System;
-using System.IO;
 using Microsoft.Extensions.Configuration;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace FileCabinetApp
 {
@@ -17,11 +15,13 @@ namespace FileCabinetApp
         /// <returns>Returns a set of default validator.</returns>
         public static IRecordValidator CreateDefault(this ValidatorBuilder validatorBuilder)
         {
-            IConfigurationRoot builder = GetConfigurationFromJsonFile();
+            IConfigurationRoot config = GetConfigurationFromJsonFile();
 
-            var config = builder.Get<ValidationConfig>().Default;
+            string validationRule = "default";
 
-            return CreateConfiguration(validatorBuilder, config);
+            var recordValidationConfig = config.GetSection(validationRule).Get<RecordValidationConfig>();
+
+            return CreateConfiguration(validatorBuilder, recordValidationConfig);
         }
 
         /// <summary>
@@ -31,22 +31,23 @@ namespace FileCabinetApp
         /// <returns>Returns a set of custom validator.</returns>
         public static IRecordValidator CreateCustom(this ValidatorBuilder validatorBuilder)
         {
-            IConfigurationRoot builder = GetConfigurationFromJsonFile();
+            IConfigurationRoot config = GetConfigurationFromJsonFile();
 
-            var config = builder.Get<ValidationConfig>().Custom;
+            string validationRule = "custom";
 
-            return CreateConfiguration(validatorBuilder, config);
+            var recordValidationConfig = config.GetSection(validationRule).Get<RecordValidationConfig>();
+
+            return CreateConfiguration(validatorBuilder, recordValidationConfig);
         }
 
         private static IConfigurationRoot GetConfigurationFromJsonFile()
         {
             return new ConfigurationBuilder()
-                            .SetBasePath(Directory.GetCurrentDirectory())
                             .AddJsonFile("validation-rules.json")
                             .Build();
         }
 
-        private static IRecordValidator CreateConfiguration(ValidatorBuilder validatorBuilder, ValidationConfigValidatorStructure config)
+        private static IRecordValidator CreateConfiguration(ValidatorBuilder validatorBuilder, RecordValidationConfig config)
         {
             string genderParametrStringComparison = config.Gender.StringComparison;
 

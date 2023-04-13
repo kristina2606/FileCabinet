@@ -54,7 +54,7 @@ namespace FileCabinetApp.CommandHandlers
                 }
                 else if (File.Exists(path))
                 {
-                    if (ReadYesOrNo($"File is exist - rewrite {path}?", true))
+                    if (UserInputHelpers.ReadYesOrNo($"File is exist - rewrite {path}?", true))
                     {
                         ExportData(makeSnapshot, format, path);
                     }
@@ -68,47 +68,6 @@ namespace FileCabinetApp.CommandHandlers
             {
                 base.Handle(appCommand);
             }
-        }
-
-        private static bool ReadYesOrNo(string prompt, bool defaultAnswer)
-        {
-            string chooseAnswer;
-
-            Console.Write(prompt);
-
-            if (defaultAnswer)
-            {
-                chooseAnswer = " [Y/n] ";
-            }
-            else
-            {
-                chooseAnswer = " [y/N] ";
-            }
-
-            Console.Write(chooseAnswer);
-
-            var usersAnswer = Console.ReadLine().ToLowerInvariant();
-            do
-            {
-                if (usersAnswer == "y")
-                {
-                    return true;
-                }
-                else if (usersAnswer == "n")
-                {
-                    return false;
-                }
-                else if (!string.IsNullOrEmpty(usersAnswer))
-                {
-                    Console.WriteLine("You entered an invalid character.");
-                    Console.Write(prompt);
-                    Console.Write(chooseAnswer);
-                    usersAnswer = Console.ReadLine().ToLowerInvariant();
-                }
-            }
-            while (!string.IsNullOrEmpty(usersAnswer));
-
-            return defaultAnswer;
         }
 
         private static void ExportData(FileCabinetServiceSnapshot makeSnapshot, string format, string path)

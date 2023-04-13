@@ -295,6 +295,14 @@
             <param name="validator">Checks the value against the criteria.</param>
             <returns>Resulting value.</returns>
         </member>
+        <member name="M:FileCabinetApp.CommandHandlers.UserInputHelpers.ReadYesOrNo(System.String,System.Boolean)">
+            <summary>
+            Promt [Y/n] oor [y/N] for user.
+            </summary>
+            <param name="prompt">Information about the data to be overwritten. </param>
+            <param name="defaultAnswer">Default response if the user does not enter anything.</param>
+            <returns>Returns the user's choice.</returns>
+        </member>
         <member name="T:FileCabinetApp.CompositeValidator">
             <summary>
             Сontains a set of different validators.

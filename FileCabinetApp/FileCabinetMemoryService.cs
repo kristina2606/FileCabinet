@@ -41,7 +41,7 @@ namespace FileCabinetApp
         /// The gender isn't equal 'f' or 'm'. The height is less than 0 or greater than 250. The weight is less than 0.</exception>
         public int CreateRecord(FileCabinetRecordNewData fileCabinetRecordNewData)
         {
-            this.validator.Validate(fileCabinetRecordNewData);
+            this.validator.ValidateParametrs(fileCabinetRecordNewData);
 
             var id = this.idGenerator.GetNext();
 
@@ -91,7 +91,7 @@ namespace FileCabinetApp
                 throw new ArgumentException("Record's id isn't exist.");
             }
 
-            this.validator.Validate(fileCabinetRecordNewData);
+            this.validator.ValidateParametrs(fileCabinetRecordNewData);
 
             var result = this.list.FirstOrDefault(x => x.Id == id);
 
@@ -194,7 +194,7 @@ namespace FileCabinetApp
                 var recordNew = new FileCabinetRecordNewData(record.FirstName, record.LastName, record.DateOfBirth, record.Gender, record.Height, record.Weight);
                 try
                 {
-                    this.validator.Validate(recordNew);
+                    this.validator.ValidateParametrs(recordNew);
                     if (this.IsExist(record.Id))
                     {
                         this.EditRecord(record.Id, recordNew);

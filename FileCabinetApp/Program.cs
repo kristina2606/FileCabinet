@@ -1,7 +1,8 @@
 ﻿using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using FileCabinetApp.CommandHandlers;
 
 namespace FileCabinetApp
 {
@@ -12,49 +13,14 @@ namespace FileCabinetApp
     {
         private const string DeveloperName = "Krystsina Labada";
         private const string HintMessage = "Enter your command, or enter 'help' to get help.";
-        private const int CommandHelpIndex = 0;
-        private const int DescriptionHelpIndex = 1;
-        private const int ExplanationHelpIndex = 2;
-        private const string FileTypeCsv = "csv";
-        private const string FileTypeXml = "xml";
         private const string FileNameFormatDatabasePath = "cabinet-records.db";
         private const string DefaultValidationRules = "Using default validation rules.";
         private const string CustomValidationRules = "Using default validation rules.";
 
         private static bool isRunning = true;
-        private static IFileCabinetService fileCabinetService = new FileCabinetMemoryService(new DefaultValidator());
+        private static IFileCabinetService fileCabinetService = new FileCabinetMemoryService(new ValidatorBuilder().CreateDefault());
         private static IUserInputValidation inputValidation = new UserInputValidationDafault();
         private static string validationRules = DefaultValidationRules;
-
-        private static Tuple<string, Action<string>>[] commands = new Tuple<string, Action<string>>[]
-        {
-            new Tuple<string, Action<string>>("help", PrintHelp),
-            new Tuple<string, Action<string>>("exit", Exit),
-            new Tuple<string, Action<string>>("stat", Stat),
-            new Tuple<string, Action<string>>("create", Create),
-            new Tuple<string, Action<string>>("list", List),
-            new Tuple<string, Action<string>>("edit", Edit),
-            new Tuple<string, Action<string>>("find", Find),
-            new Tuple<string, Action<string>>("export", Export),
-            new Tuple<string, Action<string>>("import", Import),
-            new Tuple<string, Action<string>>("remove", Remove),
-            new Tuple<string, Action<string>>("purge", Purge),
-        };
-
-        private static string[][] helpMessages = new string[][]
-        {
-            new string[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
-            new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
-            new string[] { "stat", "displays statistics on records", "The 'stat' displays statistics on records." },
-            new string[] { "create", "creat new record", "The 'create' creat new record." },
-            new string[] { "list", "returns a list of records.", "The 'list' returns a list of records." },
-            new string[] { "edit", "editing a record by id.", "The 'edit' editing a record by id." },
-            new string[] { "find", "finds all existing records by parameter.", "The 'find' finds all existing records by parameter." },
-            new string[] { "export", "exports service data to .csv or .xml file.", "The 'export' exports service data to .csv or .xml file." },
-            new string[] { "import", "import data from .csv or .xml file.", "The 'import' import data from .csv or .xml file." },
-            new string[] { "remove", "remove record by id.", "The 'remove' remove record by id." },
-            new string[] { "purge", "The command defragments the data file.", "The 'purge' command defragments the data file." },
-        };
 
         /// <summary>
         /// Receives a command from the user.
@@ -69,7 +35,7 @@ namespace FileCabinetApp
                 var comand = args[i].Split('=');
                 if ((comand[0] == "--validation-rules" && comand[1].ToLowerInvariant() == "custom") || (args[i] == "-v" && args[i + 1].ToLowerInvariant() == "custom"))
                 {
-                    fileCabinetService = new FileCabinetMemoryService(new CustomValidator());
+                    fileCabinetService = new FileCabinetMemoryService(new ValidatorBuilder().CreateCustom());
                     inputValidation = new UserInputValidationCustom();
                     validationRules = CustomValidationRules;
                 }
@@ -78,11 +44,11 @@ namespace FileCabinetApp
                 {
                     if (validationRules == CustomValidationRules)
                     {
-                        fileCabinetService = new FileCabinetFilesystemService(new FileStream(FileNameFormatDatabasePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None), new CustomValidator());
+                        fileCabinetService = new FileCabinetFilesystemService(new FileStream(FileNameFormatDatabasePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None), new ValidatorBuilder().CreateCustom());
                     }
                     else
                     {
-                        fileCabinetService = new FileCabinetFilesystemService(new FileStream(FileNameFormatDatabasePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None), new DefaultValidator());
+                        fileCabinetService = new FileCabinetFilesystemService(new FileStream(FileNameFormatDatabasePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None), new ValidatorBuilder().CreateDefault());
                     }
                 }
             }
@@ -90,6 +56,8 @@ namespace FileCabinetApp
             Console.WriteLine(Program.validationRules);
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
+
+            var commandHandler = CreateCommandHandlers();
 
             do
             {
@@ -105,330 +73,23 @@ namespace FileCabinetApp
                     continue;
                 }
 
-                var index = Array.FindIndex(commands, 0, commands.Length, i => i.Item1.Equals(command, StringComparison.InvariantCultureIgnoreCase));
-                if (index >= 0)
-                {
-                    const int parametersIndex = 1;
-                    var parameters = inputs.Length > 1 ? inputs[parametersIndex] : string.Empty;
-                    commands[index].Item2(parameters);
-                }
-                else
-                {
-                    PrintMissedCommandInfo(command);
-                }
+                const int parametersIndex = 1;
+                var parameters = inputs.Length > 1 ? inputs[parametersIndex] : string.Empty;
+
+                commandHandler.Handle(new AppCommandRequest(command, parameters));
             }
             while (isRunning);
         }
 
-        private static void PrintMissedCommandInfo(string command)
-        {
-            Console.WriteLine($"There is no '{command}' command.");
-            Console.WriteLine();
-        }
-
-        private static void PrintHelp(string parameters)
-        {
-            if (!string.IsNullOrEmpty(parameters))
-            {
-                var index = Array.FindIndex(helpMessages, 0, helpMessages.Length, i => string.Equals(i[Program.CommandHelpIndex], parameters, StringComparison.InvariantCultureIgnoreCase));
-                if (index >= 0)
-                {
-                    Console.WriteLine(helpMessages[index][Program.ExplanationHelpIndex]);
-                }
-                else
-                {
-                    Console.WriteLine($"There is no explanation for '{parameters}' command.");
-                }
-            }
-            else
-            {
-                Console.WriteLine("Available commands:");
-
-                foreach (var helpMessage in helpMessages)
-                {
-                    Console.WriteLine("\t{0}\t- {1}", helpMessage[Program.CommandHelpIndex], helpMessage[Program.DescriptionHelpIndex]);
-                }
-            }
-
-            Console.WriteLine();
-        }
-
-        private static void Exit(string parameters)
+        private static void Exit(bool exit)
         {
             Console.WriteLine("Exiting an application...");
-            isRunning = false;
+            isRunning = !exit;
         }
 
-        private static void Stat(string parameters)
+        private static void DefaultRecordPrint(IEnumerable<FileCabinetRecord> records)
         {
-            var (activeRecords, deletedRecords) = Program.fileCabinetService.GetStat();
-            Console.WriteLine($"{activeRecords + deletedRecords} record(s), {deletedRecords} of them deleted.");
-        }
-
-        private static void Create(string parameters)
-        {
-            Console.Write("First name: ");
-            var firstName = ReadInput(Converter.StringConverter, inputValidation.ValidateFirstName);
-
-            Console.Write("Last name: ");
-            var lastName = ReadInput(Converter.StringConverter, inputValidation.ValidateLastName);
-
-            Console.Write("Date of birth: ");
-            var dateOfBirth = ReadInput(Converter.DateConverter, inputValidation.ValidateDateOfBirth);
-
-            Console.Write("Gender (man - 'm' or woman - 'f'): ");
-            var gender = ReadInput(Converter.CharConverter, inputValidation.ValidateGender);
-
-            Console.Write("Height: ");
-            var height = ReadInput(Converter.ShortConverter, inputValidation.ValidateHeight);
-
-            Console.Write("Weight: ");
-            var weight = ReadInput(Converter.DecimalConverter, inputValidation.ValidateWeight);
-
-            FileCabinetRecordNewData fileCabinetRecordNewData = new FileCabinetRecordNewData(firstName, lastName, dateOfBirth, gender, height, weight);
-            int recordId = Program.fileCabinetService.CreateRecord(fileCabinetRecordNewData);
-
-            Console.WriteLine($"Record #{recordId} is created.");
-        }
-
-        private static void List(string parameters)
-        {
-            ReadOnlyCollection<FileCabinetRecord> list = Program.fileCabinetService.GetRecords();
-
-            OutputToTheConsoleDataFromTheList(list);
-        }
-
-        private static void Edit(string parameters)
-        {
-            if (!int.TryParse(parameters, out int id))
-            {
-                Console.WriteLine("You introduced an incorrect ID.");
-                return;
-            }
-
-            if (Program.fileCabinetService.IsExist(id))
-            {
-                Console.Write("First name: ");
-                var firstName = ReadInput(Converter.StringConverter, inputValidation.ValidateFirstName);
-
-                Console.Write("Last name: ");
-                var lastName = ReadInput(Converter.StringConverter, inputValidation.ValidateLastName);
-
-                Console.Write("Date of birth: ");
-                var dateOfBirth = ReadInput(Converter.DateConverter, inputValidation.ValidateDateOfBirth);
-
-                Console.Write("Gender (man - 'm' or woman - 'f'): ");
-                var gender = ReadInput(Converter.CharConverter, inputValidation.ValidateGender);
-
-                Console.Write("Height: ");
-                var height = ReadInput(Converter.ShortConverter, inputValidation.ValidateHeight);
-
-                Console.Write("Weight: ");
-                var weight = ReadInput(Converter.DecimalConverter, inputValidation.ValidateWeight);
-
-                FileCabinetRecordNewData fileCabinetRecordNewData = new FileCabinetRecordNewData(firstName, lastName, dateOfBirth, gender, height, weight);
-                Program.fileCabinetService.EditRecord(id, fileCabinetRecordNewData);
-
-                Console.WriteLine($"Record #{id} is updated.");
-            }
-            else
-            {
-                Console.WriteLine($"#{id} record is not found.");
-            }
-        }
-
-        private static void Find(string parameters)
-        {
-            var searchParametrs = parameters.ToLowerInvariant().Split(' ');
-
-            if (searchParametrs.Length != 2)
-            {
-                Console.WriteLine("You have entered an invalid search parameter. Two are needed.");
-                return;
-            }
-
-            var searchСategory = searchParametrs[0];
-            var searchParameter = searchParametrs[1].Trim('"');
-
-            switch (searchСategory)
-            {
-                case "firstname":
-                    OutputToTheConsoleDataFromTheList(Program.fileCabinetService.FindByFirstName(searchParameter));
-                    break;
-                case "lastname":
-                    OutputToTheConsoleDataFromTheList(Program.fileCabinetService.FindByLastName(searchParameter));
-                    break;
-                case "dateofbirth":
-                    if (DateTime.TryParseExact(searchParameter, "yyyy-MMM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateOfBirth))
-                    {
-                        OutputToTheConsoleDataFromTheList(Program.fileCabinetService.FindByDateOfBirth(dateOfBirth));
-                        break;
-                    }
-                    else
-                    {
-                        Console.WriteLine("Error. You introduced the date in the wrong format. (correct format 2000-Jan-01)");
-                        return;
-                    }
-
-                default:
-                    Console.WriteLine("You entered an invalid search parameter.");
-                    break;
-            }
-        }
-
-        private static void Export(string parameters)
-        {
-            var makeSnapshot = Program.fileCabinetService.MakeSnapshot();
-
-            var exportParametrs = parameters.Split(' ');
-
-            if (exportParametrs.Length != 2)
-            {
-                Console.WriteLine("You have entered an invalid export parameter. Two are needed.");
-                return;
-            }
-
-            var format = exportParametrs[0];
-            var path = exportParametrs[1];
-
-            if (format != FileTypeCsv && format != FileTypeXml)
-            {
-                Console.WriteLine("You entered an invalid format.");
-                return;
-            }
-
-            var folder = Path.GetDirectoryName(path);
-            if (!Directory.Exists(folder))
-            {
-                Console.WriteLine($"Export failed: can't open file {path}.");
-            }
-            else if (File.Exists(path))
-            {
-                Console.Write($"File is exist - rewrite {path}? [Y/n] ");
-                var fileRewrite = Console.ReadLine().ToLowerInvariant();
-
-                if (fileRewrite == "y" || string.IsNullOrEmpty(fileRewrite))
-                {
-                    ExportData(makeSnapshot, format, path);
-                }
-                else if (fileRewrite != "n")
-                {
-                    Console.WriteLine("You entered an invalid character.");
-                }
-            }
-            else
-            {
-                ExportData(makeSnapshot, format, path);
-            }
-
-            Console.WriteLine($"All records are exported to file {path}.");
-        }
-
-        private static void ExportData(FileCabinetServiceSnapshot makeSnapshot, string format, string path)
-        {
-            using (StreamWriter sw = new StreamWriter(path))
-            {
-                switch (format)
-                {
-                    case FileTypeCsv:
-                        makeSnapshot.SaveToCsv(sw);
-                        break;
-                    case FileTypeXml:
-                        makeSnapshot.SaveToXml(sw);
-                        break;
-                }
-            }
-        }
-
-        private static void Import(string parameters)
-        {
-            var importParametrs = parameters.Split(' ');
-
-            if (importParametrs.Length != 2)
-            {
-                Console.WriteLine("You have entered an invalid export parameter. Two are needed.");
-                return;
-            }
-
-            var format = importParametrs[0];
-            var path = importParametrs[1];
-
-            if (format != FileTypeCsv && format != FileTypeXml)
-            {
-                Console.WriteLine("You entered an invalid format.");
-                return;
-            }
-
-            if (!File.Exists(path))
-            {
-                Console.WriteLine($"Import error: {path} is not exist.");
-                return;
-            }
-
-            using (FileStream fs = new FileStream(path, FileMode.Open))
-            {
-                FileCabinetServiceSnapshot fileCabinetServiceSnapshot = new FileCabinetServiceSnapshot();
-                using (StreamReader sr = new StreamReader(fs))
-                {
-                    switch (format)
-                    {
-                        case FileTypeCsv:
-                            fileCabinetServiceSnapshot.LoadFromCsv(sr);
-                            break;
-                        case FileTypeXml:
-                            fileCabinetServiceSnapshot.LoadFromXml(sr);
-                            break;
-                    }
-                }
-
-                try
-                {
-                    Program.fileCabinetService.Restore(fileCabinetServiceSnapshot);
-                }
-                catch (ImportException dict)
-                {
-                    foreach (var exeption in dict.ImportExceptionByRecordId)
-                    {
-                        Console.WriteLine($"Record with id = {exeption.Key} - {exeption.Value}.");
-                    }
-                }
-
-                Console.WriteLine($"All records were imported from {path}.");
-            }
-        }
-
-        private static void Remove(string parameters)
-        {
-            if (!int.TryParse(parameters, out int id))
-            {
-                Console.WriteLine("You introduced an incorrect ID.");
-                return;
-            }
-
-            try
-            {
-                Program.fileCabinetService.Remove(id);
-
-                Console.WriteLine($"Record #{id} is removed.");
-            }
-            catch
-            {
-                Console.WriteLine($"Record #{id} doesn't exists.");
-            }
-        }
-
-        private static void Purge(string parameters)
-        {
-            var (activeRecords, deletedRecords) = fileCabinetService.GetStat();
-
-            var purgedRecordsCount = fileCabinetService.Purge();
-
-            Console.WriteLine($"Data file processing is completed: {purgedRecordsCount} of {activeRecords + deletedRecords} records were purged.");
-        }
-
-        private static void OutputToTheConsoleDataFromTheList(ReadOnlyCollection<FileCabinetRecord> list)
-        {
-            foreach (var record in list)
+            foreach (var record in records)
             {
                 var id = record.Id;
                 var firstName = record.FirstName;
@@ -442,33 +103,34 @@ namespace FileCabinetApp
             }
         }
 
-        private static T ReadInput<T>(Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator)
+        private static ICommandHandler CreateCommandHandlers()
         {
-            do
-            {
-                T value;
+            var helpHandler = new HelpCommandHandler();
+            var createHandler = new CreateCommandHandler(Program.fileCabinetService, Program.inputValidation);
+            var editHandler = new EditCommandHandler(Program.fileCabinetService, Program.inputValidation);
+            var listHandler = new ListCommandHandler(Program.fileCabinetService, DefaultRecordPrint);
+            var statHandler = new StatCommandHandler(Program.fileCabinetService);
+            var findHandler = new FindCommandHandler(Program.fileCabinetService, DefaultRecordPrint);
+            var exportHandler = new ExportCommandHandler(Program.fileCabinetService);
+            var importHandler = new ImportCommandHandler(Program.fileCabinetService);
+            var removeHandler = new RemoveCommandHandler(Program.fileCabinetService);
+            var purgeHandler = new PurgeCommandHandler(Program.fileCabinetService);
+            var exitHandler = new ExitCommandHandler(Exit);
+            var missHandler = new MissCommandHandler();
 
-                var input = Console.ReadLine();
-                var conversionResult = converter(input);
+            helpHandler.SetNext(createHandler);
+            createHandler.SetNext(editHandler);
+            editHandler.SetNext(listHandler);
+            listHandler.SetNext(statHandler);
+            statHandler.SetNext(findHandler);
+            findHandler.SetNext(exportHandler);
+            exportHandler.SetNext(importHandler);
+            importHandler.SetNext(removeHandler);
+            removeHandler.SetNext(purgeHandler);
+            purgeHandler.SetNext(exitHandler);
+            exitHandler.SetNext(missHandler);
 
-                if (!conversionResult.Item1)
-                {
-                    Console.WriteLine($"Conversion failed: {conversionResult.Item2}. Please, correct your input.");
-                    continue;
-                }
-
-                value = conversionResult.Item3;
-
-                var validationResult = validator(value);
-                if (!validationResult.Item1)
-                {
-                    Console.WriteLine($"Validation failed: {validationResult.Item2}. Please, correct your input.");
-                    continue;
-                }
-
-                return value;
-            }
-            while (true);
+            return helpHandler;
         }
     }
 }

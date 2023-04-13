@@ -69,7 +69,7 @@ namespace FileCabinetApp.CommandHandlers
 
                     try
                     {
-                        this.service.Restore(fileCabinetServiceSnapshot);
+                        this.Service.Restore(fileCabinetServiceSnapshot);
                     }
                     catch (ImportException dict)
                     {

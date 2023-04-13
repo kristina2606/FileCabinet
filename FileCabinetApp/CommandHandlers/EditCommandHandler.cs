@@ -34,35 +34,33 @@ namespace FileCabinetApp.CommandHandlers
                     return;
                 }
 
-                if (this.service.IsExist(id))
-                {
-                    Console.Write("First name: ");
-                    var firstName = UserInputValidation.ReadInput(Converter.StringConverter, this.validationRules.ValidateFirstName);
-
-                    Console.Write("Last name: ");
-                    var lastName = UserInputValidation.ReadInput(Converter.StringConverter, this.validationRules.ValidateLastName);
-
-                    Console.Write("Date of birth: ");
-                    var dateOfBirth = UserInputValidation.ReadInput(Converter.DateConverter, this.validationRules.ValidateDateOfBirth);
-
-                    Console.Write("Gender (man - 'm' or woman - 'f'): ");
-                    var gender = UserInputValidation.ReadInput(Converter.CharConverter, this.validationRules.ValidateGender);
-
-                    Console.Write("Height: ");
-                    var height = UserInputValidation.ReadInput(Converter.ShortConverter, this.validationRules.ValidateHeight);
-
-                    Console.Write("Weight: ");
-                    var weight = UserInputValidation.ReadInput(Converter.DecimalConverter, this.validationRules.ValidateWeight);
-
-                    FileCabinetRecordNewData fileCabinetRecordNewData = new FileCabinetRecordNewData(firstName, lastName, dateOfBirth, gender, height, weight);
-                    this.service.EditRecord(id, fileCabinetRecordNewData);
-
-                    Console.WriteLine($"Record #{id} is updated.");
-                }
-                else
+                if (!this.Service.IsExist(id))
                 {
                     Console.WriteLine($"#{id} record is not found.");
                 }
+
+                Console.Write("First name: ");
+                var firstName = UserInputHelpers.ReadInput(Converter.StringConverter, this.validationRules.ValidateFirstName);
+
+                Console.Write("Last name: ");
+                var lastName = UserInputHelpers.ReadInput(Converter.StringConverter, this.validationRules.ValidateLastName);
+
+                Console.Write("Date of birth: ");
+                var dateOfBirth = UserInputHelpers.ReadInput(Converter.DateConverter, this.validationRules.ValidateDateOfBirth);
+
+                Console.Write("Gender (man - 'm' or woman - 'f'): ");
+                var gender = UserInputHelpers.ReadInput(Converter.CharConverter, this.validationRules.ValidateGender);
+
+                Console.Write("Height: ");
+                var height = UserInputHelpers.ReadInput(Converter.ShortConverter, this.validationRules.ValidateHeight);
+
+                Console.Write("Weight: ");
+                var weight = UserInputHelpers.ReadInput(Converter.DecimalConverter, this.validationRules.ValidateWeight);
+
+                FileCabinetRecordNewData fileCabinetRecordNewData = new FileCabinetRecordNewData(firstName, lastName, dateOfBirth, gender, height, weight);
+                this.Service.EditRecord(id, fileCabinetRecordNewData);
+
+                Console.WriteLine($"Record #{id} is updated.");
             }
             else
             {

@@ -6,9 +6,12 @@
     public abstract class ServiceCommandHandlerBase : CommandHandlerBase
     {
         /// <summary>
-        /// Contain interface instance IFileCabinetServise.
+        /// Gets contain interface instance IFileCabinetServise.
         /// </summary>
-        protected IFileCabinetService service;
+        /// <value>
+        /// Interface instance IFileCabinetServise.
+        /// </value>
+        protected IFileCabinetService Service { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ServiceCommandHandlerBase"/> class.
@@ -16,7 +19,7 @@
         /// <param name="service">Interface instance IFileCabinetServise.</param>
         public ServiceCommandHandlerBase(IFileCabinetService service)
         {
-            this.service = service;
+            this.Service = service;
         }
     }
 }

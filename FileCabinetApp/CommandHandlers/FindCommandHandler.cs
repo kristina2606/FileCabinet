@@ -44,15 +44,15 @@ namespace FileCabinetApp.CommandHandlers
                 switch (searchСategory)
                 {
                     case "firstname":
-                        this.printer(this.service.FindByFirstName(searchParameter));
+                        this.printer(this.Service.FindByFirstName(searchParameter));
                         break;
                     case "lastname":
-                        this.printer(this.service.FindByLastName(searchParameter));
+                        this.printer(this.Service.FindByLastName(searchParameter));
                         break;
                     case "dateofbirth":
                         if (DateTime.TryParseExact(searchParameter, "yyyy-MMM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateOfBirth))
                         {
-                            this.printer(this.service.FindByDateOfBirth(dateOfBirth));
+                            this.printer(this.Service.FindByDateOfBirth(dateOfBirth));
                             break;
                         }
                         else

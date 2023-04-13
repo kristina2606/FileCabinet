@@ -24,7 +24,7 @@ namespace FileCabinetApp.CommandHandlers
         {
             if (appCommand.Command.Equals("stat", StringComparison.InvariantCultureIgnoreCase))
             {
-                var (activeRecords, deletedRecords) = this.service.GetStat();
+                var (activeRecords, deletedRecords) = this.Service.GetStat();
                 Console.WriteLine($"{activeRecords + deletedRecords} record(s), {deletedRecords} of them deleted.");
             }
             else

@@ -33,16 +33,20 @@ namespace FileCabinetApp
         {
             int id = 0;
 
-            this.WriteDateAndTime();
-            this.streamWriter.WriteLine($"Calling Create() with FirstName = '{fileCabinetRecordNewData.FirstName}', LastName = '{fileCabinetRecordNewData.LastName}', DateOfBirth = '{fileCabinetRecordNewData.DateOfBirth.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)}', Gender = '{fileCabinetRecordNewData.Gender}', Height = '{fileCabinetRecordNewData.Height}', weight = '{fileCabinetRecordNewData.Weight}'.");
+            var methodName = "Create()";
+            var methodParameters = $"with parameters FirstName = '{fileCabinetRecordNewData.FirstName}', LastName = '{fileCabinetRecordNewData.LastName}', DateOfBirth = '{fileCabinetRecordNewData.DateOfBirth.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)}', Gender = '{fileCabinetRecordNewData.Gender}', Height = '{fileCabinetRecordNewData.Height}', weight = '{fileCabinetRecordNewData.Weight}'.";
+
+            this.LoggingActivity(methodName, methodParameters);
+
             try
             {
                 id = this.service.CreateRecord(fileCabinetRecordNewData);
             }
             finally
             {
-                this.WriteDateAndTime();
-                this.streamWriter.WriteLine($"Create() returned '{id}'.");
+                var resultOfMethod = $"returned '{id}'.";
+
+                this.LoggingEndMethod(methodName, resultOfMethod);
             }
 
             return id;
@@ -55,16 +59,19 @@ namespace FileCabinetApp
         /// <param name="fileCabinetRecordNewData">The new date in the record.</param>
         public void EditRecord(int id, FileCabinetRecordNewData fileCabinetRecordNewData)
         {
-            this.WriteDateAndTime();
-            this.streamWriter.WriteLine($"Calling Edit() to record {id} with new datas FirstName = '{fileCabinetRecordNewData.FirstName}', LastName = '{fileCabinetRecordNewData.LastName}', DateOfBirth = '{fileCabinetRecordNewData.DateOfBirth.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)}', Gender = '{fileCabinetRecordNewData.Gender}', Height = '{fileCabinetRecordNewData.Height}', weight = '{fileCabinetRecordNewData.Weight}'.");
+            var methodName = "Edit()";
+            var methodParameters = $"with parameters FirstName = '{fileCabinetRecordNewData.FirstName}', LastName = '{fileCabinetRecordNewData.LastName}', DateOfBirth = '{fileCabinetRecordNewData.DateOfBirth.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)}', Gender = '{fileCabinetRecordNewData.Gender}', Height = '{fileCabinetRecordNewData.Height}', weight = '{fileCabinetRecordNewData.Weight}' for record '{id}'.";
+
+            this.LoggingActivity(methodName, methodParameters);
             try
             {
                 this.service.EditRecord(id, fileCabinetRecordNewData);
             }
             finally
             {
-                this.WriteDateAndTime();
-                this.streamWriter.WriteLine($"Edit() edited record {id}.");
+                var resultOfMethod = $"edited record '{id}'.";
+
+                this.LoggingEndMethod(methodName, resultOfMethod);
             }
         }
 
@@ -75,21 +82,20 @@ namespace FileCabinetApp
         /// <returns>Returns all records by date of birth.</returns>
         public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
         {
-            ReadOnlyCollection<FileCabinetRecord> findedRecords;
+            var methodName = "Find() by date of birth";
+            var methodParameters = $"with parameter DateOfBirth = '{dateOfBirth.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)}'.";
 
-            this.WriteDateAndTime();
-            this.streamWriter.WriteLine($"Calling Find() by date of birth  DateOfBirth = '{dateOfBirth.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)}'.");
+            this.LoggingActivity(methodName, methodParameters);
             try
             {
-                findedRecords = this.service.FindByDateOfBirth(dateOfBirth);
+                return this.service.FindByDateOfBirth(dateOfBirth);
             }
             finally
             {
-                this.WriteDateAndTime();
-                this.streamWriter.WriteLine($"Find() by date of birth returned list with finded records.");
-            }
+                var resultOfMethod = "returned list with finded records.";
 
-            return findedRecords;
+                this.LoggingEndMethod(methodName, resultOfMethod);
+            }
         }
 
         /// <summary>
@@ -99,21 +105,20 @@ namespace FileCabinetApp
         /// <returns>Returns  all records by first name.</returns>
         public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
         {
-            ReadOnlyCollection<FileCabinetRecord> findedRecords;
+            var methodName = "Find() by first name";
+            var methodParameters = $"with parameter FirstName = '{firstName}'.";
 
-            this.WriteDateAndTime();
-            this.streamWriter.WriteLine($"Calling Find() by first name FirstName = '{firstName}'.");
+            this.LoggingActivity(methodName, methodParameters);
             try
             {
-                findedRecords = this.service.FindByFirstName(firstName);
+                return this.service.FindByFirstName(firstName);
             }
             finally
             {
-                this.WriteDateAndTime();
-                this.streamWriter.WriteLine($"Find() by first name returned list with finded records.");
-            }
+                var resultOfMethod = "returned list with finded records.";
 
-            return findedRecords;
+                this.LoggingEndMethod(methodName, resultOfMethod);
+            }
         }
 
         /// <summary>
@@ -123,21 +128,20 @@ namespace FileCabinetApp
         /// <returns>Returns all records by last name.</returns>
         public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
         {
-            ReadOnlyCollection<FileCabinetRecord> findedRecords;
+            var methodName = "Find() by last name";
+            var methodParameters = $"with parameter LastName = '{lastName}'.";
 
-            this.WriteDateAndTime();
-            this.streamWriter.WriteLine($"Calling Find() by last name LastName = '{lastName}'.");
+            this.LoggingActivity(methodName, methodParameters);
             try
             {
-                findedRecords = this.service.FindByLastName(lastName);
+                return this.service.FindByLastName(lastName);
             }
             finally
             {
-                this.WriteDateAndTime();
-                this.streamWriter.WriteLine($"Find() by last name returned list with finded records.");
-            }
+                var resultOfMethod = "returned list with finded records.";
 
-            return findedRecords;
+                this.LoggingEndMethod(methodName, resultOfMethod);
+            }
         }
 
         /// <summary>
@@ -146,21 +150,19 @@ namespace FileCabinetApp
         /// <returns>Returns all existing records.</returns>
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
-            ReadOnlyCollection<FileCabinetRecord> allRecords;
+            var methodName = "List()";
 
-            this.WriteDateAndTime();
-            this.streamWriter.WriteLine($"Calling List().");
+            this.LoggingActivity(methodName);
             try
             {
-                allRecords = this.service.GetRecords();
+                return this.service.GetRecords();
             }
             finally
             {
-                this.WriteDateAndTime();
-                this.streamWriter.WriteLine($"List() returned all existing records.");
-            }
+                var resultOfMethod = "returned all existing records.";
 
-            return allRecords;
+                this.LoggingEndMethod(methodName, resultOfMethod);
+            }
         }
 
         /// <summary>
@@ -170,17 +172,18 @@ namespace FileCabinetApp
         public (int activeRecords, int deletedRecords) GetStat()
         {
             int activeRecords = 0, deletedRecords = 0;
+            var methodName = "Stat()";
 
-            this.WriteDateAndTime();
-            this.streamWriter.WriteLine($"Calling Stat().");
+            this.LoggingActivity(methodName);
             try
             {
                 (activeRecords, deletedRecords) = this.service.GetStat();
             }
             finally
             {
-                this.WriteDateAndTime();
-                this.streamWriter.WriteLine($"Stat() returned count of all active records {activeRecords} and all deleted records {deletedRecords}.");
+                var resultOfMethod = $"returned count of all active records '{activeRecords}' and all deleted records '{deletedRecords}'.";
+
+                this.LoggingEndMethod(methodName, resultOfMethod);
             }
 
             return (activeRecords, deletedRecords);
@@ -194,17 +197,18 @@ namespace FileCabinetApp
         public bool IsExist(int id)
         {
             bool status = false;
+            var methodName = "IsExist()";
 
-            this.WriteDateAndTime();
-            this.streamWriter.WriteLine($"Calling IsExist() for record {id}.");
+            this.LoggingActivity(methodName);
             try
             {
                 status = this.service.IsExist(id);
             }
             finally
             {
-                this.WriteDateAndTime();
-                this.streamWriter.WriteLine($"IsExist() returned status of records '{status}'.");
+                var resultOfMethod = $"returned status of records '{status}'.";
+
+                this.LoggingEndMethod(methodName, resultOfMethod);
             }
 
             return status;
@@ -216,21 +220,19 @@ namespace FileCabinetApp
         /// <returns>Class containing the state of an object.</returns>
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
-            FileCabinetServiceSnapshot snapshot;
+            var methodName = "Export()";
 
-            this.WriteDateAndTime();
-            this.streamWriter.WriteLine($"Calling Export().");
+            this.LoggingActivity(methodName);
             try
             {
-                snapshot = this.service.MakeSnapshot();
+                return this.service.MakeSnapshot();
             }
             finally
             {
-                this.WriteDateAndTime();
-                this.streamWriter.WriteLine($"Export() returned an instance of the class.");
-            }
+                var resultOfMethod = "returned an instance of the class.";
 
-            return snapshot;
+                this.LoggingEndMethod(methodName, resultOfMethod);
+            }
         }
 
         /// <summary>
@@ -240,17 +242,18 @@ namespace FileCabinetApp
         public int Purge()
         {
             int countPurgedRecords = 0;
+            var methodName = "Purge()";
 
-            this.WriteDateAndTime();
-            this.streamWriter.WriteLine($"Calling Purge().");
+            this.LoggingActivity(methodName);
             try
             {
                 countPurgedRecords = this.service.Purge();
             }
             finally
             {
-                this.WriteDateAndTime();
-                this.streamWriter.WriteLine($"Purge() returned a count of purged records {countPurgedRecords}.");
+                var resultOfMethod = $"returned a count of purged records '{countPurgedRecords}'.";
+
+                this.LoggingEndMethod(methodName, resultOfMethod);
             }
 
             return countPurgedRecords;
@@ -262,16 +265,18 @@ namespace FileCabinetApp
         /// <param name="id">Record id to remove.</param>
         public void Remove(int id)
         {
-            this.WriteDateAndTime();
-            this.streamWriter.WriteLine($"Calling Remove().");
+            var methodName = "Remove()";
+
+            this.LoggingActivity(methodName);
             try
             {
                 this.service.Remove(id);
             }
             finally
             {
-                this.WriteDateAndTime();
-                this.streamWriter.WriteLine($"Remove() deleted the record {id}.");
+                var resultOfMethod = $"deleted the record '{id}'.";
+
+                this.LoggingEndMethod(methodName, resultOfMethod);
             }
         }
 
@@ -281,23 +286,36 @@ namespace FileCabinetApp
         /// <param name="fileCabinetServiceSnapshot">Сlass instance.</param>
         public void Restore(FileCabinetServiceSnapshot fileCabinetServiceSnapshot)
         {
-            this.WriteDateAndTime();
-            this.streamWriter.WriteLine($"Calling Import().");
+            var methodName = "Import()";
 
+            this.LoggingActivity(methodName);
             try
             {
                 this.service.Restore(fileCabinetServiceSnapshot);
             }
             finally
             {
-                this.WriteDateAndTime();
-                this.streamWriter.WriteLine($"Import() all records.");
+                var resultOfMethod = "import all records.";
+
+                this.LoggingEndMethod(methodName, resultOfMethod);
             }
         }
 
         private void WriteDateAndTime()
         {
             this.streamWriter.Write(DateTime.Now.ToString("MM/dd/yyyy HH:mm", CultureInfo.InvariantCulture) + " ");
+        }
+
+        private void LoggingActivity(string methodName, string methodParameters = "")
+        {
+            this.WriteDateAndTime();
+            this.streamWriter.WriteLine($"Calling {methodName} {methodParameters}");
+        }
+
+        private void LoggingEndMethod(string methodName, string resultOfMethod)
+        {
+            this.WriteDateAndTime();
+            this.streamWriter.WriteLine($"{methodName} {resultOfMethod}");
         }
     }
 }

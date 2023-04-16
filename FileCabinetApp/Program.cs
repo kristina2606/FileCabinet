@@ -18,8 +18,6 @@ namespace FileCabinetApp
         private const string CustomValidationRules = "Using custom validation rules.";
         private const string FileNameFormatTxt = "used-command.txt";
 
-        private static StreamWriter streamWriter = new StreamWriter(FileNameFormatTxt, true);
-        private static FileStream fileStream = new FileStream(FileNameFormatDatabasePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
         private static bool isRunning = true;
         private static IFileCabinetService fileCabinetService = new FileCabinetMemoryService(new ValidatorBuilder().CreateDefault());
         private static IUserInputValidation inputValidation = new UserInputValidationDafault();
@@ -31,6 +29,9 @@ namespace FileCabinetApp
         /// <param name="args">Arguments of the appropriate type.</param>
         public static void Main(string[] args)
         {
+            StreamWriter streamWriter = null;
+            FileStream fileStream = null;
+
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
 
             for (var i = 0; i < args.Length; i++)
@@ -45,6 +46,8 @@ namespace FileCabinetApp
 
                 if ((comand[0] == "--storage" && comand[1].ToLowerInvariant() == "file") || (args[i] == "-s" && args[i + 1].ToLowerInvariant() == "file"))
                 {
+                    fileStream = new FileStream(FileNameFormatDatabasePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
+
                     if (validationRules == CustomValidationRules)
                     {
                         fileCabinetService = new FileCabinetFilesystemService(fileStream, new ValidatorBuilder().CreateCustom());
@@ -62,6 +65,7 @@ namespace FileCabinetApp
 
                 if (args[i] == "-" && args[i + 1].ToLowerInvariant() == "use-logger")
                 {
+                    streamWriter = new StreamWriter(FileNameFormatTxt, true);
                     fileCabinetService = new ServiceLogger(fileCabinetService, streamWriter);
                 }
             }
@@ -92,14 +96,18 @@ namespace FileCabinetApp
                 commandHandler.Handle(new AppCommandRequest(command, parameters));
             }
             while (isRunning);
+
+            if (streamWriter != null || fileStream != null)
+            {
+                streamWriter.Dispose();
+                fileStream.Dispose();
+            }
         }
 
         private static void Exit(bool exit)
         {
             Console.WriteLine("Exiting an application...");
             isRunning = !exit;
-            fileStream.Close();
-            streamWriter.Close();
         }
 
         private static void DefaultRecordPrint(IEnumerable<FileCabinetRecord> records)

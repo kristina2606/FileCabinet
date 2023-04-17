@@ -17,6 +17,10 @@ namespace FileCabinetApp
         private const short MaskForDelete = 0b_0000_0100;
         private const StringComparison ScType = StringComparison.InvariantCultureIgnoreCase;
 
+        private readonly Dictionary<string, List<long>> firstNameIndex = new Dictionary<string, List<long>>();
+        private readonly Dictionary<string, List<long>> lastNameIndex = new Dictionary<string, List<long>>();
+        private readonly Dictionary<DateTime, List<long>> dateOfBirthIndex = new Dictionary<DateTime, List<long>>();
+
         private readonly FileStream fileStream;
         private readonly IRecordValidator validator;
 
@@ -78,6 +82,11 @@ namespace FileCabinetApp
                 if (record.Id == id && (status & MaskForDelete) == 0)
                 {
                     this.WriteBinary(ConvertToFileCabinetRecord(fileCabinetRecordNewData, id), DefaultStatus, position);
+
+                    UpdateIndexes(this.firstNameIndex, fileCabinetRecordNewData.FirstName.ToLowerInvariant(), position, record.FirstName.ToLowerInvariant());
+                    UpdateIndexes(this.lastNameIndex, fileCabinetRecordNewData.LastName.ToLowerInvariant(), position, record.LastName.ToLowerInvariant());
+                    UpdateIndexes(this.dateOfBirthIndex, fileCabinetRecordNewData.DateOfBirth, position, record.DateOfBirth);
+
                     break;
                 }
             }
@@ -90,11 +99,19 @@ namespace FileCabinetApp
         /// <returns>Returns all records by date of birth.</returns>
         public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
         {
-            var list = this.GetExistingRecords()
-                .Where(record => record.DateOfBirth == dateOfBirth)
-                .ToList();
+            if (this.dateOfBirthIndex.TryGetValue(dateOfBirth, out List<long> offsets))
+            {
+                var records = new List<FileCabinetRecord>();
 
-            return new ReadOnlyCollection<FileCabinetRecord>(list);
+                foreach (long offset in offsets)
+                {
+                    records.Add(this.GetRecordAtPosition(offset));
+                }
+
+                return new ReadOnlyCollection<FileCabinetRecord>(records);
+            }
+
+            return new ReadOnlyCollection<FileCabinetRecord>(new List<FileCabinetRecord>());
         }
 
         /// <summary>
@@ -104,11 +121,19 @@ namespace FileCabinetApp
         /// <returns>Returns  all records by first name.</returns>
         public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
         {
-            var list = this.GetExistingRecords()
-                .Where(record => record.FirstName.Equals(firstName, ScType))
-                .ToList();
+            if (this.firstNameIndex.TryGetValue(firstName.ToLowerInvariant(), out List<long> offsets))
+            {
+                var records = new List<FileCabinetRecord>();
 
-            return new ReadOnlyCollection<FileCabinetRecord>(list);
+                foreach (long offset in offsets)
+                {
+                    records.Add(this.GetRecordAtPosition(offset));
+                }
+
+                return new ReadOnlyCollection<FileCabinetRecord>(records);
+            }
+
+            return new ReadOnlyCollection<FileCabinetRecord>(new List<FileCabinetRecord>());
         }
 
         /// <summary>
@@ -118,11 +143,19 @@ namespace FileCabinetApp
         /// <returns>Returns all records by last name.</returns>
         public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
         {
-            var list = this.GetExistingRecords()
-                .Where(record => record.LastName.Equals(lastName, ScType))
-                .ToList();
+            if (this.lastNameIndex.TryGetValue(lastName.ToLowerInvariant(), out List<long> offsets))
+            {
+                var records = new List<FileCabinetRecord>();
 
-            return new ReadOnlyCollection<FileCabinetRecord>(list);
+                foreach (long offset in offsets)
+                {
+                    records.Add(this.GetRecordAtPosition(offset));
+                }
+
+                return new ReadOnlyCollection<FileCabinetRecord>(records);
+            }
+
+            return new ReadOnlyCollection<FileCabinetRecord>(new List<FileCabinetRecord>());
         }
 
         /// <summary>
@@ -218,6 +251,10 @@ namespace FileCabinetApp
                         writer.Write(MaskForDelete | status);
                     }
 
+                    RemoveIndex(this.firstNameIndex, record.FirstName.ToLowerInvariant(), position);
+                    RemoveIndex(this.lastNameIndex, record.LastName.ToLowerInvariant(), position);
+                    RemoveIndex(this.dateOfBirthIndex, record.DateOfBirth, position);
+
                     break;
                 }
             }
@@ -279,6 +316,47 @@ namespace FileCabinetApp
             return record;
         }
 
+        private static FileCabinetRecord ReadRecord(BinaryReader reader)
+        {
+            FileCabinetRecord record = new FileCabinetRecord();
+
+            record.Id = reader.ReadInt32();
+            record.FirstName = new string(reader.ReadChars(60)).TrimEnd((char)0);
+            record.LastName = new string(reader.ReadChars(60)).TrimEnd((char)0);
+            record.DateOfBirth = new DateTime(reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
+            record.Gender = reader.ReadChar();
+            record.Height = reader.ReadInt16();
+            record.Weight = reader.ReadDecimal();
+
+            return record;
+        }
+
+        private static void AddRecordToIndexes<T>(Dictionary<T, List<long>> dictionary, T key, long position)
+        {
+            if (!dictionary.ContainsKey(key))
+            {
+                dictionary.Add(key, new List<long>());
+            }
+
+            dictionary[key].Add(position);
+        }
+
+        private static void UpdateIndexes<T>(Dictionary<T, List<long>> dictionary, T newKey, long position, T oldKey)
+        {
+            if (dictionary.TryGetValue(oldKey, out List<long> value))
+            {
+                value.Remove(position);
+            }
+        }
+
+        private static void RemoveIndex<T>(Dictionary<T, List<long>> dictionary, T keyForRemove, long offsetForRemove)
+        {
+            if (dictionary.TryGetValue(keyForRemove, out List<long> offsets))
+            {
+                offsets.Remove(offsetForRemove);
+            }
+        }
+
         private void WriteBinary(FileCabinetRecord record, short status, long position)
         {
             using (BinaryWriter writer = new BinaryWriter(this.fileStream, Encoding.ASCII, true))
@@ -295,28 +373,25 @@ namespace FileCabinetApp
                 writer.Write(record.Gender);
                 writer.Write(record.Height);
                 writer.Write(record.Weight);
+
+                AddRecordToIndexes(this.firstNameIndex, record.FirstName.ToLowerInvariant(), position);
+                AddRecordToIndexes(this.lastNameIndex, record.LastName.ToLowerInvariant(), position);
+                AddRecordToIndexes(this.dateOfBirthIndex, record.DateOfBirth, position);
             }
         }
 
         private IEnumerable<(long position, FileCabinetRecord record, short status)> GetRecordsInternal()
         {
-            var positionForRead = 0;
-
             using (var reader = new BinaryReader(this.fileStream, Encoding.ASCII, true))
             {
+                long positionForRead = 0;
+
                 while (positionForRead < reader.BaseStream.Length)
                 {
                     reader.BaseStream.Seek(positionForRead, SeekOrigin.Begin);
-                    FileCabinetRecord record = new FileCabinetRecord();
 
                     short status = reader.ReadInt16();
-                    record.Id = reader.ReadInt32();
-                    record.FirstName = new string(reader.ReadChars(60)).TrimEnd((char)0);
-                    record.LastName = new string(reader.ReadChars(60)).TrimEnd((char)0);
-                    record.DateOfBirth = new DateTime(reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
-                    record.Gender = reader.ReadChar();
-                    record.Height = reader.ReadInt16();
-                    record.Weight = reader.ReadDecimal();
+                    FileCabinetRecord record = ReadRecord(reader);
 
                     yield return (positionForRead, record, status);
                     positionForRead += LengthOfOneRecord;
@@ -334,6 +409,16 @@ namespace FileCabinetApp
             return this.GetRecordsInternal()
                             .Where(x => (x.status & MaskForDelete) == 0)
                             .Select(record => record.record);
+        }
+
+        private FileCabinetRecord GetRecordAtPosition(long position)
+        {
+            using (var reader = new BinaryReader(this.fileStream, Encoding.ASCII, true))
+            {
+                reader.BaseStream.Seek(position, SeekOrigin.Begin);
+                short status = reader.ReadInt16();
+                return ReadRecord(reader);
+            }
         }
     }
 }

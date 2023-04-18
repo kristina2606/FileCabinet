@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace FileCabinetApp
@@ -43,21 +44,21 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="firstName">The parameter by which you want to find all existing records.</param>
         /// <returns>Returns  all records by first name.</returns>
-        IRecordIterator FindByFirstName(string firstName);
+        IEnumerable<FileCabinetRecord> FindByFirstName(string firstName);
 
         /// <summary>
         /// Finds all records by last name.
         /// </summary>
         /// <param name="lastName">The parameter by which you want to find all existing records.</param>
         /// <returns>Returns all records by last name.</returns>
-        IRecordIterator FindByLastName(string lastName);
+        IEnumerable<FileCabinetRecord> FindByLastName(string lastName);
 
         /// <summary>
         /// Finds all records by date of birth.
         /// </summary>
         /// <param name="dateOfBirth">The parameter by which you want to find all existing records.</param>
         /// <returns>Returns all records by date of birth.</returns>
-        IRecordIterator FindByDateOfBirth(DateTime dateOfBirth);
+        IEnumerable<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth);
 
         /// <summary>
         /// Passes the state of an object.

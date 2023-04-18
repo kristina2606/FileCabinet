@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
@@ -80,7 +81,7 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="dateOfBirth">The parameter by which you want to find all existing records.</param>
         /// <returns>Returns all records by date of birth.</returns>
-        public IRecordIterator FindByDateOfBirth(DateTime dateOfBirth)
+        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
         {
             var methodName = "Find() by date of birth";
             var methodParameters = $"with parameter DateOfBirth = '{dateOfBirth.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)}'.";
@@ -103,7 +104,7 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="firstName">The parameter by which you want to find all existing records.</param>
         /// <returns>Returns  all records by first name.</returns>
-        public IRecordIterator FindByFirstName(string firstName)
+        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
             var methodName = "Find() by first name";
             var methodParameters = $"with parameter FirstName = '{firstName}'.";
@@ -126,7 +127,7 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="lastName">The parameter by which you want to find all existing records.</param>
         /// <returns>Returns all records by last name.</returns>
-        public IRecordIterator FindByLastName(string lastName)
+        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
             var methodName = "Find() by last name";
             var methodParameters = $"with parameter LastName = '{lastName}'.";

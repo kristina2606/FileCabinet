@@ -72,18 +72,14 @@ namespace FileCabinetApp.CommandHandlers
             }
         }
 
-        private void PrintAllRecordsBy(IRecordIterator iterator)
+        private void PrintAllRecordsBy(IEnumerable<FileCabinetRecord> iterator)
         {
-            if (iterator == null)
-            {
-                this.printer(new List<FileCabinetRecord>());
-                return;
-            }
-
+            var enumerator = iterator.GetEnumerator();
             List<FileCabinetRecord> records = new List<FileCabinetRecord>();
-            while (iterator.HasMore())
+
+            while (enumerator.MoveNext())
             {
-                records.Add(iterator.GetNext());
+                records.Add(enumerator.Current);
             }
 
             this.printer(records);

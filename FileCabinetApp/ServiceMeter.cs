@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 
@@ -65,7 +66,7 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="dateOfBirth">The parameter by which you want to find all existing records.</param>
         /// <returns>Returns all records by date of birth.</returns>
-        public IRecordIterator FindByDateOfBirth(DateTime dateOfBirth)
+        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
         {
             Stopwatch stopWatch = Stopwatch.StartNew();
             try
@@ -85,7 +86,7 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="firstName">The parameter by which you want to find all existing records.</param>
         /// <returns>Returns  all records by first name.</returns>
-        public IRecordIterator FindByFirstName(string firstName)
+        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
             Stopwatch stopWatch = Stopwatch.StartNew();
             try
@@ -105,7 +106,7 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="lastName">The parameter by which you want to find all existing records.</param>
         /// <returns>Returns all records by last name.</returns>
-        public IRecordIterator FindByLastName(string lastName)
+        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
             Stopwatch stopWatch = Stopwatch.StartNew();
             try

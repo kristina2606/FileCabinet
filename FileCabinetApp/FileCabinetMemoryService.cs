@@ -122,14 +122,14 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="firstName">The parameter by which you want to find all existing records.</param>
         /// <returns>Returns  all records by first name.</returns>
-        public IRecordIterator FindByFirstName(string firstName)
+        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
             if (this.firstNameDictionary.TryGetValue(firstName.ToLowerInvariant(), out List<FileCabinetRecord> allValueOfKey))
             {
                 return new MemoryIterator(allValueOfKey);
             }
 
-            return null;
+            return new List<FileCabinetRecord>();
         }
 
         /// <summary>
@@ -137,14 +137,14 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="lastName">The parameter by which you want to find all existing records.</param>
         /// <returns>Returns all records by last name.</returns>
-        public IRecordIterator FindByLastName(string lastName)
+        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
             if (this.lastNameDictionary.TryGetValue(lastName.ToLowerInvariant(), out List<FileCabinetRecord> allValueOfKey))
             {
                 return new MemoryIterator(allValueOfKey);
             }
 
-            return null;
+            return new List<FileCabinetRecord>();
         }
 
         /// <summary>
@@ -152,14 +152,14 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="dateOfBirth">The parameter by which you want to find all existing records.</param>
         /// <returns>Returns all records by date of birth.</returns>
-        public IRecordIterator FindByDateOfBirth(DateTime dateOfBirth)
+        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
         {
             if (this.dateOfBirthDictionary.TryGetValue(dateOfBirth, out List<FileCabinetRecord> allValueOfKey))
             {
                 return new MemoryIterator(allValueOfKey);
             }
 
-            return null;
+            return new List<FileCabinetRecord>();
         }
 
         /// <summary>

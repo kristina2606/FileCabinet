@@ -102,14 +102,14 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="dateOfBirth">The parameter by which you want to find all existing records.</param>
         /// <returns>Returns all records by date of birth.</returns>
-        public IRecordIterator FindByDateOfBirth(DateTime dateOfBirth)
+        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
         {
             if (this.dateOfBirthIndex.TryGetValue(dateOfBirth, out List<long> offsets))
             {
                 return new FilesystemIterator(this.fileStream, offsets);
             }
 
-            return null;
+            return new List<FileCabinetRecord>();
         }
 
         /// <summary>
@@ -117,14 +117,14 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="firstName">The parameter by which you want to find all existing records.</param>
         /// <returns>Returns  all records by first name.</returns>
-        public IRecordIterator FindByFirstName(string firstName)
+        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
             if (this.firstNameIndex.TryGetValue(firstName.ToLowerInvariant(), out List<long> offsets))
             {
                 return new FilesystemIterator(this.fileStream, offsets);
             }
 
-            return null;
+            return new List<FileCabinetRecord>();
         }
 
         /// <summary>
@@ -132,14 +132,14 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="lastName">The parameter by which you want to find all existing records.</param>
         /// <returns>Returns all records by last name.</returns>
-        public IRecordIterator FindByLastName(string lastName)
+        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
             if (this.lastNameIndex.TryGetValue(lastName.ToLowerInvariant(), out List<long> offsets))
             {
                 return new FilesystemIterator(this.fileStream, offsets);
             }
 
-            return null;
+            return new List<FileCabinetRecord>();
         }
 
         /// <summary>

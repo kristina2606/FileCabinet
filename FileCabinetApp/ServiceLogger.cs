@@ -2,7 +2,6 @@
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
-using System.Reflection;
 
 namespace FileCabinetApp
 {
@@ -32,35 +31,23 @@ namespace FileCabinetApp
         /// <returns>Returns the id of the created record.</returns>
         public int CreateRecord(FileCabinetRecordNewData fileCabinetRecordNewData)
         {
-            int id = 0;
             var methodName = "Create()";
             var methodParameters = $"with parameters FirstName = '{fileCabinetRecordNewData.FirstName}', LastName = '{fileCabinetRecordNewData.LastName}', DateOfBirth = '{fileCabinetRecordNewData.DateOfBirth.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)}', Gender = '{fileCabinetRecordNewData.Gender}', Height = '{fileCabinetRecordNewData.Height}', weight = '{fileCabinetRecordNewData.Weight}'.";
-            string resultOfMethod = $"ended with exception.";
-            bool isExceptionThrown = false;
 
             this.LoggingActivity(methodName, methodParameters);
 
             try
             {
-                id = this.service.CreateRecord(fileCabinetRecordNewData);
+                int id = this.service.CreateRecord(fileCabinetRecordNewData);
+                this.LoggingEndMethod(methodName, $"returned '{id}'.");
+                return id;
             }
             catch (Exception ex)
             {
-                isExceptionThrown = this.LoggingError(ex);
+                this.LoggingError(methodName, ex.Message);
 
                 throw;
             }
-            finally
-            {
-                if (!isExceptionThrown)
-                {
-                    resultOfMethod = $"returned '{id}'.";
-                }
-
-                this.LoggingEndMethod(methodName, resultOfMethod);
-            }
-
-            return id;
         }
 
         /// <summary>
@@ -72,28 +59,18 @@ namespace FileCabinetApp
         {
             var methodName = "Edit()";
             var methodParameters = $"with parameters FirstName = '{fileCabinetRecordNewData.FirstName}', LastName = '{fileCabinetRecordNewData.LastName}', DateOfBirth = '{fileCabinetRecordNewData.DateOfBirth.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)}', Gender = '{fileCabinetRecordNewData.Gender}', Height = '{fileCabinetRecordNewData.Height}', weight = '{fileCabinetRecordNewData.Weight}' for record '{id}'.";
-            string resultOfMethod = $"ended with exception.";
-            bool isExceptionThrown = false;
 
             this.LoggingActivity(methodName, methodParameters);
             try
             {
                 this.service.EditRecord(id, fileCabinetRecordNewData);
+                this.LoggingEndMethod(methodName, $"edited record '{id}'.");
             }
             catch (Exception ex)
             {
-                isExceptionThrown = this.LoggingError(ex);
+                this.LoggingError(methodName, ex.Message);
 
                 throw;
-            }
-            finally
-            {
-                if (!isExceptionThrown)
-                {
-                    resultOfMethod = $"edited record '{id}'.";
-                }
-
-                this.LoggingEndMethod(methodName, resultOfMethod);
             }
         }
 
@@ -106,28 +83,19 @@ namespace FileCabinetApp
         {
             var methodName = "Find() by date of birth";
             var methodParameters = $"with parameter DateOfBirth = '{dateOfBirth.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)}'.";
-            string resultOfMethod = $"ended with exception.";
-            bool isExceptionThrown = false;
 
             this.LoggingActivity(methodName, methodParameters);
             try
             {
+                this.LoggingEndMethod(methodName, "returned list with finded records.");
+
                 return this.service.FindByDateOfBirth(dateOfBirth);
             }
             catch (Exception ex)
             {
-                isExceptionThrown = this.LoggingError(ex);
+                this.LoggingError(methodName, ex.Message);
 
                 throw;
-            }
-            finally
-            {
-                if (!isExceptionThrown)
-                {
-                    resultOfMethod = "returned list with finded records.";
-                }
-
-                this.LoggingEndMethod(methodName, resultOfMethod);
             }
         }
 
@@ -140,28 +108,19 @@ namespace FileCabinetApp
         {
             var methodName = "Find() by first name";
             var methodParameters = $"with parameter FirstName = '{firstName}'.";
-            string resultOfMethod = $"ended with exception.";
-            bool isExceptionThrown = false;
 
             this.LoggingActivity(methodName, methodParameters);
             try
             {
+                this.LoggingEndMethod(methodName, "returned list with finded records.");
+
                 return this.service.FindByFirstName(firstName);
             }
             catch (Exception ex)
             {
-                isExceptionThrown = this.LoggingError(ex);
+                this.LoggingError(methodName, ex.Message);
 
                 throw;
-            }
-            finally
-            {
-                if (!isExceptionThrown)
-                {
-                    resultOfMethod = "returned list with finded records.";
-                }
-
-                this.LoggingEndMethod(methodName, resultOfMethod);
             }
         }
 
@@ -174,28 +133,19 @@ namespace FileCabinetApp
         {
             var methodName = "Find() by last name";
             var methodParameters = $"with parameter LastName = '{lastName}'.";
-            string resultOfMethod = $"ended with exception.";
-            bool isExceptionThrown = false;
 
             this.LoggingActivity(methodName, methodParameters);
             try
             {
+                this.LoggingEndMethod(methodName, "returned list with finded records.");
+
                 return this.service.FindByLastName(lastName);
             }
             catch (Exception ex)
             {
-                isExceptionThrown = this.LoggingError(ex);
+                this.LoggingError(methodName, ex.Message);
 
                 throw;
-            }
-            finally
-            {
-                if (!isExceptionThrown)
-                {
-                    resultOfMethod = "returned list with finded records.";
-                }
-
-                this.LoggingEndMethod(methodName, resultOfMethod);
             }
         }
 
@@ -206,28 +156,19 @@ namespace FileCabinetApp
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
             var methodName = "List()";
-            string resultOfMethod = $"ended with exception.";
-            bool isExceptionThrown = false;
 
             this.LoggingActivity(methodName);
             try
             {
+                this.LoggingEndMethod(methodName, "returned all existing records.");
+
                 return this.service.GetRecords();
             }
             catch (Exception ex)
             {
-                isExceptionThrown = this.LoggingError(ex);
+                this.LoggingError(methodName, ex.Message);
 
                 throw;
-            }
-            finally
-            {
-                if (!isExceptionThrown)
-                {
-                    resultOfMethod = "returned all existing records.";
-                }
-
-                this.LoggingEndMethod(methodName, resultOfMethod);
             }
         }
 
@@ -237,33 +178,21 @@ namespace FileCabinetApp
         /// <returns>Returns the count of all existing records.</returns>
         public (int activeRecords, int deletedRecords) GetStat()
         {
-            int activeRecords = 0, deletedRecords = 0;
             var methodName = "Stat()";
-            string resultOfMethod = $"ended with exception.";
-            bool isExceptionThrown = false;
 
             this.LoggingActivity(methodName);
             try
             {
-                (activeRecords, deletedRecords) = this.service.GetStat();
+                var (activeRecords, deletedRecords) = this.service.GetStat();
+                this.LoggingEndMethod(methodName, $"returned count of all active records '{activeRecords}' and all deleted records '{deletedRecords}'.");
+                return (activeRecords, deletedRecords);
             }
             catch (Exception ex)
             {
-                isExceptionThrown = this.LoggingError(ex);
+                this.LoggingError(methodName, ex.Message);
 
                 throw;
             }
-            finally
-            {
-                if (!isExceptionThrown)
-                {
-                    resultOfMethod = $"returned count of all active records '{activeRecords}' and all deleted records '{deletedRecords}'.";
-                }
-
-                this.LoggingEndMethod(methodName, resultOfMethod);
-            }
-
-            return (activeRecords, deletedRecords);
         }
 
         /// <summary>
@@ -273,33 +202,21 @@ namespace FileCabinetApp
         /// <returns>True if records exists and false if records don't exist.</returns>
         public bool IsExist(int id)
         {
-            bool status = false;
             var methodName = "IsExist()";
-            string resultOfMethod = $"ended with exception.";
-            bool isExceptionThrown = false;
 
             this.LoggingActivity(methodName);
             try
             {
-                status = this.service.IsExist(id);
+                var status = this.service.IsExist(id);
+                this.LoggingEndMethod(methodName, $"returned status of records '{status}'.");
+                return status;
             }
             catch (Exception ex)
             {
-                isExceptionThrown = this.LoggingError(ex);
+                this.LoggingError(methodName, ex.Message);
 
                 throw;
             }
-            finally
-            {
-                if (!isExceptionThrown)
-                {
-                    resultOfMethod = $"returned status of records '{status}'.";
-                }
-
-                this.LoggingEndMethod(methodName, resultOfMethod);
-            }
-
-            return status;
         }
 
         /// <summary>
@@ -309,28 +226,19 @@ namespace FileCabinetApp
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
             var methodName = "Export()";
-            string resultOfMethod = $"ended with exception.";
-            bool isExceptionThrown = false;
 
             this.LoggingActivity(methodName);
             try
             {
+                this.LoggingEndMethod(methodName, "returned an instance of the class.");
+
                 return this.service.MakeSnapshot();
             }
             catch (Exception ex)
             {
-                isExceptionThrown = this.LoggingError(ex);
+                this.LoggingError(methodName, ex.Message);
 
                 throw;
-            }
-            finally
-            {
-                if (!isExceptionThrown)
-                {
-                    resultOfMethod = "returned an instance of the class.";
-                }
-
-                this.LoggingEndMethod(methodName, resultOfMethod);
             }
         }
 
@@ -340,33 +248,21 @@ namespace FileCabinetApp
         /// <returns>Count of purged records. Only for FileCabinetFilesystemService.</returns>
         public int Purge()
         {
-            int countPurgedRecords = 0;
             string methodName = "Purge()";
-            string resultOfMethod = $"ended with exception.";
-            bool isExceptionThrown = false;
 
             this.LoggingActivity(methodName);
             try
             {
-                countPurgedRecords = this.service.Purge();
+                var countPurgedRecords = this.service.Purge();
+                this.LoggingEndMethod(methodName, $"returned a count of purged records '{countPurgedRecords}'.");
+                return countPurgedRecords;
             }
             catch (Exception ex)
             {
-                isExceptionThrown = this.LoggingError(ex);
+                this.LoggingError(methodName, ex.Message);
 
                 throw;
             }
-            finally
-            {
-                if (!isExceptionThrown)
-                {
-                    resultOfMethod = $"returned a count of purged records '{countPurgedRecords}'.";
-                }
-
-                this.LoggingEndMethod(methodName, resultOfMethod);
-            }
-
-            return countPurgedRecords;
         }
 
         /// <summary>
@@ -376,30 +272,19 @@ namespace FileCabinetApp
         public void Remove(int id)
         {
             var methodName = "Remove()";
-            bool isExceptionThrown = false;
-            string resultOfMethod = $"ended with exception.";
 
             this.LoggingActivity(methodName);
             try
             {
                 this.service.Remove(id);
+                this.LoggingEndMethod(methodName, $"deleted the record '{id}'.");
             }
             catch
             {
                 this.WriteDateAndTime();
                 this.streamWriter.WriteLine($"Record #{id} doesn't exists.");
-                isExceptionThrown = true;
 
                 throw;
-            }
-            finally
-            {
-                if (!isExceptionThrown)
-                {
-                    resultOfMethod = $"deleted the record '{id}'.";
-                }
-
-                this.LoggingEndMethod(methodName, resultOfMethod);
             }
         }
 
@@ -410,12 +295,12 @@ namespace FileCabinetApp
         public void Restore(FileCabinetServiceSnapshot fileCabinetServiceSnapshot)
         {
             var methodName = "Import()";
-            var resultOfMethod = "import all records.";
 
             this.LoggingActivity(methodName);
             try
             {
                 this.service.Restore(fileCabinetServiceSnapshot);
+                this.LoggingEndMethod(methodName, "import all records.");
             }
             catch (ImportException dict)
             {
@@ -428,10 +313,6 @@ namespace FileCabinetApp
 
                 throw;
             }
-            finally
-            {
-                this.LoggingEndMethod(methodName, resultOfMethod);
-            }
         }
 
         private void WriteDateAndTime()
@@ -439,12 +320,10 @@ namespace FileCabinetApp
             this.streamWriter.Write(DateTime.Now.ToString("MM/dd/yyyy HH:mm", CultureInfo.InvariantCulture) + " ");
         }
 
-        private bool LoggingError(Exception exception)
+        private void LoggingError(string methodName, string exceptionMessage)
         {
             this.WriteDateAndTime();
-            this.streamWriter.WriteLine(exception.Message);
-
-            return true;
+            this.streamWriter.WriteLine(methodName, exceptionMessage);
         }
 
         private void LoggingActivity(string methodName, string methodParameters = "")

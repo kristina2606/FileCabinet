@@ -16,7 +16,7 @@ namespace FileCabinetApp
         private const string FileNameFormatDatabasePath = "cabinet-records.db";
         private const string DefaultValidationRules = "Using default validation rules.";
         private const string CustomValidationRules = "Using custom validation rules.";
-        private const string FileNameFormatTxt = "used-command.txt";
+        private const string FileNameFormatTxt = "log.txt";
 
         private static bool isRunning = true;
         private static IFileCabinetService fileCabinetService = new FileCabinetMemoryService(new ValidatorBuilder().CreateDefault());
@@ -97,9 +97,13 @@ namespace FileCabinetApp
             }
             while (isRunning);
 
-            if (streamWriter != null || fileStream != null)
+            if (streamWriter != null)
             {
                 streamWriter.Dispose();
+            }
+
+            if (fileStream != null)
+            {
                 fileStream.Dispose();
             }
         }

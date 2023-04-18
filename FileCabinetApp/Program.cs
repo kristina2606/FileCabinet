@@ -97,15 +97,8 @@ namespace FileCabinetApp
             }
             while (isRunning);
 
-            if (streamWriter != null)
-            {
-                streamWriter.Dispose();
-            }
-
-            if (fileStream != null)
-            {
-                fileStream.Dispose();
-            }
+            streamWriter?.Dispose();
+            fileStream?.Dispose();
         }
 
         private static void Exit(bool exit)

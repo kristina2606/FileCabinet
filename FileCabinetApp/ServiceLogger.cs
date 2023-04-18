@@ -281,8 +281,7 @@ namespace FileCabinetApp
             }
             catch
             {
-                this.WriteDateAndTime();
-                this.streamWriter.WriteLine($"Record #{id} doesn't exists.");
+                this.LoggingError(methodName, $"Record #{id} doesn't exists.");
 
                 throw;
             }

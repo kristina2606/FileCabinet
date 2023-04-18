@@ -122,16 +122,14 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="firstName">The parameter by which you want to find all existing records.</param>
         /// <returns>Returns  all records by first name.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
+        public IRecordIterator FindByFirstName(string firstName)
         {
             if (this.firstNameDictionary.TryGetValue(firstName.ToLowerInvariant(), out List<FileCabinetRecord> allValueOfKey))
             {
-                return new ReadOnlyCollection<FileCabinetRecord>(allValueOfKey);
+                return new MemoryIterator(allValueOfKey);
             }
-            else
-            {
-                return new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
-            }
+
+            return null;
         }
 
         /// <summary>
@@ -139,16 +137,14 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="lastName">The parameter by which you want to find all existing records.</param>
         /// <returns>Returns all records by last name.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
+        public IRecordIterator FindByLastName(string lastName)
         {
             if (this.lastNameDictionary.TryGetValue(lastName.ToLowerInvariant(), out List<FileCabinetRecord> allValueOfKey))
             {
-                return new ReadOnlyCollection<FileCabinetRecord>(allValueOfKey);
+                return new MemoryIterator(allValueOfKey);
             }
-            else
-            {
-                return new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
-            }
+
+            return null;
         }
 
         /// <summary>
@@ -156,16 +152,14 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="dateOfBirth">The parameter by which you want to find all existing records.</param>
         /// <returns>Returns all records by date of birth.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
+        public IRecordIterator FindByDateOfBirth(DateTime dateOfBirth)
         {
             if (this.dateOfBirthDictionary.TryGetValue(dateOfBirth, out List<FileCabinetRecord> allValueOfKey))
             {
-                return new ReadOnlyCollection<FileCabinetRecord>(allValueOfKey);
+                return new MemoryIterator(allValueOfKey);
             }
-            else
-            {
-                return new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
-            }
+
+            return null;
         }
 
         /// <summary>

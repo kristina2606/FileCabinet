@@ -44,15 +44,15 @@ namespace FileCabinetApp.CommandHandlers
                 switch (searchСategory)
                 {
                     case "firstname":
-                        this.printer(this.Service.FindByFirstName(searchParameter));
+                        this.PrintAllRecordsBy(this.Service.FindByFirstName(searchParameter));
                         break;
                     case "lastname":
-                        this.printer(this.Service.FindByLastName(searchParameter));
+                        this.PrintAllRecordsBy(this.Service.FindByLastName(searchParameter));
                         break;
                     case "dateofbirth":
                         if (DateTime.TryParseExact(searchParameter, "yyyy-MMM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateOfBirth))
                         {
-                            this.printer(this.Service.FindByDateOfBirth(dateOfBirth));
+                            this.PrintAllRecordsBy(this.Service.FindByDateOfBirth(dateOfBirth));
                             break;
                         }
                         else
@@ -70,6 +70,23 @@ namespace FileCabinetApp.CommandHandlers
             {
                 base.Handle(appCommand);
             }
+        }
+
+        private void PrintAllRecordsBy(IRecordIterator iterator)
+        {
+            if (iterator == null)
+            {
+                this.printer(new List<FileCabinetRecord>());
+                return;
+            }
+
+            List<FileCabinetRecord> records = new List<FileCabinetRecord>();
+            while (iterator.HasMore())
+            {
+                records.Add(iterator.GetNext());
+            }
+
+            this.printer(records);
         }
     }
 }

@@ -6,17 +6,29 @@ using System.Text;
 
 namespace FileCabinetApp
 {
+    /// <summary>
+    /// Read current record from file on any method call.
+    /// </summary>
     public class FilesystemIterator : IEnumerable<FileCabinetRecord>
     {
         private readonly FileStream fileStream;
         private readonly List<long> offsets;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FilesystemIterator"/> class.
+        /// </summary>
+        /// <param name="fileStream">Open binary record stream.</param>
+        /// <param name="offsets">List with index for searching.</param>
         public FilesystemIterator(FileStream fileStream, List<long> offsets)
         {
             this.offsets = offsets;
             this.fileStream = fileStream;
         }
 
+        /// <summary>
+        /// Defines the MoveNext(), Reset() and Current methods.
+        /// </summary>
+        /// <returns>Returns the object IEnumerator 'FileCabinetRecord'.</returns>
         public IEnumerator<FileCabinetRecord> GetEnumerator()
         {
             using (var reader = new BinaryReader(this.fileStream, Encoding.ASCII, true))
@@ -41,6 +53,10 @@ namespace FileCabinetApp
             }
         }
 
+        /// <summary>
+        /// Implicit implementation of IEnumerable.
+        /// </summary>
+        /// <returns>Returns object IEnumerator type.</returns>
         IEnumerator IEnumerable.GetEnumerator()
         {
             return this.GetEnumerator();

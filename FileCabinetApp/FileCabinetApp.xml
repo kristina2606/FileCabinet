@@ -873,6 +873,30 @@
             </summary>
             <param name="reader">Path to import a file with records.</param>
         </member>
+        <member name="T:FileCabinetApp.FilesystemIterator">
+            <summary>
+            Read current record from file on any method call.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FilesystemIterator.#ctor(System.IO.FileStream,System.Collections.Generic.List{System.Int64})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FilesystemIterator"/> class.
+            </summary>
+            <param name="fileStream">Open binary record stream.</param>
+            <param name="offsets">List with index for searching.</param>
+        </member>
+        <member name="M:FileCabinetApp.FilesystemIterator.GetEnumerator">
+            <summary>
+            Defines the MoveNext(), Reset() and Current methods.
+            </summary>
+            <returns>Returns the object IEnumerator 'FileCabinetRecord'.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FilesystemIterator.System#Collections#IEnumerable#GetEnumerator">
+            <summary>
+            Implicit implementation of IEnumerable.
+            </summary>
+            <returns>Returns object IEnumerator type.</returns>
+        </member>
         <member name="T:FileCabinetApp.FirstNameValidator">
             <summary>
             Validate a new record from user input with 'first name' validate parametrs.
@@ -1233,6 +1257,29 @@
             <param name="fileCabinetRecordNewData">The new date in the record.</param>
             <exception cref="T:System.ArgumentException">Exception if the incoming entry does not match the parameters.</exception>
             <exception cref="T:System.ArgumentNullException">Exception if the incoming entry is null.</exception>
+        </member>
+        <member name="T:FileCabinetApp.MemoryIterator">
+            <summary>
+            Return an element from a pre-created list.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.MemoryIterator.#ctor(System.Collections.Generic.List{FileCabinetApp.FileCabinetRecord})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.MemoryIterator"/> class.
+            </summary>
+            <param name="list">List with all existing records.</param>
+        </member>
+        <member name="M:FileCabinetApp.MemoryIterator.GetEnumerator">
+            <summary>
+            Defines the MoveNext(), Reset() and Current methods.
+            </summary>
+            <returns>Returns the object IEnumerator 'FileCabinetRecord'.</returns>
+        </member>
+        <member name="M:FileCabinetApp.MemoryIterator.System#Collections#IEnumerable#GetEnumerator">
+            <summary>
+            Implicit implementation of IEnumerable.
+            </summary>
+            <returns>Returns object IEnumerator type.</returns>
         </member>
         <member name="T:FileCabinetApp.NameValidationRule">
             <summary>

@@ -19,7 +19,8 @@ namespace FileCabinetApp
         private const string FileNameFormatTxt = "log.txt";
 
         private static bool isRunning = true;
-        private static IFileCabinetService fileCabinetService = new FileCabinetMemoryService(new ValidatorBuilder().CreateDefault());
+        private static IRecordValidator validatorBuilder = new ValidatorBuilder().CreateDefault();
+        private static IFileCabinetService fileCabinetService = new FileCabinetMemoryService(validatorBuilder);
         private static IUserInputValidation inputValidation = new UserInputValidationDafault();
         private static string validationRules = DefaultValidationRules;
 
@@ -39,7 +40,7 @@ namespace FileCabinetApp
                 var comand = args[i].Split('=');
                 if ((comand[0] == "--validation-rules" && comand[1].ToLowerInvariant() == "custom") || (args[i] == "-v" && args[i + 1].ToLowerInvariant() == "custom"))
                 {
-                    fileCabinetService = new FileCabinetMemoryService(new ValidatorBuilder().CreateCustom());
+                    validatorBuilder = new ValidatorBuilder().CreateCustom();
                     inputValidation = new UserInputValidationCustom();
                     validationRules = CustomValidationRules;
                 }
@@ -48,14 +49,7 @@ namespace FileCabinetApp
                 {
                     fileStream = new FileStream(FileNameFormatDatabasePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
 
-                    if (validationRules == CustomValidationRules)
-                    {
-                        fileCabinetService = new FileCabinetFilesystemService(fileStream, new ValidatorBuilder().CreateCustom());
-                    }
-                    else
-                    {
-                        fileCabinetService = new FileCabinetFilesystemService(fileStream, new ValidatorBuilder().CreateDefault());
-                    }
+                    fileCabinetService = new FileCabinetFilesystemService(fileStream, validatorBuilder);
                 }
 
                 if (args[i] == "-" && args[i + 1].ToLowerInvariant() == "use-stopwatch")
@@ -76,29 +70,34 @@ namespace FileCabinetApp
 
             var commandHandler = CreateCommandHandlers();
 
-            do
+            try
             {
-                Console.Write("> ");
-                var line = Console.ReadLine();
-                var inputs = line != null ? line.Split(' ', 2) : new string[] { string.Empty, string.Empty };
-                const int commandIndex = 0;
-                var command = inputs[commandIndex];
-
-                if (string.IsNullOrEmpty(command))
+                do
                 {
-                    Console.WriteLine(Program.HintMessage);
-                    continue;
+                    Console.Write("> ");
+                    var line = Console.ReadLine();
+                    var inputs = line != null ? line.Split(' ', 2) : new string[] { string.Empty, string.Empty };
+                    const int commandIndex = 0;
+                    var command = inputs[commandIndex];
+
+                    if (string.IsNullOrEmpty(command))
+                    {
+                        Console.WriteLine(Program.HintMessage);
+                        continue;
+                    }
+
+                    const int parametersIndex = 1;
+                    var parameters = inputs.Length > 1 ? inputs[parametersIndex] : string.Empty;
+
+                    commandHandler.Handle(new AppCommandRequest(command, parameters));
                 }
-
-                const int parametersIndex = 1;
-                var parameters = inputs.Length > 1 ? inputs[parametersIndex] : string.Empty;
-
-                commandHandler.Handle(new AppCommandRequest(command, parameters));
+                while (isRunning);
             }
-            while (isRunning);
-
-            streamWriter?.Dispose();
-            fileStream?.Dispose();
+            finally
+            {
+                streamWriter?.Dispose();
+                fileStream?.Dispose();
+            }
         }
 
         private static void Exit(bool exit)

@@ -37,6 +37,7 @@ namespace FileCabinetApp.CommandHandlers
                 if (!this.Service.IsExist(id))
                 {
                     Console.WriteLine($"#{id} record is not found.");
+                    return;
                 }
 
                 Console.Write("First name: ");

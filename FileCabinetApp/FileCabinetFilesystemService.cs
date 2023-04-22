@@ -15,10 +15,9 @@ namespace FileCabinetApp
         private const int LengthOfOneRecord = 157;
         private const short DefaultStatus = 0;
         private const short MaskForDelete = 0b_0000_0100;
-        private const StringComparison ScType = StringComparison.InvariantCultureIgnoreCase;
 
-        private readonly Dictionary<string, List<long>> firstNameIndex = new Dictionary<string, List<long>>();
-        private readonly Dictionary<string, List<long>> lastNameIndex = new Dictionary<string, List<long>>();
+        private readonly Dictionary<string, List<long>> firstNameIndex = new Dictionary<string, List<long>>(StringComparer.InvariantCultureIgnoreCase);
+        private readonly Dictionary<string, List<long>> lastNameIndex = new Dictionary<string, List<long>>(StringComparer.InvariantCultureIgnoreCase);
         private readonly Dictionary<DateTime, List<long>> dateOfBirthIndex = new Dictionary<DateTime, List<long>>();
 
         private readonly FileStream fileStream;
@@ -83,11 +82,11 @@ namespace FileCabinetApp
                 {
                     this.WriteBinary(ConvertToFileCabinetRecord(fileCabinetRecordNewData, id), DefaultStatus, position);
 
-                    UpdateIndexes(this.firstNameIndex, position, record.FirstName.ToLowerInvariant());
-                    AddRecordToIndexes(this.firstNameIndex, fileCabinetRecordNewData.FirstName.ToLowerInvariant(), position);
+                    UpdateIndexes(this.firstNameIndex, position, record.FirstName);
+                    AddRecordToIndexes(this.firstNameIndex, fileCabinetRecordNewData.FirstName, position);
 
-                    UpdateIndexes(this.lastNameIndex, position, record.LastName.ToLowerInvariant());
-                    AddRecordToIndexes(this.lastNameIndex, fileCabinetRecordNewData.LastName.ToLowerInvariant(), position);
+                    UpdateIndexes(this.lastNameIndex, position, record.LastName);
+                    AddRecordToIndexes(this.lastNameIndex, fileCabinetRecordNewData.LastName, position);
 
                     UpdateIndexes(this.dateOfBirthIndex, position, record.DateOfBirth);
                     AddRecordToIndexes(this.dateOfBirthIndex, fileCabinetRecordNewData.DateOfBirth, position);
@@ -106,10 +105,10 @@ namespace FileCabinetApp
         {
             if (this.dateOfBirthIndex.TryGetValue(dateOfBirth, out List<long> offsets))
             {
-                return new FilesystemIterator(this.fileStream, offsets);
+                return this.FindRecordInFile(offsets);
             }
 
-            return new List<FileCabinetRecord>();
+            return Enumerable.Empty<FileCabinetRecord>();
         }
 
         /// <summary>
@@ -119,12 +118,12 @@ namespace FileCabinetApp
         /// <returns>Returns  all records by first name.</returns>
         public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
-            if (this.firstNameIndex.TryGetValue(firstName.ToLowerInvariant(), out List<long> offsets))
+            if (this.firstNameIndex.TryGetValue(firstName, out List<long> offsets))
             {
-                return new FilesystemIterator(this.fileStream, offsets);
+                return this.FindRecordInFile(offsets);
             }
 
-            return new List<FileCabinetRecord>();
+            return Enumerable.Empty<FileCabinetRecord>();
         }
 
         /// <summary>
@@ -134,12 +133,12 @@ namespace FileCabinetApp
         /// <returns>Returns all records by last name.</returns>
         public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
-            if (this.lastNameIndex.TryGetValue(lastName.ToLowerInvariant(), out List<long> offsets))
+            if (this.lastNameIndex.TryGetValue(lastName, out List<long> offsets))
             {
-                return new FilesystemIterator(this.fileStream, offsets);
+                return this.FindRecordInFile(offsets);
             }
 
-            return new List<FileCabinetRecord>();
+            return Enumerable.Empty<FileCabinetRecord>();
         }
 
         /// <summary>
@@ -235,8 +234,8 @@ namespace FileCabinetApp
                         writer.Write(MaskForDelete | status);
                     }
 
-                    RemoveIndex(this.firstNameIndex, record.FirstName.ToLowerInvariant(), position);
-                    RemoveIndex(this.lastNameIndex, record.LastName.ToLowerInvariant(), position);
+                    RemoveIndex(this.firstNameIndex, record.FirstName, position);
+                    RemoveIndex(this.lastNameIndex, record.LastName, position);
                     RemoveIndex(this.dateOfBirthIndex, record.DateOfBirth, position);
 
                     break;
@@ -326,6 +325,24 @@ namespace FileCabinetApp
             }
         }
 
+        private static (FileCabinetRecord record, short status) ReadOneRecordFromFile(BinaryReader reader, long positionToRead)
+        {
+            reader.BaseStream.Seek(positionToRead, SeekOrigin.Begin);
+
+            FileCabinetRecord record = new FileCabinetRecord();
+
+            short status = reader.ReadInt16();
+            record.Id = reader.ReadInt32();
+            record.FirstName = new string(reader.ReadChars(60)).TrimEnd((char)0);
+            record.LastName = new string(reader.ReadChars(60)).TrimEnd((char)0);
+            record.DateOfBirth = new DateTime(reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
+            record.Gender = reader.ReadChar();
+            record.Height = reader.ReadInt16();
+            record.Weight = reader.ReadDecimal();
+
+            return (record, status);
+        }
+
         private void WriteBinary(FileCabinetRecord record, short status, long position)
         {
             using (BinaryWriter writer = new BinaryWriter(this.fileStream, Encoding.ASCII, true))
@@ -343,8 +360,8 @@ namespace FileCabinetApp
                 writer.Write(record.Height);
                 writer.Write(record.Weight);
 
-                AddRecordToIndexes(this.firstNameIndex, record.FirstName.ToLowerInvariant(), position);
-                AddRecordToIndexes(this.lastNameIndex, record.LastName.ToLowerInvariant(), position);
+                AddRecordToIndexes(this.firstNameIndex, record.FirstName, position);
+                AddRecordToIndexes(this.lastNameIndex, record.LastName, position);
                 AddRecordToIndexes(this.dateOfBirthIndex, record.DateOfBirth, position);
             }
         }
@@ -357,18 +374,7 @@ namespace FileCabinetApp
 
                 while (positionForRead < reader.BaseStream.Length)
                 {
-                    reader.BaseStream.Seek(positionForRead, SeekOrigin.Begin);
-
-                    FileCabinetRecord record = new FileCabinetRecord();
-
-                    short status = reader.ReadInt16();
-                    record.Id = reader.ReadInt32();
-                    record.FirstName = new string(reader.ReadChars(60)).TrimEnd((char)0);
-                    record.LastName = new string(reader.ReadChars(60)).TrimEnd((char)0);
-                    record.DateOfBirth = new DateTime(reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
-                    record.Gender = reader.ReadChar();
-                    record.Height = reader.ReadInt16();
-                    record.Weight = reader.ReadDecimal();
+                    var (record, status) = ReadOneRecordFromFile(reader, positionForRead);
 
                     yield return (positionForRead, record, status);
                     positionForRead += LengthOfOneRecord;
@@ -386,6 +392,17 @@ namespace FileCabinetApp
             return this.GetRecordsInternal()
                             .Where(x => (x.status & MaskForDelete) == 0)
                             .Select(record => record.record);
+        }
+
+        private IEnumerable<FileCabinetRecord> FindRecordInFile(List<long> offsets)
+        {
+            using (var reader = new BinaryReader(this.fileStream, Encoding.ASCII, true))
+            {
+                foreach (var offset in offsets)
+                {
+                    yield return ReadOneRecordFromFile(reader, offset).record;
+                }
+            }
         }
     }
 }

@@ -14,8 +14,8 @@ namespace FileCabinetApp
     {
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
 
-        private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
-        private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
+        private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>(StringComparer.InvariantCultureIgnoreCase);
+        private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>(StringComparer.InvariantCultureIgnoreCase);
         private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
 
         private readonly IIdGenerator idGenerator = new IdGenerator();
@@ -100,11 +100,11 @@ namespace FileCabinetApp
                 throw new ArgumentException("records with the specified ID do not exist.");
             }
 
-            RemoveFromDictionary(this.firstNameDictionary, result.FirstName.ToLowerInvariant(), result);
-            AddToIndex(result, this.firstNameDictionary, fileCabinetRecordNewData.FirstName.ToLowerInvariant());
+            RemoveFromDictionary(this.firstNameDictionary, result.FirstName, result);
+            AddToIndex(result, this.firstNameDictionary, fileCabinetRecordNewData.FirstName);
 
-            RemoveFromDictionary(this.lastNameDictionary, result.LastName.ToLowerInvariant(), result);
-            AddToIndex(result, this.lastNameDictionary, fileCabinetRecordNewData.LastName.ToLowerInvariant());
+            RemoveFromDictionary(this.lastNameDictionary, result.LastName, result);
+            AddToIndex(result, this.lastNameDictionary, fileCabinetRecordNewData.LastName);
 
             RemoveFromDictionary(this.dateOfBirthDictionary, result.DateOfBirth, result);
             AddToIndex(result, this.dateOfBirthDictionary, fileCabinetRecordNewData.DateOfBirth);
@@ -124,12 +124,12 @@ namespace FileCabinetApp
         /// <returns>Returns  all records by first name.</returns>
         public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
-            if (this.firstNameDictionary.TryGetValue(firstName.ToLowerInvariant(), out List<FileCabinetRecord> allValueOfKey))
+            if (this.firstNameDictionary.TryGetValue(firstName, out List<FileCabinetRecord> allValueOfKey))
             {
-                return new MemoryIterator(allValueOfKey);
+                return FindRecordInList(allValueOfKey);
             }
 
-            return new List<FileCabinetRecord>();
+            return Enumerable.Empty<FileCabinetRecord>();
         }
 
         /// <summary>
@@ -139,12 +139,12 @@ namespace FileCabinetApp
         /// <returns>Returns all records by last name.</returns>
         public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
-            if (this.lastNameDictionary.TryGetValue(lastName.ToLowerInvariant(), out List<FileCabinetRecord> allValueOfKey))
+            if (this.lastNameDictionary.TryGetValue(lastName, out List<FileCabinetRecord> allValueOfKey))
             {
-                return new MemoryIterator(allValueOfKey);
+                return FindRecordInList(allValueOfKey);
             }
 
-            return new List<FileCabinetRecord>();
+            return Enumerable.Empty<FileCabinetRecord>();
         }
 
         /// <summary>
@@ -156,10 +156,10 @@ namespace FileCabinetApp
         {
             if (this.dateOfBirthDictionary.TryGetValue(dateOfBirth, out List<FileCabinetRecord> allValueOfKey))
             {
-                return new MemoryIterator(allValueOfKey);
+                return FindRecordInList(allValueOfKey);
             }
 
-            return new List<FileCabinetRecord>();
+            return Enumerable.Empty<FileCabinetRecord>();
         }
 
         /// <summary>
@@ -226,8 +226,8 @@ namespace FileCabinetApp
 
             this.list.Remove(valueForRemove);
 
-            RemoveFromDictionary(this.firstNameDictionary, valueForRemove.FirstName.ToLowerInvariant(), valueForRemove);
-            RemoveFromDictionary(this.lastNameDictionary, valueForRemove.LastName.ToLowerInvariant(), valueForRemove);
+            RemoveFromDictionary(this.firstNameDictionary, valueForRemove.FirstName, valueForRemove);
+            RemoveFromDictionary(this.lastNameDictionary, valueForRemove.LastName, valueForRemove);
             RemoveFromDictionary(this.dateOfBirthDictionary, valueForRemove.DateOfBirth, valueForRemove);
         }
 
@@ -271,12 +271,20 @@ namespace FileCabinetApp
             }
         }
 
+        private static IEnumerable<FileCabinetRecord> FindRecordInList(List<FileCabinetRecord> list)
+        {
+            foreach (var record in list)
+            {
+                yield return record;
+            }
+        }
+
         private void CreateRecord(FileCabinetRecord record)
         {
             this.list.Add(record);
 
-            AddToIndex(record, this.firstNameDictionary, record.FirstName.ToLowerInvariant());
-            AddToIndex(record, this.lastNameDictionary, record.LastName.ToLowerInvariant());
+            AddToIndex(record, this.firstNameDictionary, record.FirstName);
+            AddToIndex(record, this.lastNameDictionary, record.LastName);
             AddToIndex(record, this.dateOfBirthDictionary, record.DateOfBirth);
         }
     }

@@ -273,10 +273,7 @@ namespace FileCabinetApp
 
         private static IEnumerable<FileCabinetRecord> FindRecordInList(List<FileCabinetRecord> list)
         {
-            foreach (var record in list)
-            {
-                yield return record;
-            }
+            return list;
         }
 
         private void CreateRecord(FileCabinetRecord record)

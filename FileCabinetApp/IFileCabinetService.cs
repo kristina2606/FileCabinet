@@ -90,5 +90,7 @@ namespace FileCabinetApp
         /// </summary>
         /// <returns>Count of purged records. Only for FileCabinetFilesystemService.</returns>
         int Purge();
+
+        void Insert (FileCabinetRecord record);
     }
 }

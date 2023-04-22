@@ -255,6 +255,21 @@ namespace FileCabinetApp
             }
         }
 
+        public void Insert(FileCabinetRecord record)
+        {
+            Stopwatch stopWatch = Stopwatch.StartNew();
+            try
+            {
+                this.service.Insert(record);
+            }
+            finally
+            {
+                stopWatch.Stop();
+
+                MeasuringExecutionTime("Insert", stopWatch);
+            }
+        }
+
         private static void MeasuringExecutionTime(string methodName, Stopwatch stopWatch)
         {
             var ticks = stopWatch.ElapsedTicks;

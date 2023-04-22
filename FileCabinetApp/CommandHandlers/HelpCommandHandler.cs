@@ -24,6 +24,7 @@ namespace FileCabinetApp.CommandHandlers
             new string[] { "import", "import data from .csv or .xml file.", "The 'import' import data from .csv or .xml file." },
             new string[] { "remove", "remove record by id.", "The 'remove' remove record by id." },
             new string[] { "purge", "The command defragments the data file.", "The 'purge' command defragments the data file." },
+            new string[] { "insert", "The command adds a record using the passed data.", "The 'insert' adds a record using the passed data." },
 };
 
         /// <summary>

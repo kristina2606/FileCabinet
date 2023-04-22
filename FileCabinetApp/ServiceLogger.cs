@@ -315,6 +315,24 @@ namespace FileCabinetApp
             }
         }
 
+        public void Insert(FileCabinetRecord record)
+        {
+            var methodName = "Insert()";
+
+            this.LoggingActivity(methodName);
+            try
+            {
+                this.service.Insert(record);
+                this.LoggingEndMethod(methodName, $"insert the record '{record.Id}'.");
+            }
+            catch
+            {
+                this.LoggingError(methodName, $"Record #{record.Id} is exists.");
+
+                throw;
+            }
+        }
+
         private void WriteDateAndTime()
         {
             this.streamWriter.Write(DateTime.Now.ToString("MM/dd/yyyy HH:mm", CultureInfo.InvariantCulture) + " ");
@@ -343,5 +361,5 @@ namespace FileCabinetApp
             this.WriteDateAndTime();
             this.streamWriter.WriteLine($"{methodName} {resultOfMethod}");
         }
-    }
+            }
 }

@@ -240,6 +240,16 @@ namespace FileCabinetApp
             return 0;
         }
 
+        public void Insert(FileCabinetRecord record)
+        {
+            if (this.IsExist(record.Id))
+            {
+                throw new ArgumentException("Record's id is exist.");
+            }
+
+            this.CreateRecord(record);
+        }
+
         /// <summary>
         /// Checks if records with the specified id exists.
         /// </summary>

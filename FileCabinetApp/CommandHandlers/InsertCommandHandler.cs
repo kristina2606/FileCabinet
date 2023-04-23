@@ -20,7 +20,7 @@ namespace FileCabinetApp.CommandHandlers
 
         public override void Handle(AppCommandRequest appCommand)
         {
-            var parametrs = appCommand.Parameters.Replace("values", "-", this.stringComparison).Split('-');
+            var parametrs = appCommand.Parameters.Split("values");
 
             if (appCommand.Command.Equals("insert", this.stringComparison))
             {
@@ -44,30 +44,31 @@ namespace FileCabinetApp.CommandHandlers
                 {
                     for (var i = 0; i < fields.Length; i++)
                     {
-                        var value = values[i].Trim();
+                        var fieldForInsert = fields[i].Trim().ToLowerInvariant();
+                        var valueForInsert = values[i].Trim();
 
-                        switch (fields[i].Trim().ToLowerInvariant())
+                        switch (fieldForInsert)
                         {
                             case "id":
-                                record.Id = Converter.IntConverter(value).Item3;
+                                record.Id = Converter.IntConverter(valueForInsert).Item3;
                                 break;
                             case "firstname":
-                                record.FirstName = Convert(Converter.StringConverter, this.validationRules.ValidateFirstName, value);
+                                record.FirstName = Convert(Converter.StringConverter, this.validationRules.ValidateFirstName, valueForInsert);
                                 break;
                             case "lastname":
-                                record.LastName = Convert(Converter.StringConverter, this.validationRules.ValidateLastName, value);
+                                record.LastName = Convert(Converter.StringConverter, this.validationRules.ValidateLastName, valueForInsert);
                                 break;
                             case "dateofbirth":
-                                record.DateOfBirth = Convert(Converter.DateConverter, this.validationRules.ValidateDateOfBirth, value);
+                                record.DateOfBirth = Convert(Converter.DateConverter, this.validationRules.ValidateDateOfBirth, valueForInsert);
                                 break;
                             case "gender":
-                                record.Gender = Convert(Converter.CharConverter, this.validationRules.ValidateGender, value);
+                                record.Gender = Convert(Converter.CharConverter, this.validationRules.ValidateGender, valueForInsert);
                                 break;
                             case "height":
-                                record.Height = Convert(Converter.ShortConverter, this.validationRules.ValidateHeight, value);
+                                record.Height = Convert(Converter.ShortConverter, this.validationRules.ValidateHeight, valueForInsert);
                                 break;
                             case "weight":
-                                record.Weight = Convert(Converter.DecimalConverter, this.validationRules.ValidateWeight, value);
+                                record.Weight = Convert(Converter.DecimalConverter, this.validationRules.ValidateWeight, valueForInsert);
                                 break;
                         }
                     }

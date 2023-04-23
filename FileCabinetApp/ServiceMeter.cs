@@ -270,6 +270,21 @@ namespace FileCabinetApp
             }
         }
 
+        public int[] Delete(List<int> idRecordsForDelete)
+        {
+            Stopwatch stopWatch = Stopwatch.StartNew();
+            try
+            {
+                return this.service.Delete(idRecordsForDelete);
+            }
+            finally
+            {
+                stopWatch.Stop();
+
+                MeasuringExecutionTime("Delete", stopWatch);
+            }
+        }
+
         private static void MeasuringExecutionTime(string methodName, Stopwatch stopWatch)
         {
             var ticks = stopWatch.ElapsedTicks;

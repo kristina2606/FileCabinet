@@ -92,5 +92,7 @@ namespace FileCabinetApp
         int Purge();
 
         void Insert (FileCabinetRecord record);
+
+        int[] Delete(List<int> idRecordsForDelete);
     }
 }

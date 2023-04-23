@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text;
 
 [assembly: CLSCompliant(true)]
 
@@ -248,6 +249,33 @@ namespace FileCabinetApp
             }
 
             this.CreateRecord(record);
+        }
+
+        public int[] Delete(List<int> idRecordsForDelete)
+        {
+            int[] deletedRecords = new int[idRecordsForDelete.Count];
+
+            for (var i = 0; i < idRecordsForDelete.Count; i++)
+            {
+                var id = idRecordsForDelete[i];
+
+                if (!this.IsExist(id))
+                {
+                    throw new ArgumentException("Record's id isn't exist.");
+                }
+
+                deletedRecords[i] = id;
+
+                var valueForRemove = this.list.Find(x => x.Id == id);
+
+                this.list.Remove(valueForRemove);
+
+                RemoveFromDictionary(this.firstNameDictionary, valueForRemove.FirstName, valueForRemove);
+                RemoveFromDictionary(this.lastNameDictionary, valueForRemove.LastName, valueForRemove);
+                RemoveFromDictionary(this.dateOfBirthDictionary, valueForRemove.DateOfBirth, valueForRemove);
+            }
+
+            return deletedRecords;
         }
 
         /// <summary>

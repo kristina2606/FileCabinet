@@ -333,6 +333,25 @@ namespace FileCabinetApp
             }
         }
 
+        public int[] Delete(List<int> idRecordsForDelete)
+        {
+            string methodName = "Delete()";
+
+            this.LoggingActivity(methodName);
+            try
+            {
+                this.LoggingEndMethod(methodName, $"deleted all records by parametrs.");
+                return this.service.Delete(idRecordsForDelete);
+            }
+            catch (Exception ex)
+            {
+                this.LoggingError(methodName, ex.Message);
+
+                throw;
+            }
+
+        }
+
         private void WriteDateAndTime()
         {
             this.streamWriter.Write(DateTime.Now.ToString("MM/dd/yyyy HH:mm", CultureInfo.InvariantCulture) + " ");
@@ -361,5 +380,5 @@ namespace FileCabinetApp
             this.WriteDateAndTime();
             this.streamWriter.WriteLine($"{methodName} {resultOfMethod}");
         }
-            }
+    }
 }

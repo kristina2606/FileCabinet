@@ -23,8 +23,9 @@ namespace FileCabinetApp.CommandHandlers
             new string[] { "export", "exports service data to .csv or .xml file.", "The 'export' exports service data to .csv or .xml file." },
             new string[] { "import", "import data from .csv or .xml file.", "The 'import' import data from .csv or .xml file." },
             new string[] { "remove", "remove record by id.", "The 'remove' remove record by id." },
-            new string[] { "purge", "The command defragments the data file.", "The 'purge' command defragments the data file." },
-            new string[] { "insert", "The command adds a record using the passed data.", "The 'insert' adds a record using the passed data." },
+            new string[] { "purge", "defragments the data file.", "The 'purge' command defragments the data file." },
+            new string[] { "insert", "adds a record using the passed data.", "The 'insert' adds a record using the passed data." },
+            new string[] { "delete", "delete record by predetermined criteria.", "The 'delete' delete record by predetermined criteria." },
 };
 
         /// <summary>

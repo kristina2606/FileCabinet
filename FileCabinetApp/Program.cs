@@ -134,6 +134,7 @@ namespace FileCabinetApp
             var exportHandler = new ExportCommandHandler(Program.fileCabinetService);
             var importHandler = new ImportCommandHandler(Program.fileCabinetService);
             var removeHandler = new RemoveCommandHandler(Program.fileCabinetService);
+            var deleteHandler = new DeleteCommandHandler(Program.fileCabinetService, Program.inputValidation);
             var purgeHandler = new PurgeCommandHandler(Program.fileCabinetService);
             var exitHandler = new ExitCommandHandler(Exit);
             var missHandler = new MissCommandHandler();
@@ -147,7 +148,8 @@ namespace FileCabinetApp
             findHandler.SetNext(exportHandler);
             exportHandler.SetNext(importHandler);
             importHandler.SetNext(removeHandler);
-            removeHandler.SetNext(purgeHandler);
+            removeHandler.SetNext(deleteHandler);
+            deleteHandler.SetNext(purgeHandler);
             purgeHandler.SetNext(exitHandler);
             exitHandler.SetNext(missHandler);
 

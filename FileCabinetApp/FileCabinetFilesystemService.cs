@@ -272,44 +272,6 @@ namespace FileCabinetApp
             this.CreateRecord(record);
         }
 
-        public int[] Delete(List<int> idRecordsForDelete)
-        {
-            int[] deletedRecords = new int[idRecordsForDelete.Count];
-
-            for (var i = 0; i < idRecordsForDelete.Count; i++)
-            {
-                var id = idRecordsForDelete[i];
-
-                if (!this.IsExist(id))
-                {
-                    throw new ArgumentException("Record's id isn't exist.");
-                }
-
-                deletedRecords[i] = id;
-
-                foreach (var (position, record, status) in this.GetRecordsInternal())
-                {
-                    if (record.Id == id)
-                    {
-                        using (BinaryWriter writer = new BinaryWriter(this.fileStream, Encoding.ASCII, true))
-                        {
-                            writer.BaseStream.Seek(position, SeekOrigin.Begin);
-
-                            writer.Write(MaskForDelete | status);
-                        }
-
-                        RemoveIndex(this.firstNameIndex, record.FirstName, position);
-                        RemoveIndex(this.lastNameIndex, record.LastName, position);
-                        RemoveIndex(this.dateOfBirthIndex, record.DateOfBirth, position);
-
-                        break;
-                    }
-                }
-            }
-
-            return deletedRecords;
-        }
-
         /// <summary>
         /// Checks if records with the specified id exists.
         /// </summary>

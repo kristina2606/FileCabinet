@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FileCabinetApp.CommandHandlers
 {
@@ -53,22 +48,22 @@ namespace FileCabinetApp.CommandHandlers
                                 record.Id = Converter.IntConverter(valueForInsert).Item3;
                                 break;
                             case "firstname":
-                                record.FirstName = Convert(Converter.StringConverter, this.validationRules.ValidateFirstName, valueForInsert);
+                                record.FirstName = UserInputHelpers.Convert(Converter.StringConverter, this.validationRules.ValidateFirstName, valueForInsert);
                                 break;
                             case "lastname":
-                                record.LastName = Convert(Converter.StringConverter, this.validationRules.ValidateLastName, valueForInsert);
+                                record.LastName = UserInputHelpers.Convert(Converter.StringConverter, this.validationRules.ValidateLastName, valueForInsert);
                                 break;
                             case "dateofbirth":
-                                record.DateOfBirth = Convert(Converter.DateConverter, this.validationRules.ValidateDateOfBirth, valueForInsert);
+                                record.DateOfBirth = UserInputHelpers.Convert(Converter.DateConverter, this.validationRules.ValidateDateOfBirth, valueForInsert);
                                 break;
                             case "gender":
-                                record.Gender = Convert(Converter.CharConverter, this.validationRules.ValidateGender, valueForInsert);
+                                record.Gender = UserInputHelpers.Convert(Converter.CharConverter, this.validationRules.ValidateGender, valueForInsert);
                                 break;
                             case "height":
-                                record.Height = Convert(Converter.ShortConverter, this.validationRules.ValidateHeight, valueForInsert);
+                                record.Height = UserInputHelpers.Convert(Converter.ShortConverter, this.validationRules.ValidateHeight, valueForInsert);
                                 break;
                             case "weight":
-                                record.Weight = Convert(Converter.DecimalConverter, this.validationRules.ValidateWeight, valueForInsert);
+                                record.Weight = UserInputHelpers.Convert(Converter.DecimalConverter, this.validationRules.ValidateWeight, valueForInsert);
                                 break;
                         }
                     }
@@ -84,18 +79,6 @@ namespace FileCabinetApp.CommandHandlers
             {
                 base.Handle(appCommand);
             }
-        }
-
-        private static T Convert<T>(Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator, string value)
-        {
-            var conversionResult = converter(value);
-
-            if (conversionResult.Item1 && validator(conversionResult.Item3).Item1)
-            {
-                return conversionResult.Item3;
-            }
-
-            throw new ArgumentException($"Validation failed: {conversionResult.Item2}.");
         }
     }
 }

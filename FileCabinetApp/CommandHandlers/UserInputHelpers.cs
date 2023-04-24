@@ -89,5 +89,17 @@ namespace FileCabinetApp.CommandHandlers
 
             return defaultAnswer;
         }
+
+        public static T Convert<T>(Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator, string value)
+        {
+            var conversionResult = converter(value);
+
+            if (conversionResult.Item1 && validator(conversionResult.Item3).Item1)
+            {
+                return conversionResult.Item3;
+            }
+
+            throw new ArgumentException($"Validation failed: {conversionResult.Item2}.");
+        }
     }
 }

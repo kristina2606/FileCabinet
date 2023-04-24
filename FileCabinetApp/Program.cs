@@ -127,7 +127,8 @@ namespace FileCabinetApp
             var helpHandler = new HelpCommandHandler();
             var createHandler = new CreateCommandHandler(Program.fileCabinetService, Program.inputValidation);
             var editHandler = new EditCommandHandler(Program.fileCabinetService, Program.inputValidation);
-            var insertHendler = new InsertCommandHandler(Program.fileCabinetService, Program.inputValidation);
+            var insertHandler = new InsertCommandHandler(Program.fileCabinetService, Program.inputValidation);
+            var updateHandler = new UpdateCommandHandler(Program.fileCabinetService, Program.inputValidation);
             var listHandler = new ListCommandHandler(Program.fileCabinetService, DefaultRecordPrint);
             var statHandler = new StatCommandHandler(Program.fileCabinetService);
             var findHandler = new FindCommandHandler(Program.fileCabinetService, DefaultRecordPrint);
@@ -141,8 +142,9 @@ namespace FileCabinetApp
 
             helpHandler.SetNext(createHandler);
             createHandler.SetNext(editHandler);
-            editHandler.SetNext(insertHendler);
-            insertHendler.SetNext(listHandler);
+            editHandler.SetNext(insertHandler);
+            insertHandler.SetNext(updateHandler);
+            updateHandler.SetNext(listHandler);
             listHandler.SetNext(statHandler);
             statHandler.SetNext(findHandler);
             findHandler.SetNext(exportHandler);

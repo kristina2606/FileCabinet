@@ -30,6 +30,7 @@ namespace FileCabinetApp.CommandHandlers
                 string parametrForDelete = parametrs[0].ToLowerInvariant();
                 string valueForDelete = parametrs[1];
                 List<int> recordsForDelete = new List<int>();
+                List<int> deletedRecords = new List<int>();
 
                 try
                 {
@@ -39,20 +40,25 @@ namespace FileCabinetApp.CommandHandlers
                             recordsForDelete.Add(Converter.IntConverter(valueForDelete).Item3);
                             break;
                         case "firstname":
-                            var firstName = Convert(Converter.StringConverter, this.validationRules.ValidateFirstName, valueForDelete);
+                            var firstName = UserInputHelpers.Convert(Converter.StringConverter, this.validationRules.ValidateFirstName, valueForDelete);
                             recordsForDelete = this.Service.FindByFirstName(firstName).Select(x => x.Id).ToList();
                             break;
                         case "lastname":
-                            var lastName = Convert(Converter.StringConverter, this.validationRules.ValidateLastName, valueForDelete);
+                            var lastName = UserInputHelpers.Convert(Converter.StringConverter, this.validationRules.ValidateLastName, valueForDelete);
                             recordsForDelete = this.Service.FindByLastName(lastName).Select(x => x.Id).ToList();
                             break;
                         case "dateofbirth":
-                            var dateOfBirth = Convert(Converter.DateConverter, this.validationRules.ValidateDateOfBirth, valueForDelete);
+                            var dateOfBirth = UserInputHelpers.Convert(Converter.DateConverter, this.validationRules.ValidateDateOfBirth, valueForDelete);
                             recordsForDelete = this.Service.FindByDateOfBirth(dateOfBirth).Select(x => x.Id).ToList();
                             break;
                     }
 
-                    int[] deletedRecords = this.Service.Delete(recordsForDelete);
+                    foreach (var record in recordsForDelete)
+                    {
+                        this.Service.Remove(record);
+
+                        deletedRecords.Add(record);
+                    }
 
                     Console.WriteLine($"Records #{string.Join(", #", deletedRecords)} are deleted.");
                 }
@@ -65,20 +71,6 @@ namespace FileCabinetApp.CommandHandlers
             {
                 base.Handle(appCommand);
             }
-
         }
-
-        private static T Convert<T>(Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator, string value)
-        {
-            var conversionResult = converter(value);
-
-            if (conversionResult.Item1 && validator(conversionResult.Item3).Item1)
-            {
-                return conversionResult.Item3;
-            }
-
-            throw new ArgumentException($"Validation failed: {conversionResult.Item2}.");
-        }
-
     }
 }

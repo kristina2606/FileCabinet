@@ -126,7 +126,7 @@ namespace FileCabinetApp
         {
             if (this.firstNameDictionary.TryGetValue(firstName, out List<FileCabinetRecord> allValueOfKey))
             {
-                return FindRecordInList(allValueOfKey);
+                return allValueOfKey;
             }
 
             return Enumerable.Empty<FileCabinetRecord>();
@@ -141,7 +141,7 @@ namespace FileCabinetApp
         {
             if (this.lastNameDictionary.TryGetValue(lastName, out List<FileCabinetRecord> allValueOfKey))
             {
-                return FindRecordInList(allValueOfKey);
+                return allValueOfKey;
             }
 
             return Enumerable.Empty<FileCabinetRecord>();
@@ -156,7 +156,7 @@ namespace FileCabinetApp
         {
             if (this.dateOfBirthDictionary.TryGetValue(dateOfBirth, out List<FileCabinetRecord> allValueOfKey))
             {
-                return FindRecordInList(allValueOfKey);
+                return allValueOfKey;
             }
 
             return Enumerable.Empty<FileCabinetRecord>();
@@ -269,11 +269,6 @@ namespace FileCabinetApp
             {
                 allValueOfExistingKey.Remove(recordForRemove);
             }
-        }
-
-        private static IEnumerable<FileCabinetRecord> FindRecordInList(List<FileCabinetRecord> list)
-        {
-            return list;
         }
 
         private void CreateRecord(FileCabinetRecord record)

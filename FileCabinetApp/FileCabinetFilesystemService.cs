@@ -15,7 +15,10 @@ namespace FileCabinetApp
         private const int LengthOfOneRecord = 157;
         private const short DefaultStatus = 0;
         private const short MaskForDelete = 0b_0000_0100;
-        private const StringComparison ScType = StringComparison.InvariantCultureIgnoreCase;
+
+        private readonly Dictionary<string, List<long>> firstNameIndex = new Dictionary<string, List<long>>(StringComparer.InvariantCultureIgnoreCase);
+        private readonly Dictionary<string, List<long>> lastNameIndex = new Dictionary<string, List<long>>(StringComparer.InvariantCultureIgnoreCase);
+        private readonly Dictionary<DateTime, List<long>> dateOfBirthIndex = new Dictionary<DateTime, List<long>>();
 
         private readonly FileStream fileStream;
         private readonly IRecordValidator validator;
@@ -78,6 +81,16 @@ namespace FileCabinetApp
                 if (record.Id == id && (status & MaskForDelete) == 0)
                 {
                     this.WriteBinary(ConvertToFileCabinetRecord(fileCabinetRecordNewData, id), DefaultStatus, position);
+
+                    UpdateIndexes(this.firstNameIndex, position, record.FirstName);
+                    AddRecordToIndexes(this.firstNameIndex, fileCabinetRecordNewData.FirstName, position);
+
+                    UpdateIndexes(this.lastNameIndex, position, record.LastName);
+                    AddRecordToIndexes(this.lastNameIndex, fileCabinetRecordNewData.LastName, position);
+
+                    UpdateIndexes(this.dateOfBirthIndex, position, record.DateOfBirth);
+                    AddRecordToIndexes(this.dateOfBirthIndex, fileCabinetRecordNewData.DateOfBirth, position);
+
                     break;
                 }
             }
@@ -88,13 +101,14 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="dateOfBirth">The parameter by which you want to find all existing records.</param>
         /// <returns>Returns all records by date of birth.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
+        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
         {
-            var list = this.GetExistingRecords()
-                .Where(record => record.DateOfBirth == dateOfBirth)
-                .ToList();
+            if (this.dateOfBirthIndex.TryGetValue(dateOfBirth, out List<long> offsets))
+            {
+                return this.FindRecordInFile(offsets);
+            }
 
-            return new ReadOnlyCollection<FileCabinetRecord>(list);
+            return Enumerable.Empty<FileCabinetRecord>();
         }
 
         /// <summary>
@@ -102,13 +116,14 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="firstName">The parameter by which you want to find all existing records.</param>
         /// <returns>Returns  all records by first name.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
+        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
-            var list = this.GetExistingRecords()
-                .Where(record => record.FirstName.Equals(firstName, ScType))
-                .ToList();
+            if (this.firstNameIndex.TryGetValue(firstName, out List<long> offsets))
+            {
+                return this.FindRecordInFile(offsets);
+            }
 
-            return new ReadOnlyCollection<FileCabinetRecord>(list);
+            return Enumerable.Empty<FileCabinetRecord>();
         }
 
         /// <summary>
@@ -116,13 +131,14 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="lastName">The parameter by which you want to find all existing records.</param>
         /// <returns>Returns all records by last name.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
+        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
-            var list = this.GetExistingRecords()
-                .Where(record => record.LastName.Equals(lastName, ScType))
-                .ToList();
+            if (this.lastNameIndex.TryGetValue(lastName, out List<long> offsets))
+            {
+                return this.FindRecordInFile(offsets);
+            }
 
-            return new ReadOnlyCollection<FileCabinetRecord>(list);
+            return Enumerable.Empty<FileCabinetRecord>();
         }
 
         /// <summary>
@@ -218,6 +234,10 @@ namespace FileCabinetApp
                         writer.Write(MaskForDelete | status);
                     }
 
+                    RemoveIndex(this.firstNameIndex, record.FirstName, position);
+                    RemoveIndex(this.lastNameIndex, record.LastName, position);
+                    RemoveIndex(this.dateOfBirthIndex, record.DateOfBirth, position);
+
                     break;
                 }
             }
@@ -279,6 +299,50 @@ namespace FileCabinetApp
             return record;
         }
 
+        private static void AddRecordToIndexes<T>(Dictionary<T, List<long>> dictionary, T key, long position)
+        {
+            if (!dictionary.ContainsKey(key))
+            {
+                dictionary.Add(key, new List<long>());
+            }
+
+            dictionary[key].Add(position);
+        }
+
+        private static void UpdateIndexes<T>(Dictionary<T, List<long>> dictionary, long valueForRemove, T oldKey)
+        {
+            if (dictionary.TryGetValue(oldKey, out List<long> allValueOfOldKey))
+            {
+                allValueOfOldKey.Remove(valueForRemove);
+            }
+        }
+
+        private static void RemoveIndex<T>(Dictionary<T, List<long>> dictionary, T keyForRemove, long offsetForRemove)
+        {
+            if (dictionary.TryGetValue(keyForRemove, out List<long> offsets))
+            {
+                offsets.Remove(offsetForRemove);
+            }
+        }
+
+        private static (FileCabinetRecord record, short status) ReadOneRecordFromFile(BinaryReader reader, long positionToRead)
+        {
+            reader.BaseStream.Seek(positionToRead, SeekOrigin.Begin);
+
+            FileCabinetRecord record = new FileCabinetRecord();
+
+            short status = reader.ReadInt16();
+            record.Id = reader.ReadInt32();
+            record.FirstName = new string(reader.ReadChars(60)).TrimEnd((char)0);
+            record.LastName = new string(reader.ReadChars(60)).TrimEnd((char)0);
+            record.DateOfBirth = new DateTime(reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
+            record.Gender = reader.ReadChar();
+            record.Height = reader.ReadInt16();
+            record.Weight = reader.ReadDecimal();
+
+            return (record, status);
+        }
+
         private void WriteBinary(FileCabinetRecord record, short status, long position)
         {
             using (BinaryWriter writer = new BinaryWriter(this.fileStream, Encoding.ASCII, true))
@@ -295,28 +359,22 @@ namespace FileCabinetApp
                 writer.Write(record.Gender);
                 writer.Write(record.Height);
                 writer.Write(record.Weight);
+
+                AddRecordToIndexes(this.firstNameIndex, record.FirstName, position);
+                AddRecordToIndexes(this.lastNameIndex, record.LastName, position);
+                AddRecordToIndexes(this.dateOfBirthIndex, record.DateOfBirth, position);
             }
         }
 
         private IEnumerable<(long position, FileCabinetRecord record, short status)> GetRecordsInternal()
         {
-            var positionForRead = 0;
-
             using (var reader = new BinaryReader(this.fileStream, Encoding.ASCII, true))
             {
+                long positionForRead = 0;
+
                 while (positionForRead < reader.BaseStream.Length)
                 {
-                    reader.BaseStream.Seek(positionForRead, SeekOrigin.Begin);
-                    FileCabinetRecord record = new FileCabinetRecord();
-
-                    short status = reader.ReadInt16();
-                    record.Id = reader.ReadInt32();
-                    record.FirstName = new string(reader.ReadChars(60)).TrimEnd((char)0);
-                    record.LastName = new string(reader.ReadChars(60)).TrimEnd((char)0);
-                    record.DateOfBirth = new DateTime(reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
-                    record.Gender = reader.ReadChar();
-                    record.Height = reader.ReadInt16();
-                    record.Weight = reader.ReadDecimal();
+                    var (record, status) = ReadOneRecordFromFile(reader, positionForRead);
 
                     yield return (positionForRead, record, status);
                     positionForRead += LengthOfOneRecord;
@@ -334,6 +392,17 @@ namespace FileCabinetApp
             return this.GetRecordsInternal()
                             .Where(x => (x.status & MaskForDelete) == 0)
                             .Select(record => record.record);
+        }
+
+        private IEnumerable<FileCabinetRecord> FindRecordInFile(List<long> offsets)
+        {
+            using (var reader = new BinaryReader(this.fileStream, Encoding.ASCII, true))
+            {
+                foreach (var offset in offsets)
+                {
+                    yield return ReadOneRecordFromFile(reader, offset).record;
+                }
+            }
         }
     }
 }

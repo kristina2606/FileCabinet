@@ -22,15 +22,13 @@ namespace FileCabinetApp.CommandHandlers
         /// <param name="appCommand">>Configuratiion the application command and options.</param>
         public override void Handle(AppCommandRequest appCommand)
         {
-            if (appCommand.Command.Equals("stat", StringComparison.InvariantCultureIgnoreCase))
-            {
-                var (activeRecords, deletedRecords) = this.Service.GetStat();
-                Console.WriteLine($"{activeRecords + deletedRecords} record(s), {deletedRecords} of them deleted.");
-            }
-            else
+            if (!appCommand.Command.Equals("stat", StringComparison.InvariantCultureIgnoreCase))
             {
                 base.Handle(appCommand);
             }
+
+            var (activeRecords, deletedRecords) = this.Service.GetStat();
+            Console.WriteLine($"{activeRecords + deletedRecords} record(s), {deletedRecords} of them deleted.");
         }
     }
 }

@@ -315,6 +315,10 @@ namespace FileCabinetApp
             }
         }
 
+        /// <summary>
+        /// Insert new record and saves information about service method calls and passed parameters to a text file.
+        /// </summary>
+        /// <param name="record">New record from user.</param>
         public void Insert(FileCabinetRecord record)
         {
             var methodName = "Insert()";

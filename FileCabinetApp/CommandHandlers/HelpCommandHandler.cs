@@ -33,36 +33,34 @@ namespace FileCabinetApp.CommandHandlers
         /// <param name="appCommand">>Configuratiion the application command and options.</param>
         public override void Handle(AppCommandRequest appCommand)
         {
-            if (appCommand.Command.Equals("help", StringComparison.InvariantCultureIgnoreCase))
-            {
-                if (!string.IsNullOrEmpty(appCommand.Parameters))
-                {
-                    var index = Array.FindIndex(this.helpMessages, 0, this.helpMessages.Length, i => string.Equals(i[CommandHelpIndex], appCommand.Parameters, StringComparison.InvariantCultureIgnoreCase));
-                    if (index >= 0)
-                    {
-                        Console.WriteLine(this.helpMessages[index][ExplanationHelpIndex]);
-                    }
-                    else
-                    {
-                        Console.WriteLine($"There is no explanation for '{appCommand.Parameters}' command.");
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("Available commands:");
-
-                    foreach (var helpMessage in this.helpMessages)
-                    {
-                        Console.WriteLine("\t{0}\t- {1}", helpMessage[CommandHelpIndex], helpMessage[DescriptionHelpIndex]);
-                    }
-                }
-
-                Console.WriteLine();
-            }
-            else
+            if (!appCommand.Command.Equals("help", StringComparison.InvariantCultureIgnoreCase))
             {
                 base.Handle(appCommand);
             }
+
+            if (!string.IsNullOrEmpty(appCommand.Parameters))
+            {
+                var index = Array.FindIndex(this.helpMessages, 0, this.helpMessages.Length, i => string.Equals(i[CommandHelpIndex], appCommand.Parameters, StringComparison.InvariantCultureIgnoreCase));
+                if (index >= 0)
+                {
+                    Console.WriteLine(this.helpMessages[index][ExplanationHelpIndex]);
+                }
+                else
+                {
+                    Console.WriteLine($"There is no explanation for '{appCommand.Parameters}' command.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Available commands:");
+
+                foreach (var helpMessage in this.helpMessages)
+                {
+                    Console.WriteLine("\t{0}\t- {1}", helpMessage[CommandHelpIndex], helpMessage[DescriptionHelpIndex]);
+                }
+            }
+
+            Console.WriteLine();
         }
     }
 }

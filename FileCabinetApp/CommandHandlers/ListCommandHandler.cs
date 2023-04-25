@@ -28,16 +28,14 @@ namespace FileCabinetApp.CommandHandlers
         /// <param name="appCommand">>Configuratiion the application command and options.</param>
         public override void Handle(AppCommandRequest appCommand)
         {
-            if (appCommand.Command.Equals("list", StringComparison.InvariantCultureIgnoreCase))
-            {
-                ReadOnlyCollection<FileCabinetRecord> list = this.Service.GetRecords();
-
-                this.printer(list);
-            }
-            else
+            if (!appCommand.Command.Equals("list", StringComparison.InvariantCultureIgnoreCase))
             {
                 base.Handle(appCommand);
             }
+
+            ReadOnlyCollection<FileCabinetRecord> list = this.Service.GetRecords();
+
+            this.printer(list);
         }
     }
 }

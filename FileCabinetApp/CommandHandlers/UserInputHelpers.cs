@@ -90,6 +90,15 @@ namespace FileCabinetApp.CommandHandlers
             return defaultAnswer;
         }
 
+        /// <summary>
+        /// Validate user input parametrs.
+        /// </summary>
+        /// <typeparam name="T">Generic types.</typeparam>
+        /// <param name="converter">Converts a string to a value of the required type.</param>
+        /// <param name="validator">Checks the value against the criteria.</param>
+        /// <param name="value">The string value to be converted and validated.</param>
+        /// <returns>>Resulting value.</returns>
+        /// <exception cref="ArgumentException">An exception with an error message received from the validator function.</exception>
         public static T Convert<T>(Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator, string value)
         {
             var conversionResult = converter(value);

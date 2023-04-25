@@ -255,6 +255,10 @@ namespace FileCabinetApp
             }
         }
 
+        /// <summary>
+        /// Insert new record and measures the running time of service methods and displays them on the screen.
+        /// </summary>
+        /// <param name="record">New record from user.</param>
         public void Insert(FileCabinetRecord record)
         {
             Stopwatch stopWatch = Stopwatch.StartNew();

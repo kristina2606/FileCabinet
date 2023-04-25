@@ -262,6 +262,10 @@ namespace FileCabinetApp
             return countOfrecordsForPurge;
         }
 
+        /// <summary>
+        /// Insert new record.
+        /// </summary>
+        /// <param name="record">New record from user.</param>
         public void Insert(FileCabinetRecord record)
         {
             if (this.IsExist(record.Id))

@@ -67,6 +67,24 @@
             </summary>
             <param name="appCommand">>Configuratiion the application command and options.</param>
         </member>
+        <member name="T:FileCabinetApp.CommandHandlers.DeleteCommandHandler">
+            <summary>
+            Contain code for handling delete requests.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.DeleteCommandHandler.#ctor(FileCabinetApp.IFileCabinetService,FileCabinetApp.IUserInputValidation)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.DeleteCommandHandler"/> class.
+            </summary>
+            <param name="service">Interface instance IFileCabinetServise.</param>
+            <param name="inputValidation">Interface instance IUserInputValidation.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.DeleteCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <summary>
+            Handling for delete requests.
+            </summary>
+            <param name="appCommand">>Configuratiion the application command and options.</param>
+        </member>
         <member name="T:FileCabinetApp.CommandHandlers.ExitCommandHandler">
             <summary>
             Contain code for handling exit requests.
@@ -164,6 +182,24 @@
             </summary>
             <param name="appCommand">>Configuratiion the application command and options.</param>
         </member>
+        <member name="T:FileCabinetApp.CommandHandlers.InsertCommandHandler">
+            <summary>
+            Contain code for handling insert requests.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.InsertCommandHandler.#ctor(FileCabinetApp.IFileCabinetService,FileCabinetApp.IUserInputValidation)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.InsertCommandHandler"/> class.
+            </summary>
+            <param name="service">Interface instance IFileCabinetServise.</param>
+            <param name="inputValidation">Interface instance IUserInputValidation.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.InsertCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <summary>
+            Handling for insert requests.
+            </summary>
+            <param name="appCommand">>Configuratiion the application command and options.</param>
+        </member>
         <member name="T:FileCabinetApp.CommandHandlers.ListCommandHandler">
             <summary>
             Contain code for handling list requests.
@@ -246,6 +282,24 @@
             </summary>
             <param name="appCommand">>Configuratiion the application command and options.</param>
         </member>
+        <member name="T:FileCabinetApp.CommandHandlers.UpdateCommandHandler">
+            <summary>
+            Contain code for handling update requests.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.UpdateCommandHandler.#ctor(FileCabinetApp.IFileCabinetService,FileCabinetApp.IUserInputValidation)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.UpdateCommandHandler"/> class.
+            </summary>
+            <param name="service">Interface instance IFileCabinetServise.</param>
+            <param name="inputValidation">Interface instance IUserInputValidation.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.UpdateCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <summary>
+            Handling for update requests.
+            </summary>
+            <param name="appCommand">>Configuratiion the application command and options.</param>
+        </member>
         <member name="T:FileCabinetApp.CommandHandlers.UserInputHelpers">
             <summary>
             User input validation.
@@ -267,6 +321,17 @@
             <param name="prompt">Information about the data to be overwritten. </param>
             <param name="defaultAnswer">Default response if the user does not enter anything.</param>
             <returns>Returns the user's choice.</returns>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.UserInputHelpers.Convert``1(System.Func{System.String,System.Tuple{System.Boolean,System.String,``0}},System.Func{``0,System.Tuple{System.Boolean,System.String}},System.String)">
+            <summary>
+            Validate user input parametrs.
+            </summary>
+            <typeparam name="T">Generic types.</typeparam>
+            <param name="converter">Converts a string to a value of the required type.</param>
+            <param name="validator">Checks the value against the criteria.</param>
+            <param name="value">The string value to be converted and validated.</param>
+            <returns>>Resulting value.</returns>
+            <exception cref="T:System.ArgumentException">An exception with an error message received from the validator function.</exception>
         </member>
         <member name="T:FileCabinetApp.CompositeValidator">
             <summary>
@@ -465,6 +530,12 @@
             </summary>
             <returns>Count of purged records.</returns>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.Insert(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Insert new record.
+            </summary>
+            <param name="record">New record from user.</param>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.IsExist(System.Int32)">
             <summary>
             Checks if records with the specified id exists.
@@ -558,6 +629,12 @@
             Defragments the data file. Only for FileCabinetFilesystemService.
             </summary>
             <returns>Count of purged records.Only for FileCabinetFilesystemService.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.Insert(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Insert new record.
+            </summary>
+            <param name="record">New record from user.</param>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.IsExist(System.Int32)">
             <summary>
@@ -1080,6 +1157,12 @@
             </summary>
             <returns>Count of purged records. Only for FileCabinetFilesystemService.</returns>
         </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.Insert(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Insert new record.
+            </summary>
+            <param name="record">New record from user.</param>
+        </member>
         <member name="T:FileCabinetApp.IIdGenerator">
             <summary>
             Generates the following id.
@@ -1387,6 +1470,12 @@
             </summary>
             <param name="fileCabinetServiceSnapshot">Сlass instance.</param>
         </member>
+        <member name="M:FileCabinetApp.ServiceLogger.Insert(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Insert new record and saves information about service method calls and passed parameters to a text file.
+            </summary>
+            <param name="record">New record from user.</param>
+        </member>
         <member name="T:FileCabinetApp.ServiceMeter">
             <summary>
             Measures the running time of service methods and displays them on the screen.
@@ -1475,6 +1564,12 @@
             Adding imported records to existing records and measures the running time of service methods and displays them on the screen.
             </summary>
             <param name="fileCabinetServiceSnapshot">Сlass instance.</param>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.Insert(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Insert new record and measures the running time of service methods and displays them on the screen.
+            </summary>
+            <param name="record">New record from user.</param>
         </member>
         <member name="T:FileCabinetApp.UserInputValidationCustom">
             <summary>

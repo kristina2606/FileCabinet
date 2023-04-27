@@ -36,6 +36,7 @@ namespace FileCabinetApp.CommandHandlers
             if (!appCommand.Command.Equals("help", StringComparison.InvariantCultureIgnoreCase))
             {
                 base.Handle(appCommand);
+                return;
             }
 
             if (!string.IsNullOrEmpty(appCommand.Parameters))

@@ -19,6 +19,7 @@ namespace FileCabinetApp.CommandHandlers
             if (string.IsNullOrEmpty(appCommand.Command))
             {
                 base.Handle(appCommand);
+                return;
             }
 
             Console.WriteLine($"'{appCommand.Command}' is not a command. See 'help'.");

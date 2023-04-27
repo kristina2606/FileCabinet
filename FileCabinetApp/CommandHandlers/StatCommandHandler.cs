@@ -25,6 +25,7 @@ namespace FileCabinetApp.CommandHandlers
             if (!appCommand.Command.Equals("stat", StringComparison.InvariantCultureIgnoreCase))
             {
                 base.Handle(appCommand);
+                return;
             }
 
             var (activeRecords, deletedRecords) = this.Service.GetStat();

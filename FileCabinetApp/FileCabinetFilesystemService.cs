@@ -277,6 +277,61 @@ namespace FileCabinetApp
         }
 
         /// <summary>
+        /// Finds records by parameters.
+        /// </summary>
+        /// <param name="conditions">Contains conditions with search parameters.</param>
+        /// <param name="type">Contains an OR or AND operator.</param>
+        /// <returns>Returns finded records.</returns>
+        public IEnumerable<FileCabinetRecord> Find(Condition[] conditions, UnionType type)
+        {
+            if (conditions.Length == 0)
+            {
+                return Enumerable.Empty<FileCabinetRecord>();
+            }
+
+            var records = Enumerable.Empty<FileCabinetRecord>();
+
+            var allRecords = this.GetRecordsInternal().Select(x => x.record);
+
+            foreach (var condition in conditions)
+            {
+                switch (condition.Field)
+                {
+                    case "id":
+                        records = allRecords.Where(x => x.Id == condition.Value.Id);
+                        break;
+                    case "firstname":
+                        records = allRecords.Where(x => x.FirstName.ToLowerInvariant() == condition.Value.FirstName);
+                        break;
+                    case "lastname":
+                        records = allRecords.Where(x => x.LastName.ToLowerInvariant() == condition.Value.LastName);
+                        break;
+                    case "dateofbirth":
+                        records = allRecords.Where(x => x.DateOfBirth == condition.Value.DateOfBirth);
+                        break;
+                    case "gender":
+                        records = allRecords.Where(x => x.Gender == condition.Value.Gender);
+                        break;
+                    case "height":
+                        records = allRecords.Where(x => x.Height == condition.Value.Height);
+                        break;
+                    case "weight":
+                        records = allRecords.Where(x => x.Weight == condition.Value.Weight);
+                        break;
+                    default:
+                        throw new ArgumentException($"Unknown search criteria: {condition.Field}");
+                }
+
+                if (type.OperatorType == "or")
+                {
+                    return records;
+                }
+            }
+
+            return records;
+        }
+
+        /// <summary>
         /// Checks if records with the specified id exists.
         /// </summary>
         /// <param name="id">The id entered by the user.</param>

@@ -110,5 +110,66 @@ namespace FileCabinetApp.CommandHandlers
 
             throw new ArgumentException($"Validation failed: {conversionResult.Item2}.");
         }
+
+        /// <summary>
+        /// Creates an array of conditions based on the specified array of fields.
+        /// </summary>
+        /// <param name="fields">The array of fields to create conditions from.</param>
+        /// <param name="inputValidation">Interface instance IUserInputValidation.</param>
+        /// <returns>>An array of conditions.</returns>
+        public static Condition[] CreateConditions(string[] fields, IUserInputValidation inputValidation)
+        {
+            if (fields.Length == 0)
+            {
+                throw new ArgumentNullException(nameof(fields));
+            }
+
+            var conditions = new Condition[fields.Length];
+
+            for (var i = 0; i < fields.Length; i++)
+            {
+                var condition = fields[i].Trim().Split('=', StringSplitOptions.RemoveEmptyEntries);
+
+                if (condition.Length != 2)
+                {
+                    throw new ArgumentException("You introduced an incorrect parametrs.");
+                }
+
+                conditions[i] = new Condition
+                {
+                    Field = condition[0],
+                    Value = new FileCabinetRecord(),
+                };
+
+                switch (conditions[i].Field)
+                {
+                    case "id":
+                        conditions[i].Value.Id = Converter.IntConverter(condition[1]).Item3;
+                        break;
+                    case "firstname":
+                        conditions[i].Value.FirstName = Convert(Converter.StringConverter, inputValidation.ValidateFirstName, condition[1]);
+                        break;
+                    case "lastname":
+                        conditions[i].Value.LastName = Convert(Converter.StringConverter, inputValidation.ValidateLastName, condition[1]);
+                        break;
+                    case "dateofbirth":
+                        conditions[i].Value.DateOfBirth = Convert(Converter.DateConverter, inputValidation.ValidateDateOfBirth, condition[1]);
+                        break;
+                    case "gender":
+                        conditions[i].Value.Gender = Convert(Converter.CharConverter, inputValidation.ValidateGender, condition[1]);
+                        break;
+                    case "height":
+                        conditions[i].Value.Height = Convert(Converter.ShortConverter, inputValidation.ValidateHeight, condition[1]);
+                        break;
+                    case "weight":
+                        conditions[i].Value.Weight = Convert(Converter.DecimalConverter, inputValidation.ValidateWeight, condition[1]);
+                        break;
+                    default:
+                        throw new ArgumentException($"Unknown search criteria: {conditions[i].Field}");
+                }
+            }
+
+            return conditions;
+        }
     }
 }

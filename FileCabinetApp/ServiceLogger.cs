@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 
 namespace FileCabinetApp
 {
@@ -332,6 +333,32 @@ namespace FileCabinetApp
             catch
             {
                 this.LoggingError(methodName, $"Record #{record.Id} is exists.");
+
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Finds records by parameters and saves information about service method calls and passed parameters to a text file.
+        /// </summary>
+        /// <param name="conditions">Contains conditions with search parameters.</param>
+        /// <param name="type">Contains an OR or AND operator.</param>
+        /// <returns>Returns finded records.</returns>
+        public IEnumerable<FileCabinetRecord> Find(Condition[] conditions, UnionType type)
+        {
+            var methodName = "Find()";
+            var methodParameters = $"with parameter: '{string.Join(",", conditions.Select(x => x.Field))}'.";
+
+            this.LoggingActivity(methodName, methodParameters);
+            try
+            {
+                this.LoggingEndMethod(methodName, "returned list with finded records.");
+
+                return this.service.Find(conditions, type);
+            }
+            catch (Exception ex)
+            {
+                this.LoggingError(methodName, ex.Message);
 
                 throw;
             }

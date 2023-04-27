@@ -333,6 +333,14 @@
             <returns>>Resulting value.</returns>
             <exception cref="T:System.ArgumentException">An exception with an error message received from the validator function.</exception>
         </member>
+        <member name="M:FileCabinetApp.CommandHandlers.UserInputHelpers.CreateConditions(System.String[],FileCabinetApp.IUserInputValidation)">
+            <summary>
+            Creates an array of conditions based on the specified array of fields.
+            </summary>
+            <param name="fields">The array of fields to create conditions from.</param>
+            <param name="inputValidation">Interface instance IUserInputValidation.</param>
+            <returns>>An array of conditions.</returns>
+        </member>
         <member name="T:FileCabinetApp.CompositeValidator">
             <summary>
             Сontains a set of different validators.
@@ -349,6 +357,27 @@
             Validate a new record from user input with new validate parametrs.
             </summary>
             <param name="fileCabinetRecordNewData">The new date in the record.</param>
+        </member>
+        <member name="T:FileCabinetApp.Condition">
+            <summary>
+            representation of search terms in records.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.Condition.Field">
+            <summary>
+            Gets or sets the field by which the search will be performed in the records.
+            </summary>
+            <value>
+            The field by which the search will be performed in the records.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.Condition.Value">
+            <summary>
+            Gets or sets the value contains the search values.
+            </summary>
+            <value>
+            The value contains the search values.
+            </value>
         </member>
         <member name="T:FileCabinetApp.Converter">
             <summary>
@@ -536,6 +565,14 @@
             </summary>
             <param name="record">New record from user.</param>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.Find(FileCabinetApp.Condition[],FileCabinetApp.UnionType)">
+            <summary>
+            Finds records by parameters.
+            </summary>
+            <param name="conditions">Contains conditions with search parameters.</param>
+            <param name="type">Contains an OR or AND operator.</param>
+            <returns>Returns finded records.</returns>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.IsExist(System.Int32)">
             <summary>
             Checks if records with the specified id exists.
@@ -635,6 +672,14 @@
             Insert new record.
             </summary>
             <param name="record">New record from user.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.Find(FileCabinetApp.Condition[],FileCabinetApp.UnionType)">
+            <summary>
+            Finds records by parameters.
+            </summary>
+            <param name="conditions">Contains conditions with search parameters.</param>
+            <param name="type">Contains an OR or AND operator.</param>
+            <returns>Returns finded records.</returns>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.IsExist(System.Int32)">
             <summary>
@@ -1163,6 +1208,14 @@
             </summary>
             <param name="record">New record from user.</param>
         </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.Find(FileCabinetApp.Condition[],FileCabinetApp.UnionType)">
+            <summary>
+            Finds records by parameters.
+            </summary>
+            <param name="conditions">Contains conditions with search parameters.</param>
+            <param name="type">Contains an OR or AND operator.</param>
+            <returns>Returns finded records.</returns>
+        </member>
         <member name="T:FileCabinetApp.IIdGenerator">
             <summary>
             Generates the following id.
@@ -1476,6 +1529,14 @@
             </summary>
             <param name="record">New record from user.</param>
         </member>
+        <member name="M:FileCabinetApp.ServiceLogger.Find(FileCabinetApp.Condition[],FileCabinetApp.UnionType)">
+            <summary>
+            Finds records by parameters and saves information about service method calls and passed parameters to a text file.
+            </summary>
+            <param name="conditions">Contains conditions with search parameters.</param>
+            <param name="type">Contains an OR or AND operator.</param>
+            <returns>Returns finded records.</returns>
+        </member>
         <member name="T:FileCabinetApp.ServiceMeter">
             <summary>
             Measures the running time of service methods and displays them on the screen.
@@ -1570,6 +1631,27 @@
             Insert new record and measures the running time of service methods and displays them on the screen.
             </summary>
             <param name="record">New record from user.</param>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.Find(FileCabinetApp.Condition[],FileCabinetApp.UnionType)">
+            <summary>
+            Finds records by parameters and measures the running time of service methods and displays them on the screen.
+            </summary>
+            <param name="conditions">Contains conditions with search parameters.</param>
+            <param name="type">Contains an OR or AND operator.</param>
+            <returns>Returns finded records.</returns>
+        </member>
+        <member name="T:FileCabinetApp.UnionType">
+            <summary>
+            Represents the type of union operation.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.UnionType.OperatorType">
+            <summary>
+            Gets or sets the type of the join operation.
+            </summary>
+            <value>
+            The type of the join operation.
+            </value>
         </member>
         <member name="T:FileCabinetApp.UserInputValidationCustom">
             <summary>

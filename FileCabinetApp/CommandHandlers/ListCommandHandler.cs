@@ -31,6 +31,7 @@ namespace FileCabinetApp.CommandHandlers
             if (!appCommand.Command.Equals("list", StringComparison.InvariantCultureIgnoreCase))
             {
                 base.Handle(appCommand);
+                return;
             }
 
             ReadOnlyCollection<FileCabinetRecord> list = this.Service.GetRecords();

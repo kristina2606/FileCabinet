@@ -31,6 +31,7 @@ namespace FileCabinetApp.CommandHandlers
             if (!appCommand.Command.Equals("find", StringComparison.InvariantCultureIgnoreCase))
             {
                 base.Handle(appCommand);
+                return;
             }
 
             var searchParametrs = appCommand.Parameters.ToLowerInvariant().Split(' ');

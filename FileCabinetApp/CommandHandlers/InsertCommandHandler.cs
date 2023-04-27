@@ -7,6 +7,7 @@ namespace FileCabinetApp.CommandHandlers
     /// </summary>
     public class InsertCommandHandler : ServiceCommandHandlerBase
     {
+        private const int NumberFieldsInRecord = 7;
         private readonly StringComparison stringComparison = StringComparison.InvariantCultureIgnoreCase;
         private readonly IUserInputValidation validationRules;
 
@@ -32,6 +33,7 @@ namespace FileCabinetApp.CommandHandlers
             if (!appCommand.Command.Equals("insert", this.stringComparison))
             {
                 base.Handle(appCommand);
+                return;
             }
 
             if (parametrs.Length != 2)
@@ -40,12 +42,18 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
-            string[] fields = parametrs[0].Replace("(", string.Empty, this.stringComparison).Replace(")", string.Empty, this.stringComparison).Split(',');
-            string[] values = parametrs[1].Replace("(", string.Empty, this.stringComparison).Replace(")", string.Empty, this.stringComparison).Replace("'", string.Empty, this.stringComparison).Split(',');
+            string[] fields = parametrs[0].Replace("(", string.Empty, this.stringComparison)
+                                          .Replace(")", string.Empty, this.stringComparison)
+                                          .Split(',');
 
-            if (fields.Length != values.Length)
+            string[] values = parametrs[1].Replace("(", string.Empty, this.stringComparison)
+                                          .Replace(")", string.Empty, this.stringComparison)
+                                          .Replace("'", string.Empty, this.stringComparison)
+                                          .Split(',');
+
+            if (fields.Length != NumberFieldsInRecord || values.Length != NumberFieldsInRecord)
             {
-                Console.WriteLine("You introduced an incorrect data.");
+                Console.WriteLine("Incorrect number of fields or values.");
                 return;
             }
 

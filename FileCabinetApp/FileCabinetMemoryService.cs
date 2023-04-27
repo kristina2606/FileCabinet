@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 
 [assembly: CLSCompliant(true)]
@@ -255,6 +256,59 @@ namespace FileCabinetApp
         }
 
         /// <summary>
+        /// Finds records by parameters.
+        /// </summary>
+        /// <param name="conditions">Contains conditions with search parameters.</param>
+        /// <param name="type">Contains an OR or AND operator.</param>
+        /// <returns>Returns finded records.</returns>
+        public IEnumerable<FileCabinetRecord> Find(Condition[] conditions, UnionType type)
+        {
+            if (conditions.Length == 0)
+            {
+                return Enumerable.Empty<FileCabinetRecord>();
+            }
+
+            var records = Enumerable.Empty<FileCabinetRecord>();
+
+            foreach (var condition in conditions)
+            {
+                switch (condition.Field)
+                {
+                    case "id":
+                        records = this.list.Where(x => x.Id == condition.Value.Id);
+                        break;
+                    case "firstname":
+                        records = this.list.Where(x => x.FirstName.ToLowerInvariant() == condition.Value.FirstName);
+                        break;
+                    case "lastname":
+                        records = this.list.Where(x => x.LastName.ToLowerInvariant() == condition.Value.LastName);
+                        break;
+                    case "dateofbirth":
+                        records = this.list.Where(x => x.DateOfBirth == condition.Value.DateOfBirth);
+                        break;
+                    case "gender":
+                        records = this.list.Where(x => x.Gender == condition.Value.Gender);
+                        break;
+                    case "height":
+                        records = this.list.Where(x => x.Height == condition.Value.Height);
+                        break;
+                    case "weight":
+                        records = this.list.Where(x => x.Weight == condition.Value.Weight);
+                        break;
+                    default:
+                        throw new ArgumentException($"Unknown search criteria: {condition.Field}");
+                }
+
+                if (type.OperatorType == "or")
+                {
+                    return records;
+                }
+            }
+
+            return records;
+        }
+
+        /// <summary>
         /// Checks if records with the specified id exists.
         /// </summary>
         /// <param name="id">The id entered by the user.</param>
@@ -282,14 +336,6 @@ namespace FileCabinetApp
             if (dictionary.TryGetValue(keyForRemove, out List<FileCabinetRecord> allValueOfExistingKey))
             {
                 allValueOfExistingKey.Remove(recordForRemove);
-            }
-        }
-
-        private static IEnumerable<FileCabinetRecord> FindRecordInList(List<FileCabinetRecord> list)
-        {
-            foreach (var record in list)
-            {
-                yield return record;
             }
         }
 

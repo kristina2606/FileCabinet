@@ -29,6 +29,7 @@ namespace FileCabinetApp.CommandHandlers
             if (!appCommand.Command.Equals("export", StringComparison.InvariantCultureIgnoreCase))
             {
                 base.Handle(appCommand);
+                return;
             }
 
             var makeSnapshot = this.Service.MakeSnapshot();

@@ -27,6 +27,7 @@ namespace FileCabinetApp.CommandHandlers
             if (!appCommand.Command.Equals("exit", StringComparison.InvariantCultureIgnoreCase))
             {
                 base.Handle(appCommand);
+                return;
             }
 
             this.exit(true);

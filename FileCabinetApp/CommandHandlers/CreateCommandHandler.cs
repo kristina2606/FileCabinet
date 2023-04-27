@@ -29,6 +29,7 @@ namespace FileCabinetApp.CommandHandlers
             if (!appCommand.Command.Equals("create", StringComparison.InvariantCultureIgnoreCase))
             {
                 base.Handle(appCommand);
+                return;
             }
 
             Console.Write("First name: ");

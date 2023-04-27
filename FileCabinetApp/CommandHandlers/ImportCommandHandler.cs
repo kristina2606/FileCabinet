@@ -29,6 +29,7 @@ namespace FileCabinetApp.CommandHandlers
             if (!appCommand.Command.Equals("import", StringComparison.InvariantCultureIgnoreCase))
             {
                 base.Handle(appCommand);
+                return;
             }
 
             var importParametrs = appCommand.Parameters.Split(' ');

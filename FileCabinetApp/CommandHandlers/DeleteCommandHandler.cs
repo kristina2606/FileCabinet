@@ -12,6 +12,8 @@ namespace FileCabinetApp.CommandHandlers
         private readonly StringComparison stringComparison = StringComparison.InvariantCultureIgnoreCase;
         private readonly IUserInputValidation validationRules;
 
+        private string conditionalOperator = "or";
+
         /// <summary>
         /// Initializes a new instance of the <see cref="DeleteCommandHandler"/> class.
         /// </summary>
@@ -32,54 +34,49 @@ namespace FileCabinetApp.CommandHandlers
             if (!appCommand.Command.Equals("delete", this.stringComparison))
             {
                 base.Handle(appCommand);
-            }
-
-            var parametrs = appCommand.Parameters.Replace("where ", string.Empty, this.stringComparison).Replace("'", string.Empty, this.stringComparison).Split('=');
-
-            if (parametrs.Length != 2)
-            {
-                Console.WriteLine("You introduced an incorrect parametrs.");
                 return;
             }
 
-            string parametrForDelete = parametrs[0].ToLowerInvariant();
-            string valueForDelete = parametrs[1];
-            List<int> recordsForDelete = new List<int>();
-            List<int> deletedRecords = new List<int>();
+            if (!appCommand.Parameters.Contains("where", this.stringComparison))
+            {
+                Console.WriteLine("Invalid command syntax. Missing 'where' clause.");
+                return;
+            }
+
+            if (appCommand.Parameters.Contains("and", StringComparison.InvariantCultureIgnoreCase))
+            {
+                this.conditionalOperator = "and";
+            }
+
+            var parametrs = appCommand.Parameters.ToLowerInvariant()
+                                                 .Replace("where ", string.Empty, this.stringComparison)
+                                                 .Replace("'", string.Empty, this.stringComparison)
+                                                 .Split(this.conditionalOperator, StringSplitOptions.RemoveEmptyEntries);
 
             try
             {
-                switch (parametrForDelete)
+                var deletedRecords = new List<int>();
+                Condition[] conditionsToSearch = UserInputHelpers.CreateConditions(parametrs, this.validationRules);
+                var recordsForDelete = this.Service.Find(conditionsToSearch, new UnionType { OperatorType = this.conditionalOperator });
+
+                foreach (var recordId in recordsForDelete.Select(x => x.Id).ToList())
                 {
-                    case "id":
-                        recordsForDelete.Add(Converter.IntConverter(valueForDelete).Item3);
-                        break;
-                    case "firstname":
-                        var firstName = UserInputHelpers.Convert(Converter.StringConverter, this.validationRules.ValidateFirstName, valueForDelete);
-                        recordsForDelete = this.Service.FindByFirstName(firstName).Select(x => x.Id).ToList();
-                        break;
-                    case "lastname":
-                        var lastName = UserInputHelpers.Convert(Converter.StringConverter, this.validationRules.ValidateLastName, valueForDelete);
-                        recordsForDelete = this.Service.FindByLastName(lastName).Select(x => x.Id).ToList();
-                        break;
-                    case "dateofbirth":
-                        var dateOfBirth = UserInputHelpers.Convert(Converter.DateConverter, this.validationRules.ValidateDateOfBirth, valueForDelete);
-                        recordsForDelete = this.Service.FindByDateOfBirth(dateOfBirth).Select(x => x.Id).ToList();
-                        break;
+                    this.Service.Remove(recordId);
+
+                    deletedRecords.Add(recordId);
                 }
 
-                foreach (var record in recordsForDelete)
+                if (deletedRecords.Count == 0)
                 {
-                    this.Service.Remove(record);
-
-                    deletedRecords.Add(record);
+                    Console.WriteLine($"'{string.Join(",", conditionsToSearch.Select(x => x.Value))}' value for delete not found.");
+                    return;
                 }
 
                 Console.WriteLine($"Records #{string.Join(", #", deletedRecords)} are deleted.");
             }
             catch
             {
-                Console.WriteLine($"Record with {valueForDelete} parametr doesn't exists.");
+                Console.WriteLine($"Record with {parametrs[0]} parametr doesn't exists.");
             }
         }
     }

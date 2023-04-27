@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
 
 namespace FileCabinetApp.CommandHandlers
 {
@@ -11,6 +9,7 @@ namespace FileCabinetApp.CommandHandlers
     {
         private readonly StringComparison stringComparison = StringComparison.InvariantCultureIgnoreCase;
         private readonly IUserInputValidation validationRules;
+        private string conditionalOperator = "or";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UpdateCommandHandler"/> class.
@@ -35,7 +34,13 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
-            var parametrs = appCommand.Parameters.ToLowerInvariant().Split("where", StringSplitOptions.RemoveEmptyEntries);
+            if (!appCommand.Parameters.Contains("where", this.stringComparison))
+            {
+                Console.WriteLine("Invalid command syntax. Missing 'where' clause.");
+                return;
+            }
+
+            var parametrs = appCommand.Parameters.Split("where", StringSplitOptions.RemoveEmptyEntries);
 
             if (parametrs.Length != 2)
             {
@@ -43,20 +48,30 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
-            var updateFields = parametrs[0].Replace("set", string.Empty, this.stringComparison).Replace("'", string.Empty, this.stringComparison).Split(',', StringSplitOptions.RemoveEmptyEntries);
-            var searchCriteria = parametrs[1].Replace("'", string.Empty, this.stringComparison).Split("and", StringSplitOptions.RemoveEmptyEntries);
+            var updateFields = parametrs[0].Replace("set", string.Empty, this.stringComparison)
+                                           .Replace("'", string.Empty, this.stringComparison)
+                                           .Split(',', StringSplitOptions.RemoveEmptyEntries);
 
-            var allRecords = this.Service.GetRecords();
-            var fieldValuesToUpdate = GetDictionaryFromFields(updateFields);
-            var searchCriteriaValues = GetDictionaryFromFields(searchCriteria);
+            if (parametrs[1].Contains("and", StringComparison.InvariantCultureIgnoreCase))
+            {
+                this.conditionalOperator = "and";
+            }
+
+            var searchCriteria = parametrs[1].ToLowerInvariant()
+                                              .Replace("'", string.Empty, this.stringComparison)
+                                              .Split(this.conditionalOperator, StringSplitOptions.RemoveEmptyEntries);
 
             try
             {
-                var recordsToUpdate = this.GetRecordsToUpdate(allRecords, searchCriteriaValues);
+                Condition[] conditionsToSearch = UserInputHelpers.CreateConditions(searchCriteria, this.validationRules);
+                Condition[] conditionsToUpdate = UserInputHelpers.CreateConditions(updateFields, this.validationRules);
+                var @operator = new UnionType { OperatorType = this.conditionalOperator };
+
+                var recordsToUpdate = this.Service.Find(conditionsToSearch, @operator);
 
                 foreach (var record in recordsToUpdate)
                 {
-                    var newData = this.GetNewDataFromFields(record, fieldValuesToUpdate);
+                    var newData = GetNewDataFromFields(record, conditionsToUpdate);
                     this.Service.EditRecord(record.Id, newData);
                 }
 
@@ -68,26 +83,7 @@ namespace FileCabinetApp.CommandHandlers
             }
         }
 
-        private static Dictionary<string, string> GetDictionaryFromFields(string[] fields)
-        {
-            var dictionary = new Dictionary<string, string>();
-
-            foreach (string field in fields)
-            {
-                string[] fieldParts = field.Trim().Split('=', StringSplitOptions.RemoveEmptyEntries);
-
-                if (fieldParts.Length != 2)
-                {
-                    throw new ArgumentException($"Invalid search criteria: {field}");
-                }
-
-                dictionary[fieldParts[0].Trim()] = fieldParts[1].Trim();
-            }
-
-            return dictionary;
-        }
-
-        private FileCabinetRecordNewData GetNewDataFromFields(FileCabinetRecord record, Dictionary<string, string> fieldValuesToUpdate)
+        private static FileCabinetRecordNewData GetNewDataFromFields(FileCabinetRecord record, Condition[] conditionsToUpdate)
         {
             var firstName = record.FirstName;
             var lastName = record.LastName;
@@ -96,97 +92,34 @@ namespace FileCabinetApp.CommandHandlers
             var height = record.Height;
             var weight = record.Weight;
 
-            foreach (var field in fieldValuesToUpdate)
+            foreach (var condition in conditionsToUpdate)
             {
-                switch (field.Key)
+                switch (condition.Field)
                 {
                     case "firstname":
-                        firstName = UserInputHelpers.Convert(Converter.StringConverter, this.validationRules.ValidateFirstName, field.Value);
+                        firstName = condition.Value.FirstName;
                         break;
                     case "lastname":
-                        lastName = UserInputHelpers.Convert(Converter.StringConverter, this.validationRules.ValidateLastName, field.Value);
+                        lastName = condition.Value.LastName;
                         break;
                     case "dateofbirth":
-                        dateOfBirth = UserInputHelpers.Convert(Converter.DateConverter, this.validationRules.ValidateDateOfBirth, field.Value);
+                        dateOfBirth = condition.Value.DateOfBirth;
                         break;
                     case "gender":
-                        gender = UserInputHelpers.Convert(Converter.CharConverter, this.validationRules.ValidateGender, field.Value);
+                        gender = condition.Value.Gender;
                         break;
                     case "height":
-                        height = UserInputHelpers.Convert(Converter.ShortConverter, this.validationRules.ValidateHeight, field.Value);
+                        height = condition.Value.Height;
                         break;
                     case "weight":
-                        weight = UserInputHelpers.Convert(Converter.DecimalConverter, this.validationRules.ValidateWeight, field.Value);
+                        weight = condition.Value.Weight;
                         break;
                     default:
-                        throw new ArgumentException($"Unknown field to update: {field.Key}");
+                        throw new ArgumentException($"Unknown field to update: {condition.Field}");
                 }
             }
 
             return new FileCabinetRecordNewData(firstName, lastName, dateOfBirth, gender, height, weight);
-        }
-
-        private bool RecordFitsCriteria(FileCabinetRecord record, Dictionary<string, string> searchCriteriaValues)
-        {
-            foreach (var criteria in searchCriteriaValues)
-            {
-                switch (criteria.Key)
-                {
-                    case "id":
-                        if (record.Id != int.Parse(criteria.Value, CultureInfo.InvariantCulture))
-                        {
-                           return false;
-                        }
-
-                        break;
-                    case "firstname":
-                        string firstName = UserInputHelpers.Convert(Converter.StringConverter, this.validationRules.ValidateFirstName, criteria.Value);
-
-                        if (!string.Equals(record.FirstName, firstName, StringComparison.InvariantCultureIgnoreCase))
-                        {
-                            return false;
-                        }
-
-                        break;
-                    case "lastname":
-                        string lastName = UserInputHelpers.Convert(Converter.StringConverter, this.validationRules.ValidateLastName, criteria.Value);
-
-                        if (!string.Equals(record.LastName, lastName, StringComparison.InvariantCultureIgnoreCase))
-                        {
-                            return false;
-                        }
-
-                        break;
-                    case "dateofbirth":
-                        DateTime dateOfBirth = UserInputHelpers.Convert(Converter.DateConverter, this.validationRules.ValidateDateOfBirth, criteria.Value);
-
-                        if (record.DateOfBirth != dateOfBirth)
-                        {
-                            return false;
-                        }
-
-                        break;
-                    default:
-                        throw new ArgumentException($"Unknown search criteria: {criteria.Key}");
-                }
-            }
-
-            return true;
-        }
-
-        private List<FileCabinetRecord> GetRecordsToUpdate(IEnumerable<FileCabinetRecord> allRecords, Dictionary<string, string> searchCriteriaValues)
-        {
-            var recordsToUpdate = new List<FileCabinetRecord>();
-
-            foreach (var record in allRecords)
-            {
-                if (this.RecordFitsCriteria(record, searchCriteriaValues))
-                {
-                    recordsToUpdate.Add(record);
-                }
-            }
-
-            return recordsToUpdate;
         }
     }
 }

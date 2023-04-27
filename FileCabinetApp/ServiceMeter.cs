@@ -274,6 +274,27 @@ namespace FileCabinetApp
             }
         }
 
+        /// <summary>
+        /// Finds records by parameters and measures the running time of service methods and displays them on the screen.
+        /// </summary>
+        /// <param name="conditions">Contains conditions with search parameters.</param>
+        /// <param name="type">Contains an OR or AND operator.</param>
+        /// <returns>Returns finded records.</returns>
+        public IEnumerable<FileCabinetRecord> Find(Condition[] conditions, UnionType type)
+        {
+            Stopwatch stopWatch = Stopwatch.StartNew();
+            try
+            {
+                return this.service.Find(conditions, type);
+            }
+            finally
+            {
+                stopWatch.Stop();
+
+                MeasuringExecutionTime("Find()", stopWatch);
+            }
+        }
+
         private static void MeasuringExecutionTime(string methodName, Stopwatch stopWatch)
         {
             var ticks = stopWatch.ElapsedTicks;

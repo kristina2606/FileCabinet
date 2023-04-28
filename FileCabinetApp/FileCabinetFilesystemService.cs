@@ -289,46 +289,39 @@ namespace FileCabinetApp
                 return Enumerable.Empty<FileCabinetRecord>();
             }
 
-            var records = Enumerable.Empty<FileCabinetRecord>();
+            var result = Enumerable.Empty<FileCabinetRecord>();
 
             var allRecords = this.GetRecordsInternal().Select(x => x.record);
 
             foreach (var condition in conditions)
             {
-                switch (condition.Field)
+                IEnumerable<FileCabinetRecord> records = condition.Field switch
                 {
-                    case "id":
-                        records = allRecords.Where(x => x.Id == condition.Value.Id);
-                        break;
-                    case "firstname":
-                        records = allRecords.Where(x => x.FirstName.ToLowerInvariant() == condition.Value.FirstName);
-                        break;
-                    case "lastname":
-                        records = allRecords.Where(x => x.LastName.ToLowerInvariant() == condition.Value.LastName);
-                        break;
-                    case "dateofbirth":
-                        records = allRecords.Where(x => x.DateOfBirth == condition.Value.DateOfBirth);
-                        break;
-                    case "gender":
-                        records = allRecords.Where(x => x.Gender == condition.Value.Gender);
-                        break;
-                    case "height":
-                        records = allRecords.Where(x => x.Height == condition.Value.Height);
-                        break;
-                    case "weight":
-                        records = allRecords.Where(x => x.Weight == condition.Value.Weight);
-                        break;
-                    default:
-                        throw new ArgumentException($"Unknown search criteria: {condition.Field}");
-                }
+                    FieldsName.Id => allRecords.Where(x => x.Id == condition.Value.Id),
+                    FieldsName.FirstName => allRecords.Where(x => x.FirstName.Equals(condition.Value.FirstName, StringComparison.InvariantCultureIgnoreCase)),
+                    FieldsName.LastName => allRecords.Where(x => x.LastName.Equals(condition.Value.LastName, StringComparison.InvariantCultureIgnoreCase)),
+                    FieldsName.DateOfBirth => allRecords.Where(x => x.DateOfBirth == condition.Value.DateOfBirth),
+                    FieldsName.Gender => allRecords.Where(x => x.Gender == condition.Value.Gender),
+                    FieldsName.Height => allRecords.Where(x => x.Height == condition.Value.Height),
+                    FieldsName.Weight => allRecords.Where(x => x.Weight == condition.Value.Weight),
+                    _ => throw new ArgumentException($"Unknown search criteria: {condition.Field}"),
+                };
 
-                if (type.OperatorType == "or")
+                if (!result.Any())
                 {
-                    return records;
+                    result = records;
+                }
+                else if (type == UnionType.And)
+                {
+                    result = result.Intersect(records);
+                }
+                else if (type == UnionType.Or)
+                {
+                    result = result.Union(records);
                 }
             }
 
-            return records;
+            return result;
         }
 
         /// <summary>

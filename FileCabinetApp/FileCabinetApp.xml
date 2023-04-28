@@ -473,6 +473,46 @@
             <param name="fileCabinetRecordNewData">The new date in the record.</param>
             <exception cref="T:System.ArgumentException">Exception if the incoming entry does not match the parameters.</exception>
         </member>
+        <member name="T:FileCabinetApp.FieldsName">
+            <summary>
+            Fields for searchig parapetrs.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.FieldsName.Id">
+            <summary>
+            The id field.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.FieldsName.FirstName">
+            <summary>
+            The first name field.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.FieldsName.LastName">
+            <summary>
+            The last name field.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.FieldsName.DateOfBirth">
+            <summary>
+            The  date of birth field.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.FieldsName.Gender">
+            <summary>
+            The gender field.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.FieldsName.Height">
+            <summary>
+            The height field.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.FieldsName.Weight">
+            <summary>
+            The weight field.
+            </summary>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetFilesystemService">
             <summary>
             Works with binary notation.
@@ -1645,13 +1685,20 @@
             Represents the type of union operation.
             </summary>
         </member>
-        <member name="P:FileCabinetApp.UnionType.OperatorType">
+        <member name="F:FileCabinetApp.UnionType.And">
             <summary>
-            Gets or sets the type of the join operation.
+            An operator that combines results by multiple parameters.
             </summary>
-            <value>
-            The type of the join operation.
-            </value>
+        </member>
+        <member name="F:FileCabinetApp.UnionType.Or">
+            <summary>
+            An operator that produces a result with multiple parameters.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.UnionType.Default">
+            <summary>
+            Without operator.
+            </summary>
         </member>
         <member name="T:FileCabinetApp.UserInputValidationCustom">
             <summary>

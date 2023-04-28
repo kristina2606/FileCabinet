@@ -103,6 +103,6 @@ namespace FileCabinetApp
         /// <param name="conditions">Contains conditions with search parameters.</param>
         /// <param name="type">Contains an OR or AND operator.</param>
         /// <returns>Returns finded records.</returns>
-        public IEnumerable<FileCabinetRecord> Find(Condition[] conditions, UnionType type);
+        IEnumerable<FileCabinetRecord> Find(Condition[] conditions, UnionType type);
     }
 }

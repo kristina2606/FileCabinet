@@ -12,7 +12,8 @@ namespace FileCabinetApp.CommandHandlers
         private readonly StringComparison stringComparison = StringComparison.InvariantCultureIgnoreCase;
         private readonly IUserInputValidation validationRules;
 
-        private string conditionalOperator = "or";
+        private UnionType conditionalOperator = UnionType.Default;
+        private string operatorToSplit = "or";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DeleteCommandHandler"/> class.
@@ -45,19 +46,26 @@ namespace FileCabinetApp.CommandHandlers
 
             if (appCommand.Parameters.Contains("and", StringComparison.InvariantCultureIgnoreCase))
             {
-                this.conditionalOperator = "and";
+                this.conditionalOperator = UnionType.And;
+                this.operatorToSplit = "and";
+            }
+
+            if (appCommand.Parameters.Contains("or", StringComparison.InvariantCultureIgnoreCase))
+            {
+                this.conditionalOperator = UnionType.Or;
+                this.operatorToSplit = "or";
             }
 
             var parametrs = appCommand.Parameters.ToLowerInvariant()
                                                  .Replace("where ", string.Empty, this.stringComparison)
                                                  .Replace("'", string.Empty, this.stringComparison)
-                                                 .Split(this.conditionalOperator, StringSplitOptions.RemoveEmptyEntries);
+                                                 .Split(this.operatorToSplit, StringSplitOptions.RemoveEmptyEntries);
 
             try
             {
                 var deletedRecords = new List<int>();
                 Condition[] conditionsToSearch = UserInputHelpers.CreateConditions(parametrs, this.validationRules);
-                var recordsForDelete = this.Service.Find(conditionsToSearch, new UnionType { OperatorType = this.conditionalOperator });
+                var recordsForDelete = this.Service.Find(conditionsToSearch, this.conditionalOperator);
 
                 foreach (var recordId in recordsForDelete.Select(x => x.Id).ToList())
                 {

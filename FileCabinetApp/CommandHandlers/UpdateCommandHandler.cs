@@ -9,7 +9,8 @@ namespace FileCabinetApp.CommandHandlers
     {
         private readonly StringComparison stringComparison = StringComparison.InvariantCultureIgnoreCase;
         private readonly IUserInputValidation validationRules;
-        private string conditionalOperator = "or";
+        private UnionType conditionalOperator = UnionType.Default;
+        private string operatorToSplit;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UpdateCommandHandler"/> class.
@@ -54,20 +55,26 @@ namespace FileCabinetApp.CommandHandlers
 
             if (parametrs[1].Contains("and", StringComparison.InvariantCultureIgnoreCase))
             {
-                this.conditionalOperator = "and";
+                this.conditionalOperator = UnionType.And;
+                this.operatorToSplit = "and";
+            }
+
+            if (parametrs[1].Contains("or", StringComparison.InvariantCultureIgnoreCase))
+            {
+                this.conditionalOperator = UnionType.Or;
+                this.operatorToSplit = "or";
             }
 
             var searchCriteria = parametrs[1].ToLowerInvariant()
                                               .Replace("'", string.Empty, this.stringComparison)
-                                              .Split(this.conditionalOperator, StringSplitOptions.RemoveEmptyEntries);
+                                              .Split(this.operatorToSplit, StringSplitOptions.RemoveEmptyEntries);
 
             try
             {
                 Condition[] conditionsToSearch = UserInputHelpers.CreateConditions(searchCriteria, this.validationRules);
                 Condition[] conditionsToUpdate = UserInputHelpers.CreateConditions(updateFields, this.validationRules);
-                var @operator = new UnionType { OperatorType = this.conditionalOperator };
 
-                var recordsToUpdate = this.Service.Find(conditionsToSearch, @operator);
+                var recordsToUpdate = this.Service.Find(conditionsToSearch, this.conditionalOperator);
 
                 foreach (var record in recordsToUpdate)
                 {
@@ -96,22 +103,22 @@ namespace FileCabinetApp.CommandHandlers
             {
                 switch (condition.Field)
                 {
-                    case "firstname":
+                    case FieldsName.FirstName:
                         firstName = condition.Value.FirstName;
                         break;
-                    case "lastname":
+                    case FieldsName.LastName:
                         lastName = condition.Value.LastName;
                         break;
-                    case "dateofbirth":
+                    case FieldsName.DateOfBirth:
                         dateOfBirth = condition.Value.DateOfBirth;
                         break;
-                    case "gender":
+                    case FieldsName.Gender:
                         gender = condition.Value.Gender;
                         break;
-                    case "height":
+                    case FieldsName.Height:
                         height = condition.Value.Height;
                         break;
-                    case "weight":
+                    case FieldsName.Weight:
                         weight = condition.Value.Weight;
                         break;
                     default:

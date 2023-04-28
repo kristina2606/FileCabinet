@@ -128,45 +128,55 @@ namespace FileCabinetApp.CommandHandlers
 
             for (var i = 0; i < fields.Length; i++)
             {
-                var condition = fields[i].Trim().Split('=', StringSplitOptions.RemoveEmptyEntries);
+                var splitResult = fields[i].Trim().Split('=', StringSplitOptions.RemoveEmptyEntries);
 
-                if (condition.Length != 2)
+                if (splitResult.Length != 2)
                 {
                     throw new ArgumentException("You introduced an incorrect parametrs.");
                 }
 
-                conditions[i] = new Condition
+                var field = splitResult[0];
+                var value = splitResult[1];
+
+                if (!Enum.TryParse<FieldsName>(field, true, out var enumField))
                 {
-                    Field = condition[0],
+                    throw new ArgumentException($"Unknown search criteria: {field}");
+                }
+
+                var condition = new Condition
+                {
+                    Field = enumField,
                     Value = new FileCabinetRecord(),
                 };
 
-                switch (conditions[i].Field)
+                switch (condition.Field)
                 {
-                    case "id":
-                        conditions[i].Value.Id = Converter.IntConverter(condition[1]).Item3;
+                    case FieldsName.Id:
+                        condition.Value.Id = Converter.IntConverter(value).Item3;
                         break;
-                    case "firstname":
-                        conditions[i].Value.FirstName = Convert(Converter.StringConverter, inputValidation.ValidateFirstName, condition[1]);
+                    case FieldsName.FirstName:
+                        condition.Value.FirstName = Convert(Converter.StringConverter, inputValidation.ValidateFirstName, value);
                         break;
-                    case "lastname":
-                        conditions[i].Value.LastName = Convert(Converter.StringConverter, inputValidation.ValidateLastName, condition[1]);
+                    case FieldsName.LastName:
+                        condition.Value.LastName = Convert(Converter.StringConverter, inputValidation.ValidateLastName, value);
                         break;
-                    case "dateofbirth":
-                        conditions[i].Value.DateOfBirth = Convert(Converter.DateConverter, inputValidation.ValidateDateOfBirth, condition[1]);
+                    case FieldsName.DateOfBirth:
+                        condition.Value.DateOfBirth = Convert(Converter.DateConverter, inputValidation.ValidateDateOfBirth, value);
                         break;
-                    case "gender":
-                        conditions[i].Value.Gender = Convert(Converter.CharConverter, inputValidation.ValidateGender, condition[1]);
+                    case FieldsName.Gender:
+                        condition.Value.Gender = Convert(Converter.CharConverter, inputValidation.ValidateGender, value);
                         break;
-                    case "height":
-                        conditions[i].Value.Height = Convert(Converter.ShortConverter, inputValidation.ValidateHeight, condition[1]);
+                    case FieldsName.Height:
+                        condition.Value.Height = Convert(Converter.ShortConverter, inputValidation.ValidateHeight, value);
                         break;
-                    case "weight":
-                        conditions[i].Value.Weight = Convert(Converter.DecimalConverter, inputValidation.ValidateWeight, condition[1]);
+                    case FieldsName.Weight:
+                        condition.Value.Weight = Convert(Converter.DecimalConverter, inputValidation.ValidateWeight, value);
                         break;
                     default:
-                        throw new ArgumentException($"Unknown search criteria: {conditions[i].Field}");
+                        throw new ArgumentException($"Unknown search criteria: {condition.Field}");
                 }
+
+                conditions[i] = condition;
             }
 
             return conditions;

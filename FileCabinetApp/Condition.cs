@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace FileCabinetApp
+﻿namespace FileCabinetApp
 {
     /// <summary>
     /// representation of search terms in records.
@@ -13,7 +11,7 @@ namespace FileCabinetApp
         /// <value>
         /// The field by which the search will be performed in the records.
         /// </value>
-        public string Field { get; set; }
+        public FieldsName Field { get; set; }
 
         /// <summary>
         /// Gets or sets the value contains the search values.

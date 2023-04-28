@@ -1,45 +1,23 @@
-﻿using System;
-
-namespace FileCabinetApp
+﻿namespace FileCabinetApp
 {
     /// <summary>
     /// Represents the type of union operation.
     /// </summary>
-    public class UnionType
+    public enum UnionType
     {
-        private const string OperatorOr = "or";
-        private const string OperatorAnd = "and";
-
-        private string operatorType;
+        /// <summary>
+        /// An operator that combines results by multiple parameters.
+        /// </summary>
+        And,
 
         /// <summary>
-        /// Gets or sets the type of the join operation.
+        /// An operator that produces a result with multiple parameters.
         /// </summary>
-        /// <value>
-        /// The type of the join operation.
-        /// </value>
-        public string OperatorType
-        {
-            get
-            {
-                return this.operatorType;
-            }
+        Or,
 
-            set
-            {
-                if (string.Equals(value, OperatorOr, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    this.operatorType = OperatorOr;
-                }
-                else if (string.Equals(value, OperatorAnd, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    this.operatorType = OperatorAnd;
-                }
-                else
-                {
-                    throw new ArgumentException("You entered wrong operator.");
-                }
-            }
-        }
+        /// <summary>
+        /// Without operator.
+        /// </summary>
+        Default,
     }
 }

@@ -291,7 +291,7 @@ namespace FileCabinetApp
 
             return this.GetRecordsInternal().Where(x => (x.status & MaskForDelete) == 0)
                                             .Select(x => x.record)
-                                            .Where(x => IsMatch(x, conditions, type));
+                                            .Where(x => RecordMatcher.IsMatch(x, conditions, type));
         }
 
         /// <summary>
@@ -302,35 +302,6 @@ namespace FileCabinetApp
         public bool IsExist(int id)
         {
             return this.GetExistingRecords().Any(x => x.Id == id);
-        }
-
-        private static bool IsMatch(FileCabinetRecord record, Condition[] conditions, UnionType type)
-        {
-            foreach (var condition in conditions)
-            {
-                bool isMatch = condition.Field switch
-                {
-                    FileCabinetRecordFields.Id => record.Id == condition.Value.Id,
-                    FileCabinetRecordFields.FirstName => record.FirstName.Equals(condition.Value.FirstName, StringComparison.InvariantCultureIgnoreCase),
-                    FileCabinetRecordFields.LastName => record.LastName.Equals(condition.Value.LastName, StringComparison.InvariantCultureIgnoreCase),
-                    FileCabinetRecordFields.DateOfBirth => record.DateOfBirth == condition.Value.DateOfBirth,
-                    FileCabinetRecordFields.Gender => record.Gender == condition.Value.Gender,
-                    FileCabinetRecordFields.Height => record.Height == condition.Value.Height,
-                    FileCabinetRecordFields.Weight => record.Weight == condition.Value.Weight,
-                    _ => throw new ArgumentException($"Unknown search criteria: {condition.Field}"),
-                };
-
-                if (type == UnionType.And && !isMatch)
-                {
-                    return false;
-                }
-                else if ((type == UnionType.Or || type == UnionType.Default) && isMatch)
-                {
-                    return true;
-                }
-            }
-
-            return type == UnionType.And;
         }
 
         private static char[] CreateCharArray(string name)

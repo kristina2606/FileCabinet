@@ -1407,6 +1407,21 @@
             </summary>
             <param name="args">Arguments of the appropriate type.</param>
         </member>
+        <member name="T:FileCabinetApp.RecordMatcher">
+            <summary>
+            Checking if the record matches the conditions.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.RecordMatcher.IsMatch(FileCabinetApp.FileCabinetRecord,FileCabinetApp.Condition[],FileCabinetApp.UnionType)">
+            <summary>
+            Checks if the object matches the conditions passed in the array.
+            </summary>
+            <param name="record">Record for cheack.</param>
+            <param name="conditions">Array with conditions.</param>
+            <param name="type">Сompliance conditions.</param>
+            <returns>Result if record matches the conditions.</returns>
+            <exception cref="T:System.ArgumentException">If Condition didn't find.</exception>
+        </member>
         <member name="T:FileCabinetApp.RecordsSeralization">
             <summary>
              Fields for creating a list of record.

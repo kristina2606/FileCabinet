@@ -3,7 +3,7 @@
     /// <summary>
     /// Fields for searchig parapetrs.
     /// </summary>
-    public enum FieldsName
+    public enum FileCabinetRecordFields
     {
         /// <summary>
         /// The id field.

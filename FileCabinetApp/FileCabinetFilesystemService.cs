@@ -289,39 +289,9 @@ namespace FileCabinetApp
                 return Enumerable.Empty<FileCabinetRecord>();
             }
 
-            var result = Enumerable.Empty<FileCabinetRecord>();
-
-            var allRecords = this.GetRecordsInternal().Select(x => x.record);
-
-            foreach (var condition in conditions)
-            {
-                IEnumerable<FileCabinetRecord> records = condition.Field switch
-                {
-                    FieldsName.Id => allRecords.Where(x => x.Id == condition.Value.Id),
-                    FieldsName.FirstName => allRecords.Where(x => x.FirstName.Equals(condition.Value.FirstName, StringComparison.InvariantCultureIgnoreCase)),
-                    FieldsName.LastName => allRecords.Where(x => x.LastName.Equals(condition.Value.LastName, StringComparison.InvariantCultureIgnoreCase)),
-                    FieldsName.DateOfBirth => allRecords.Where(x => x.DateOfBirth == condition.Value.DateOfBirth),
-                    FieldsName.Gender => allRecords.Where(x => x.Gender == condition.Value.Gender),
-                    FieldsName.Height => allRecords.Where(x => x.Height == condition.Value.Height),
-                    FieldsName.Weight => allRecords.Where(x => x.Weight == condition.Value.Weight),
-                    _ => throw new ArgumentException($"Unknown search criteria: {condition.Field}"),
-                };
-
-                if (!result.Any())
-                {
-                    result = records;
-                }
-                else if (type == UnionType.And)
-                {
-                    result = result.Intersect(records);
-                }
-                else if (type == UnionType.Or)
-                {
-                    result = result.Union(records);
-                }
-            }
-
-            return result;
+            return this.GetRecordsInternal().Where(x => (x.status & MaskForDelete) == 0)
+                                            .Select(x => x.record)
+                                            .Where(x => IsMatch(x, conditions, type));
         }
 
         /// <summary>
@@ -332,6 +302,35 @@ namespace FileCabinetApp
         public bool IsExist(int id)
         {
             return this.GetExistingRecords().Any(x => x.Id == id);
+        }
+
+        private static bool IsMatch(FileCabinetRecord record, Condition[] conditions, UnionType type)
+        {
+            foreach (var condition in conditions)
+            {
+                bool isMatch = condition.Field switch
+                {
+                    FileCabinetRecordFields.Id => record.Id == condition.Value.Id,
+                    FileCabinetRecordFields.FirstName => record.FirstName.Equals(condition.Value.FirstName, StringComparison.InvariantCultureIgnoreCase),
+                    FileCabinetRecordFields.LastName => record.LastName.Equals(condition.Value.LastName, StringComparison.InvariantCultureIgnoreCase),
+                    FileCabinetRecordFields.DateOfBirth => record.DateOfBirth == condition.Value.DateOfBirth,
+                    FileCabinetRecordFields.Gender => record.Gender == condition.Value.Gender,
+                    FileCabinetRecordFields.Height => record.Height == condition.Value.Height,
+                    FileCabinetRecordFields.Weight => record.Weight == condition.Value.Weight,
+                    _ => throw new ArgumentException($"Unknown search criteria: {condition.Field}"),
+                };
+
+                if (type == UnionType.And && !isMatch)
+                {
+                    return false;
+                }
+                else if ((type == UnionType.Or || type == UnionType.Default) && isMatch)
+                {
+                    return true;
+                }
+            }
+
+            return type == UnionType.And;
         }
 
         private static char[] CreateCharArray(string name)

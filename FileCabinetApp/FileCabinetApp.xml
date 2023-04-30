@@ -473,46 +473,6 @@
             <param name="fileCabinetRecordNewData">The new date in the record.</param>
             <exception cref="T:System.ArgumentException">Exception if the incoming entry does not match the parameters.</exception>
         </member>
-        <member name="T:FileCabinetApp.FieldsName">
-            <summary>
-            Fields for searchig parapetrs.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.FieldsName.Id">
-            <summary>
-            The id field.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.FieldsName.FirstName">
-            <summary>
-            The first name field.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.FieldsName.LastName">
-            <summary>
-            The last name field.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.FieldsName.DateOfBirth">
-            <summary>
-            The  date of birth field.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.FieldsName.Gender">
-            <summary>
-            The gender field.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.FieldsName.Height">
-            <summary>
-            The height field.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.FieldsName.Weight">
-            <summary>
-            The weight field.
-            </summary>
-        </member>
         <member name="T:FileCabinetApp.FileCabinetFilesystemService">
             <summary>
             Works with binary notation.
@@ -808,6 +768,46 @@
             Write the record to the file.
             </summary>
             <param name="record">Record for write.</param>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetRecordFields">
+            <summary>
+            Fields for searchig parapetrs.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.FileCabinetRecordFields.Id">
+            <summary>
+            The id field.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.FileCabinetRecordFields.FirstName">
+            <summary>
+            The first name field.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.FileCabinetRecordFields.LastName">
+            <summary>
+            The last name field.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.FileCabinetRecordFields.DateOfBirth">
+            <summary>
+            The  date of birth field.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.FileCabinetRecordFields.Gender">
+            <summary>
+            The gender field.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.FileCabinetRecordFields.Height">
+            <summary>
+            The height field.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.FileCabinetRecordFields.Weight">
+            <summary>
+            The weight field.
+            </summary>
         </member>
         <member name="T:FileCabinetApp.FileCabinetRecordNewData">
             <summary>

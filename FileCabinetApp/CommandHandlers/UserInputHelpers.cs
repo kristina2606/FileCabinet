@@ -138,7 +138,7 @@ namespace FileCabinetApp.CommandHandlers
                 var field = splitResult[0];
                 var value = splitResult[1];
 
-                if (!Enum.TryParse<FieldsName>(field, true, out var enumField))
+                if (!Enum.TryParse<FileCabinetRecordFields>(field, true, out var enumField))
                 {
                     throw new ArgumentException($"Unknown search criteria: {field}");
                 }
@@ -151,25 +151,25 @@ namespace FileCabinetApp.CommandHandlers
 
                 switch (condition.Field)
                 {
-                    case FieldsName.Id:
+                    case FileCabinetRecordFields.Id:
                         condition.Value.Id = Converter.IntConverter(value).Item3;
                         break;
-                    case FieldsName.FirstName:
+                    case FileCabinetRecordFields.FirstName:
                         condition.Value.FirstName = Convert(Converter.StringConverter, inputValidation.ValidateFirstName, value);
                         break;
-                    case FieldsName.LastName:
+                    case FileCabinetRecordFields.LastName:
                         condition.Value.LastName = Convert(Converter.StringConverter, inputValidation.ValidateLastName, value);
                         break;
-                    case FieldsName.DateOfBirth:
+                    case FileCabinetRecordFields.DateOfBirth:
                         condition.Value.DateOfBirth = Convert(Converter.DateConverter, inputValidation.ValidateDateOfBirth, value);
                         break;
-                    case FieldsName.Gender:
+                    case FileCabinetRecordFields.Gender:
                         condition.Value.Gender = Convert(Converter.CharConverter, inputValidation.ValidateGender, value);
                         break;
-                    case FieldsName.Height:
+                    case FileCabinetRecordFields.Height:
                         condition.Value.Height = Convert(Converter.ShortConverter, inputValidation.ValidateHeight, value);
                         break;
-                    case FieldsName.Weight:
+                    case FileCabinetRecordFields.Weight:
                         condition.Value.Weight = Convert(Converter.DecimalConverter, inputValidation.ValidateWeight, value);
                         break;
                     default:

@@ -11,7 +11,7 @@
         /// <value>
         /// The field by which the search will be performed in the records.
         /// </value>
-        public FieldsName Field { get; set; }
+        public FileCabinetRecordFields Field { get; set; }
 
         /// <summary>
         /// Gets or sets the value contains the search values.

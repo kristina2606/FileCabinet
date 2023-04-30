@@ -13,7 +13,6 @@ namespace FileCabinetApp.CommandHandlers
         private readonly IUserInputValidation validationRules;
 
         private UnionType conditionalOperator = UnionType.Default;
-        private string operatorToSplit = "or";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DeleteCommandHandler"/> class.
@@ -47,19 +46,17 @@ namespace FileCabinetApp.CommandHandlers
             if (appCommand.Parameters.Contains("and", StringComparison.InvariantCultureIgnoreCase))
             {
                 this.conditionalOperator = UnionType.And;
-                this.operatorToSplit = "and";
             }
 
             if (appCommand.Parameters.Contains("or", StringComparison.InvariantCultureIgnoreCase))
             {
                 this.conditionalOperator = UnionType.Or;
-                this.operatorToSplit = "or";
             }
 
             var parametrs = appCommand.Parameters.ToLowerInvariant()
                                                  .Replace("where ", string.Empty, this.stringComparison)
                                                  .Replace("'", string.Empty, this.stringComparison)
-                                                 .Split(this.operatorToSplit, StringSplitOptions.RemoveEmptyEntries);
+                                                 .Split(this.conditionalOperator.ToString().ToLowerInvariant(), StringSplitOptions.RemoveEmptyEntries);
 
             try
             {

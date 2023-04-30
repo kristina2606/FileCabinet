@@ -10,7 +10,6 @@ namespace FileCabinetApp.CommandHandlers
         private readonly StringComparison stringComparison = StringComparison.InvariantCultureIgnoreCase;
         private readonly IUserInputValidation validationRules;
         private UnionType conditionalOperator = UnionType.Default;
-        private string operatorToSplit;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UpdateCommandHandler"/> class.
@@ -56,18 +55,16 @@ namespace FileCabinetApp.CommandHandlers
             if (parametrs[1].Contains("and", StringComparison.InvariantCultureIgnoreCase))
             {
                 this.conditionalOperator = UnionType.And;
-                this.operatorToSplit = "and";
             }
 
             if (parametrs[1].Contains("or", StringComparison.InvariantCultureIgnoreCase))
             {
                 this.conditionalOperator = UnionType.Or;
-                this.operatorToSplit = "or";
             }
 
             var searchCriteria = parametrs[1].ToLowerInvariant()
                                               .Replace("'", string.Empty, this.stringComparison)
-                                              .Split(this.operatorToSplit, StringSplitOptions.RemoveEmptyEntries);
+                                              .Split(this.conditionalOperator.ToString().ToLowerInvariant(), StringSplitOptions.RemoveEmptyEntries);
 
             try
             {
@@ -103,22 +100,22 @@ namespace FileCabinetApp.CommandHandlers
             {
                 switch (condition.Field)
                 {
-                    case FieldsName.FirstName:
+                    case FileCabinetRecordFields.FirstName:
                         firstName = condition.Value.FirstName;
                         break;
-                    case FieldsName.LastName:
+                    case FileCabinetRecordFields.LastName:
                         lastName = condition.Value.LastName;
                         break;
-                    case FieldsName.DateOfBirth:
+                    case FileCabinetRecordFields.DateOfBirth:
                         dateOfBirth = condition.Value.DateOfBirth;
                         break;
-                    case FieldsName.Gender:
+                    case FileCabinetRecordFields.Gender:
                         gender = condition.Value.Gender;
                         break;
-                    case FieldsName.Height:
+                    case FileCabinetRecordFields.Height:
                         height = condition.Value.Height;
                         break;
-                    case FieldsName.Weight:
+                    case FileCabinetRecordFields.Weight:
                         weight = condition.Value.Weight;
                         break;
                     default:

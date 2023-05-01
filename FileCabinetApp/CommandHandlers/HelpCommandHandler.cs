@@ -25,6 +25,7 @@ namespace FileCabinetApp.CommandHandlers
             new string[] { "insert", "adds a record using the passed data.", "The 'insert' adds a record using the passed data." },
             new string[] { "delete", "delete record by predetermined criteria.", "The 'delete' delete record by predetermined criteria." },
             new string[] { "update", "update record fields using the specified search criteria.", "The 'update' update record fields using the specified search criteria." },
+            new string[] { "select", "accept a list of fields to display and search criteria.", "The 'select' accept a list of fields to display and search criteria." },
 };
 
         /// <summary>

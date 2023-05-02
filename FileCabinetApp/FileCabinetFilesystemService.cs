@@ -284,11 +284,6 @@ namespace FileCabinetApp
         /// <returns>Returns finded records.</returns>
         public IEnumerable<FileCabinetRecord> Find(Condition[] conditions, UnionType type)
         {
-            if (conditions.Length == 0)
-            {
-                return this.GetRecords();
-            }
-
             return this.GetExistingRecords().Where(x => RecordMatcher.IsMatch(x, conditions, type));
         }
 

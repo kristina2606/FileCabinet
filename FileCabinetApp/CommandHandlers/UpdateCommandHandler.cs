@@ -9,7 +9,6 @@ namespace FileCabinetApp.CommandHandlers
     {
         private readonly StringComparison stringComparison = StringComparison.InvariantCultureIgnoreCase;
         private readonly IUserInputValidation validationRules;
-        private UnionType conditionalOperator = UnionType.Or;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UpdateCommandHandler"/> class.
@@ -40,9 +39,10 @@ namespace FileCabinetApp.CommandHandlers
                                            .Replace("'", string.Empty, this.stringComparison)
                                            .Split(',', StringSplitOptions.RemoveEmptyEntries);
 
+            var conditionalOperator = UnionType.Or;
             if (parameters.Length > 1 && parameters[1].Contains(QueryConstants.And, StringComparison.InvariantCultureIgnoreCase))
             {
-                this.conditionalOperator = UnionType.And;
+                conditionalOperator = UnionType.And;
             }
 
             try
@@ -53,14 +53,14 @@ namespace FileCabinetApp.CommandHandlers
                 {
                     var searchCriteria = parameters[1].ToLowerInvariant()
                                   .Replace("'", string.Empty, this.stringComparison)
-                                  .Split(this.conditionalOperator.ToString().ToLowerInvariant(), StringSplitOptions.RemoveEmptyEntries);
+                                  .Split(conditionalOperator.ToString().ToLowerInvariant(), StringSplitOptions.RemoveEmptyEntries);
 
                     conditionsToSearch = UserInputHelpers.CreateConditions(searchCriteria, this.validationRules);
                 }
 
                 Condition[] conditionsToUpdate = UserInputHelpers.CreateConditions(updateFields, this.validationRules);
 
-                var recordsToUpdate = this.Service.Find(conditionsToSearch, this.conditionalOperator);
+                var recordsToUpdate = this.Service.Find(conditionsToSearch, conditionalOperator);
 
                 foreach (var record in recordsToUpdate)
                 {

@@ -12,8 +12,6 @@ namespace FileCabinetApp.CommandHandlers
         private readonly StringComparison stringComparison = StringComparison.InvariantCultureIgnoreCase;
         private readonly IUserInputValidation validationRules;
 
-        private UnionType conditionalOperator = UnionType.Or;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="DeleteCommandHandler"/> class.
         /// </summary>
@@ -43,21 +41,23 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
+            var conditionalOperator = UnionType.Or;
+
             if (appCommand.Parameters.Contains(QueryConstants.And, StringComparison.InvariantCultureIgnoreCase))
             {
-                this.conditionalOperator = UnionType.And;
+               conditionalOperator = UnionType.And;
             }
 
             var parametrs = appCommand.Parameters.ToLowerInvariant()
                                                  .Replace(QueryConstants.Where, string.Empty, this.stringComparison)
                                                  .Replace("'", string.Empty, this.stringComparison)
-                                                 .Split(this.conditionalOperator.ToString().ToLowerInvariant(), StringSplitOptions.RemoveEmptyEntries);
+                                                 .Split(conditionalOperator.ToString().ToLowerInvariant(), StringSplitOptions.RemoveEmptyEntries);
 
             try
             {
                 var deletedRecords = new List<int>();
                 Condition[] conditionsToSearch = UserInputHelpers.CreateConditions(parametrs, this.validationRules);
-                var recordsForDelete = this.Service.Find(conditionsToSearch, this.conditionalOperator);
+                var recordsForDelete = this.Service.Find(conditionsToSearch, conditionalOperator);
 
                 foreach (var recordId in recordsForDelete.Select(x => x.Id).ToList())
                 {

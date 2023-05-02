@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Globalization;
 using System.Linq;
 
 [assembly: CLSCompliant(true)]
@@ -265,7 +264,7 @@ namespace FileCabinetApp
         {
             if (conditions.Length == 0)
             {
-                return Enumerable.Empty<FileCabinetRecord>();
+                return this.GetRecords();
             }
 
             return this.list.Where(x => RecordMatcher.IsMatch(x, conditions, type));

@@ -9,7 +9,7 @@ namespace FileCabinetApp.CommandHandlers
     {
         private readonly StringComparison stringComparison = StringComparison.InvariantCultureIgnoreCase;
         private readonly IUserInputValidation validationRules;
-        private UnionType conditionalOperator = UnionType.Default;
+        private UnionType conditionalOperator = UnionType.Or;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UpdateCommandHandler"/> class.
@@ -34,41 +34,30 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
-            if (!appCommand.Parameters.Contains("where", this.stringComparison))
-            {
-                Console.WriteLine("Invalid command syntax. Missing 'where' clause.");
-                return;
-            }
+            var parameters = appCommand.Parameters.Split(QueryConstants.Where, StringSplitOptions.RemoveEmptyEntries);
 
-            var parametrs = appCommand.Parameters.Split("where", StringSplitOptions.RemoveEmptyEntries);
-
-            if (parametrs.Length != 2)
-            {
-                Console.WriteLine("You have entered an invalid update parameter. Two are needed.");
-                return;
-            }
-
-            var updateFields = parametrs[0].Replace("set", string.Empty, this.stringComparison)
+            var updateFields = parameters[0].Replace(QueryConstants.Set, string.Empty, this.stringComparison)
                                            .Replace("'", string.Empty, this.stringComparison)
                                            .Split(',', StringSplitOptions.RemoveEmptyEntries);
 
-            if (parametrs[1].Contains("and", StringComparison.InvariantCultureIgnoreCase))
+            if (parameters.Length > 1 && parameters[1].Contains(QueryConstants.And, StringComparison.InvariantCultureIgnoreCase))
             {
                 this.conditionalOperator = UnionType.And;
             }
 
-            if (parametrs[1].Contains("or", StringComparison.InvariantCultureIgnoreCase))
-            {
-                this.conditionalOperator = UnionType.Or;
-            }
-
-            var searchCriteria = parametrs[1].ToLowerInvariant()
-                                              .Replace("'", string.Empty, this.stringComparison)
-                                              .Split(this.conditionalOperator.ToString().ToLowerInvariant(), StringSplitOptions.RemoveEmptyEntries);
-
             try
             {
-                Condition[] conditionsToSearch = UserInputHelpers.CreateConditions(searchCriteria, this.validationRules);
+                Condition[] conditionsToSearch = Array.Empty<Condition>();
+
+                if (parameters.Length > 1)
+                {
+                    var searchCriteria = parameters[1].ToLowerInvariant()
+                                  .Replace("'", string.Empty, this.stringComparison)
+                                  .Split(this.conditionalOperator.ToString().ToLowerInvariant(), StringSplitOptions.RemoveEmptyEntries);
+
+                    conditionsToSearch = UserInputHelpers.CreateConditions(searchCriteria, this.validationRules);
+                }
+
                 Condition[] conditionsToUpdate = UserInputHelpers.CreateConditions(updateFields, this.validationRules);
 
                 var recordsToUpdate = this.Service.Find(conditionsToSearch, this.conditionalOperator);

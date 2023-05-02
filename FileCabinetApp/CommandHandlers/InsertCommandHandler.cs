@@ -28,13 +28,13 @@ namespace FileCabinetApp.CommandHandlers
         /// <param name="appCommand">>Configuratiion the application command and options.</param>
         public override void Handle(AppCommandRequest appCommand)
         {
-            var parametrs = appCommand.Parameters.Split("values");
-
             if (!appCommand.Command.Equals("insert", this.stringComparison))
             {
                 base.Handle(appCommand);
                 return;
             }
+
+            var parametrs = appCommand.Parameters.Split(QueryConstants.Values);
 
             if (parametrs.Length != 2)
             {

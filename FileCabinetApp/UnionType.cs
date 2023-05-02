@@ -14,10 +14,5 @@
         /// An operator that produces a result with multiple parameters.
         /// </summary>
         Or,
-
-        /// <summary>
-        /// Without operator.
-        /// </summary>
-        Default,
     }
 }

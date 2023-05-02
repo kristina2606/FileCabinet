@@ -251,6 +251,12 @@
             Create interface instance IFileCabinetServise.
             </summary>
         </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase.#ctor(FileCabinetApp.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase"/> class.
+            </summary>
+            <param name="service">Interface instance IFileCabinetServise.</param>
+        </member>
         <member name="P:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase.Service">
             <summary>
             Gets contain interface instance IFileCabinetServise.
@@ -258,12 +264,6 @@
             <value>
             Interface instance IFileCabinetServise.
             </value>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase.#ctor(FileCabinetApp.IFileCabinetService)">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase"/> class.
-            </summary>
-            <param name="service">Interface instance IFileCabinetServise.</param>
         </member>
         <member name="T:FileCabinetApp.CommandHandlers.StatCommandHandler">
             <summary>
@@ -1407,6 +1407,36 @@
             </summary>
             <param name="args">Arguments of the appropriate type.</param>
         </member>
+        <member name="T:FileCabinetApp.QueryConstants">
+            <summary>
+            Contain constant fo processing sql similar queries.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.QueryConstants.Set">
+            <summary>
+            Сonstant for customizing the field to update the record.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.QueryConstants.Where">
+            <summary>
+            Record search constant.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.QueryConstants.Values">
+            <summary>
+            Constant with values for adding a new entry.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.QueryConstants.And">
+            <summary>
+            Constant to union records.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.QueryConstants.Or">
+            <summary>
+            Constant to union records.
+            </summary>
+        </member>
         <member name="T:FileCabinetApp.RecordMatcher">
             <summary>
             Checking if the record matches the conditions.
@@ -1708,11 +1738,6 @@
         <member name="F:FileCabinetApp.UnionType.Or">
             <summary>
             An operator that produces a result with multiple parameters.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.UnionType.Default">
-            <summary>
-            Without operator.
             </summary>
         </member>
         <member name="T:FileCabinetApp.UserInputValidationCustom">

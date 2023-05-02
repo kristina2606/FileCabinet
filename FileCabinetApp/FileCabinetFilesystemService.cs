@@ -286,12 +286,10 @@ namespace FileCabinetApp
         {
             if (conditions.Length == 0)
             {
-                return Enumerable.Empty<FileCabinetRecord>();
+                return this.GetRecords();
             }
 
-            return this.GetRecordsInternal().Where(x => (x.status & MaskForDelete) == 0)
-                                            .Select(x => x.record)
-                                            .Where(x => RecordMatcher.IsMatch(x, conditions, type));
+            return this.GetExistingRecords().Where(x => RecordMatcher.IsMatch(x, conditions, type));
         }
 
         /// <summary>

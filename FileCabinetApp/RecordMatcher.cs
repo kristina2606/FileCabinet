@@ -35,7 +35,7 @@ namespace FileCabinetApp
                 {
                     return false;
                 }
-                else if ((type == UnionType.Or || type == UnionType.Default) && isMatch)
+                else if (type == UnionType.Or && isMatch)
                 {
                     return true;
                 }

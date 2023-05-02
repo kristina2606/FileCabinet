@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Globalization;
 using System.Linq;
 
 [assembly: CLSCompliant(true)]
@@ -62,15 +60,6 @@ namespace FileCabinetApp
         }
 
         /// <summary>
-        /// Gets all existing records.
-        /// </summary>
-        /// <returns>Returns all existing records.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> GetRecords()
-        {
-            return new ReadOnlyCollection<FileCabinetRecord>(this.list);
-        }
-
-        /// <summary>
         /// Gets the count of all existed and deleted records.
         /// </summary>
         /// <returns>Returns the count of all existed and deleted records.</returns>
@@ -80,12 +69,12 @@ namespace FileCabinetApp
         }
 
         /// <summary>
-        /// Edits an already existing record by id.
+        /// Update an already existing record by id.
         /// </summary>
         /// <param name="id">The id of the record to be modified.</param>
         /// <param name="fileCabinetRecordNewData">The new date in the record.</param>
         /// <exception cref="ArgumentException">if records with the specified ID do not exist.</exception>
-        public void EditRecord(int id, FileCabinetRecordNewData fileCabinetRecordNewData)
+        public void Update(int id, FileCabinetRecordNewData fileCabinetRecordNewData)
         {
             if (!this.IsExist(id))
             {
@@ -119,51 +108,6 @@ namespace FileCabinetApp
         }
 
         /// <summary>
-        /// Finds all records by first name.
-        /// </summary>
-        /// <param name="firstName">The parameter by which you want to find all existing records.</param>
-        /// <returns>Returns  all records by first name.</returns>
-        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
-        {
-            if (this.firstNameDictionary.TryGetValue(firstName, out List<FileCabinetRecord> allValueOfKey))
-            {
-                return allValueOfKey;
-            }
-
-            return Enumerable.Empty<FileCabinetRecord>();
-        }
-
-        /// <summary>
-        /// Finds all records by last name.
-        /// </summary>
-        /// <param name="lastName">The parameter by which you want to find all existing records.</param>
-        /// <returns>Returns all records by last name.</returns>
-        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
-        {
-            if (this.lastNameDictionary.TryGetValue(lastName, out List<FileCabinetRecord> allValueOfKey))
-            {
-                return allValueOfKey;
-            }
-
-            return Enumerable.Empty<FileCabinetRecord>();
-        }
-
-        /// <summary>
-        /// Finds all records by date of birth.
-        /// </summary>
-        /// <param name="dateOfBirth">The parameter by which you want to find all existing records.</param>
-        /// <returns>Returns all records by date of birth.</returns>
-        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
-        {
-            if (this.dateOfBirthDictionary.TryGetValue(dateOfBirth, out List<FileCabinetRecord> allValueOfKey))
-            {
-                return allValueOfKey;
-            }
-
-            return Enumerable.Empty<FileCabinetRecord>();
-        }
-
-        /// <summary>
         /// Passes the state of an object.
         /// </summary>
         /// <returns>Class containing the state of an object.</returns>
@@ -192,7 +136,7 @@ namespace FileCabinetApp
                     this.validator.ValidateParametrs(recordNew);
                     if (this.IsExist(record.Id))
                     {
-                        this.EditRecord(record.Id, recordNew);
+                        this.Update(record.Id, recordNew);
                     }
                     else
                     {
@@ -213,10 +157,10 @@ namespace FileCabinetApp
         }
 
         /// <summary>
-        /// Remove record by id.
+        /// Delete record by id.
         /// </summary>
         /// <param name="id">Record id to remove.</param>
-        public void Remove(int id)
+        public void Delete(int id)
         {
             if (!this.IsExist(id))
             {

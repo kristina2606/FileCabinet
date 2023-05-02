@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -63,11 +62,11 @@ namespace FileCabinetApp
         }
 
         /// <summary>
-        ///  Edits an already existing record in binary file by id.
+        ///  Update an already existing record in binary file by id.
         /// </summary>
         /// <param name="id">The id of the record to be modified.</param>
         /// <param name="fileCabinetRecordNewData">The new date in the record.</param>
-        public void EditRecord(int id, FileCabinetRecordNewData fileCabinetRecordNewData)
+        public void Update(int id, FileCabinetRecordNewData fileCabinetRecordNewData)
         {
             if (!this.IsExist(id))
             {
@@ -94,60 +93,6 @@ namespace FileCabinetApp
                     break;
                 }
             }
-        }
-
-        /// <summary>
-        /// Finds all records by date of birth in binary file.
-        /// </summary>
-        /// <param name="dateOfBirth">The parameter by which you want to find all existing records.</param>
-        /// <returns>Returns all records by date of birth.</returns>
-        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
-        {
-            if (this.dateOfBirthIndex.TryGetValue(dateOfBirth, out List<long> offsets))
-            {
-                return this.FindRecordInFile(offsets);
-            }
-
-            return Enumerable.Empty<FileCabinetRecord>();
-        }
-
-        /// <summary>
-        /// Finds all records by first name in binary file.
-        /// </summary>
-        /// <param name="firstName">The parameter by which you want to find all existing records.</param>
-        /// <returns>Returns  all records by first name.</returns>
-        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
-        {
-            if (this.firstNameIndex.TryGetValue(firstName, out List<long> offsets))
-            {
-                return this.FindRecordInFile(offsets);
-            }
-
-            return Enumerable.Empty<FileCabinetRecord>();
-        }
-
-        /// <summary>
-        /// Finds all records by last name in binary file.
-        /// </summary>
-        /// <param name="lastName">The parameter by which you want to find all existing records.</param>
-        /// <returns>Returns all records by last name.</returns>
-        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
-        {
-            if (this.lastNameIndex.TryGetValue(lastName, out List<long> offsets))
-            {
-                return this.FindRecordInFile(offsets);
-            }
-
-            return Enumerable.Empty<FileCabinetRecord>();
-        }
-
-        /// <summary>
-        /// Reads all available records from the data file.
-        /// </summary>
-        /// <returns>Returns all available records from the data file.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> GetRecords()
-        {
-            return new ReadOnlyCollection<FileCabinetRecord>(this.GetExistingRecords().ToList());
         }
 
         /// <summary>
@@ -192,7 +137,7 @@ namespace FileCabinetApp
 
                     if (this.IsExist(record.Id))
                     {
-                        this.EditRecord(record.Id, recordNew);
+                        this.Update(record.Id, recordNew);
                     }
                     else
                     {
@@ -213,10 +158,10 @@ namespace FileCabinetApp
         }
 
         /// <summary>
-        /// Remove record by id.
+        /// Delete record by id.
         /// </summary>
         /// <param name="id">Record id to remove.</param>
-        public void Remove(int id)
+        public void Delete(int id)
         {
             if (!this.IsExist(id))
             {
@@ -424,17 +369,6 @@ namespace FileCabinetApp
             return this.GetRecordsInternal()
                             .Where(x => (x.status & MaskForDelete) == 0)
                             .Select(record => record.record);
-        }
-
-        private IEnumerable<FileCabinetRecord> FindRecordInFile(List<long> offsets)
-        {
-            using (var reader = new BinaryReader(this.fileStream, Encoding.ASCII, true))
-            {
-                foreach (var offset in offsets)
-                {
-                    yield return ReadOneRecordFromFile(reader, offset).record;
-                }
-            }
         }
     }
 }

@@ -78,6 +78,7 @@ namespace FileCabinetApp.CommandHandlers
             {
                 var maxRecordColumnWidth = records.Select(x => GetFieldValueInt(x, fields[i])).Max();
                 columnWidth[i] = Math.Max(fields[i].ToString().Length, maxRecordColumnWidth);
+
                 if (maxRecordColumnWidth < 0)
                 {
                     columnWidth[i] *= -1;

@@ -76,7 +76,7 @@ namespace FileCabinetApp.CommandHandlers
                 foreach (var record in recordsToUpdate)
                 {
                     var newData = GetNewDataFromFields(record, conditionsToUpdate);
-                    this.Service.EditRecord(record.Id, newData);
+                    this.Service.Update(record.Id, newData);
                 }
 
                 Console.WriteLine($"Record(s) updated.");

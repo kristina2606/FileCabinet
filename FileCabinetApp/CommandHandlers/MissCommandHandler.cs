@@ -8,7 +8,7 @@ namespace FileCabinetApp.CommandHandlers
     /// </summary>
     public class MissCommandHandler : CommandHandlerBase
     {
-        private readonly string[] allCommands = { "help", "exit", "stat", "create", "list", "find", "export", "import", "purge", "insert", "delete", "update" };
+        private readonly string[] allCommands = { "help", "exit", "stat", "create", "select", "export", "import", "purge", "insert", "delete", "update" };
 
         /// <summary>
         /// Handling for miss command requests.

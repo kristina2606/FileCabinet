@@ -6,18 +6,29 @@ using System.Text;
 
 namespace FileCabinetApp.CommandHandlers
 {
+    /// <summary>
+    /// Contain code for handling select requests.
+    /// </summary>
     public class SelectCommandHandler : ServiceCommandHandlerBase
     {
         private readonly StringComparison stringComparison = StringComparison.InvariantCultureIgnoreCase;
         private readonly IUserInputValidation validationRules;
-        private UnionType conditionalOperator = UnionType.Default;
 
-        public SelectCommandHandler(IFileCabinetService service, IUserInputValidation validationRules)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SelectCommandHandler"/> class.
+        /// </summary>
+        /// <param name="service">Interface instance IFileCabinetServise.</param>
+        /// <param name="inputValidation">Interface instance IUserInputValidation.</param>
+        public SelectCommandHandler(IFileCabinetService service, IUserInputValidation inputValidation)
             : base(service)
         {
-            this.validationRules = validationRules;
+            this.validationRules = inputValidation;
         }
 
+        /// <summary>
+        /// Handling for select requests.
+        /// </summary>
+        /// <param name="appCommand">>Configuratiion the application command and options.</param>
         public override void Handle(AppCommandRequest appCommand)
         {
             if (!appCommand.Command.Equals("select", this.stringComparison))
@@ -26,42 +37,35 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
-            if (!appCommand.Parameters.Contains("where", this.stringComparison))
+            var parameters = appCommand.Parameters.Split(QueryConstants.Where, StringSplitOptions.RemoveEmptyEntries);
+
+            var conditionalOperator = UnionType.Or;
+            if (parameters.Length > 1 && parameters[1].Contains(QueryConstants.And, StringComparison.InvariantCultureIgnoreCase))
             {
-                Console.WriteLine("Invalid command syntax. Missing 'where' clause.");
-                return;
+                conditionalOperator = UnionType.And;
             }
-
-            var parametrs = appCommand.Parameters.Split("where", StringSplitOptions.RemoveEmptyEntries);
-
-            if (parametrs.Length != 2)
-            {
-                Console.WriteLine("You have entered an invalid select parameter.");
-                return;
-            }
-
-            if (parametrs[1].Contains("and", StringComparison.InvariantCultureIgnoreCase))
-            {
-                this.conditionalOperator = UnionType.And;
-            }
-
-            if (parametrs[1].Contains("or", StringComparison.InvariantCultureIgnoreCase))
-            {
-                this.conditionalOperator = UnionType.Or;
-            }
-
-            var printFields = parametrs[0].ToLowerInvariant().Split(',', StringSplitOptions.RemoveEmptyEntries);
-
-            var searchCriteria = parametrs[1].ToLowerInvariant()
-                                  .Replace(" ", string.Empty, this.stringComparison)
-                                  .Replace("'", string.Empty, this.stringComparison)
-                                  .Split(this.conditionalOperator.ToString().ToLowerInvariant(), StringSplitOptions.RemoveEmptyEntries);
 
             try
             {
-                Condition[] conditionsToSearch = UserInputHelpers.CreateConditions(searchCriteria, this.validationRules);
+                string[] printFields = Array.Empty<string>();
+                if (parameters.Length > 0)
+                {
+                    printFields = parameters[0].ToLowerInvariant().Split(',', StringSplitOptions.RemoveEmptyEntries);
+                }
+
+                Condition[] conditionsToSearch = Array.Empty<Condition>();
+                if (parameters.Length > 1)
+                {
+                    var searchCriteria = parameters[1].ToLowerInvariant()
+                                  .Replace(" ", string.Empty, this.stringComparison)
+                                  .Replace("'", string.Empty, this.stringComparison)
+                                  .Split(conditionalOperator.ToString().ToLowerInvariant(), StringSplitOptions.RemoveEmptyEntries);
+
+                    conditionsToSearch = UserInputHelpers.CreateConditions(searchCriteria, this.validationRules);
+                }
+
                 var fieldsToPrint = GetFieldsToPrint(printFields);
-                var recordsToPrint = this.Service.Find(conditionsToSearch, this.conditionalOperator);
+                var recordsToPrint = this.Service.Find(conditionsToSearch, conditionalOperator);
 
                 PrintTable(recordsToPrint, fieldsToPrint);
             }
@@ -129,6 +133,11 @@ namespace FileCabinetApp.CommandHandlers
 
         private static List<FileCabinetRecordFields> GetFieldsToPrint(string[] fields)
         {
+            if (fields == null || fields.Length == 0)
+            {
+                return new List<FileCabinetRecordFields>((FileCabinetRecordFields[])Enum.GetValues(typeof(FileCabinetRecordFields)));
+            }
+
             var fieldsToPrinr = new List<FileCabinetRecordFields>();
 
             foreach (var field in fields)

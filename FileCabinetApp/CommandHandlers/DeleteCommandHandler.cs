@@ -12,8 +12,6 @@ namespace FileCabinetApp.CommandHandlers
         private readonly StringComparison stringComparison = StringComparison.InvariantCultureIgnoreCase;
         private readonly IUserInputValidation validationRules;
 
-        private UnionType conditionalOperator = UnionType.Default;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="DeleteCommandHandler"/> class.
         /// </summary>
@@ -37,32 +35,29 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
-            if (!appCommand.Parameters.Contains("where", this.stringComparison))
+            if (!appCommand.Parameters.Contains(QueryConstants.Where, this.stringComparison))
             {
                 Console.WriteLine("Invalid command syntax. Missing 'where' clause.");
                 return;
             }
 
-            if (appCommand.Parameters.Contains("and", StringComparison.InvariantCultureIgnoreCase))
-            {
-                this.conditionalOperator = UnionType.And;
-            }
+            var conditionalOperator = UnionType.Or;
 
-            if (appCommand.Parameters.Contains("or", StringComparison.InvariantCultureIgnoreCase))
+            if (appCommand.Parameters.Contains(QueryConstants.And, StringComparison.InvariantCultureIgnoreCase))
             {
-                this.conditionalOperator = UnionType.Or;
+               conditionalOperator = UnionType.And;
             }
 
             var parametrs = appCommand.Parameters.ToLowerInvariant()
-                                                 .Replace("where ", string.Empty, this.stringComparison)
+                                                 .Replace(QueryConstants.Where, string.Empty, this.stringComparison)
                                                  .Replace("'", string.Empty, this.stringComparison)
-                                                 .Split(this.conditionalOperator.ToString().ToLowerInvariant(), StringSplitOptions.RemoveEmptyEntries);
+                                                 .Split(conditionalOperator.ToString().ToLowerInvariant(), StringSplitOptions.RemoveEmptyEntries);
 
             try
             {
                 var deletedRecords = new List<int>();
                 Condition[] conditionsToSearch = UserInputHelpers.CreateConditions(parametrs, this.validationRules);
-                var recordsForDelete = this.Service.Find(conditionsToSearch, this.conditionalOperator);
+                var recordsForDelete = this.Service.Find(conditionsToSearch, conditionalOperator);
 
                 foreach (var recordId in recordsForDelete.Select(x => x.Id).ToList())
                 {

@@ -210,10 +210,34 @@
             </summary>
             <param name="appCommand">>Configuratiion the application command and options.</param>
         </member>
+        <member name="T:FileCabinetApp.CommandHandlers.SelectCommandHandler">
+            <summary>
+            Contain code for handling select requests.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.SelectCommandHandler.#ctor(FileCabinetApp.IFileCabinetService,FileCabinetApp.IUserInputValidation)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.SelectCommandHandler"/> class.
+            </summary>
+            <param name="service">Interface instance IFileCabinetServise.</param>
+            <param name="inputValidation">Interface instance IUserInputValidation.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.SelectCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <summary>
+            Handling for select requests.
+            </summary>
+            <param name="appCommand">>Configuratiion the application command and options.</param>
+        </member>
         <member name="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase">
             <summary>
             Create interface instance IFileCabinetServise.
             </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase.#ctor(FileCabinetApp.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase"/> class.
+            </summary>
+            <param name="service">Interface instance IFileCabinetServise.</param>
         </member>
         <member name="P:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase.Service">
             <summary>
@@ -222,12 +246,6 @@
             <value>
             Interface instance IFileCabinetServise.
             </value>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase.#ctor(FileCabinetApp.IFileCabinetService)">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase"/> class.
-            </summary>
-            <param name="service">Interface instance IFileCabinetServise.</param>
         </member>
         <member name="T:FileCabinetApp.CommandHandlers.StatCommandHandler">
             <summary>
@@ -579,7 +597,7 @@
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.Insert(FileCabinetApp.FileCabinetRecord)">
             <summary>
-            Insert new record.
+            Checks if records with the specified id exists.
             </summary>
             <param name="record">New record from user.</param>
         </member>
@@ -1290,6 +1308,36 @@
             </summary>
             <param name="args">Arguments of the appropriate type.</param>
         </member>
+        <member name="T:FileCabinetApp.QueryConstants">
+            <summary>
+            Contain constant fo processing sql similar queries.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.QueryConstants.Set">
+            <summary>
+            Сonstant for customizing the field to update the record.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.QueryConstants.Where">
+            <summary>
+            Record search constant.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.QueryConstants.Values">
+            <summary>
+            Constant with values for adding a new entry.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.QueryConstants.And">
+            <summary>
+            Constant to union records.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.QueryConstants.Or">
+            <summary>
+            Constant to union records.
+            </summary>
+        </member>
         <member name="T:FileCabinetApp.RecordMatcher">
             <summary>
             Checking if the record matches the conditions.
@@ -1537,11 +1585,6 @@
         <member name="F:FileCabinetApp.UnionType.Or">
             <summary>
             An operator that produces a result with multiple parameters.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.UnionType.Default">
-            <summary>
-            Without operator.
             </summary>
         </member>
         <member name="T:FileCabinetApp.UserInputValidationCustom">

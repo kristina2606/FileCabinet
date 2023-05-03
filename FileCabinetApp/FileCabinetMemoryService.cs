@@ -175,7 +175,7 @@ namespace FileCabinetApp
         }
 
         /// <summary>
-        /// Insert new record.
+        /// Checks if records with the specified id exists.
         /// </summary>
         /// <param name="record">New record from user.</param>
         public void Insert(FileCabinetRecord record)
@@ -198,11 +198,6 @@ namespace FileCabinetApp
         /// <returns>Returns finded records.</returns>
         public IEnumerable<FileCabinetRecord> Find(Condition[] conditions, UnionType type)
         {
-            if (conditions.Length == 0)
-            {
-                return Enumerable.Empty<FileCabinetRecord>();
-            }
-
             string key = $"Find_{string.Join('|', (object[])conditions)}_{type}";
 
             if (this.memorizater.TryGetValue(key, out var records))

@@ -13,9 +13,7 @@ namespace FileCabinetApp
     {
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
 
-        private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>(StringComparer.InvariantCultureIgnoreCase);
-        private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>(StringComparer.InvariantCultureIgnoreCase);
-        private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
+        private readonly Dictionary<string, List<FileCabinetRecord>> memorizater = new Dictionary<string, List<FileCabinetRecord>>(StringComparer.InvariantCultureIgnoreCase);
 
         private readonly IIdGenerator idGenerator = new IdGenerator();
         private readonly IRecordValidator validator;
@@ -76,6 +74,8 @@ namespace FileCabinetApp
         /// <exception cref="ArgumentException">if records with the specified ID do not exist.</exception>
         public void Update(int id, FileCabinetRecordNewData fileCabinetRecordNewData)
         {
+            this.memorizater.Clear();
+
             if (!this.IsExist(id))
             {
                 throw new ArgumentException("Record's id isn't exist.");
@@ -89,15 +89,6 @@ namespace FileCabinetApp
             {
                 throw new ArgumentException("records with the specified ID do not exist.");
             }
-
-            RemoveFromDictionary(this.firstNameDictionary, result.FirstName, result);
-            AddToIndex(result, this.firstNameDictionary, fileCabinetRecordNewData.FirstName);
-
-            RemoveFromDictionary(this.lastNameDictionary, result.LastName, result);
-            AddToIndex(result, this.lastNameDictionary, fileCabinetRecordNewData.LastName);
-
-            RemoveFromDictionary(this.dateOfBirthDictionary, result.DateOfBirth, result);
-            AddToIndex(result, this.dateOfBirthDictionary, fileCabinetRecordNewData.DateOfBirth);
 
             result.FirstName = fileCabinetRecordNewData.FirstName;
             result.LastName = fileCabinetRecordNewData.LastName;
@@ -162,6 +153,8 @@ namespace FileCabinetApp
         /// <param name="id">Record id to remove.</param>
         public void Delete(int id)
         {
+            this.memorizater.Clear();
+
             if (!this.IsExist(id))
             {
                 throw new ArgumentException("Record's id isn't exist.");
@@ -170,10 +163,6 @@ namespace FileCabinetApp
             var valueForRemove = this.list.Find(x => x.Id == id);
 
             this.list.Remove(valueForRemove);
-
-            RemoveFromDictionary(this.firstNameDictionary, valueForRemove.FirstName, valueForRemove);
-            RemoveFromDictionary(this.lastNameDictionary, valueForRemove.LastName, valueForRemove);
-            RemoveFromDictionary(this.dateOfBirthDictionary, valueForRemove.DateOfBirth, valueForRemove);
         }
 
         /// <summary>
@@ -191,6 +180,8 @@ namespace FileCabinetApp
         /// <param name="record">New record from user.</param>
         public void Insert(FileCabinetRecord record)
         {
+            this.memorizater.Clear();
+
             if (this.IsExist(record.Id))
             {
                 throw new ArgumentException("Record's id is exist.");
@@ -212,7 +203,17 @@ namespace FileCabinetApp
                 return Enumerable.Empty<FileCabinetRecord>();
             }
 
-            return this.list.Where(x => RecordMatcher.IsMatch(x, conditions, type));
+            string key = $"Find_{string.Join('|', (object[])conditions)}_{type}";
+
+            if (this.memorizater.TryGetValue(key, out var records))
+            {
+                return records;
+            }
+
+            var result = this.list.Where(x => RecordMatcher.IsMatch(x, conditions, type));
+
+            this.memorizater.Add(key, result.ToList());
+            return result;
         }
 
         /// <summary>
@@ -225,34 +226,9 @@ namespace FileCabinetApp
             return this.list.Any(x => x.Id == id);
         }
 
-        private static void AddToIndex<T>(FileCabinetRecord record, Dictionary<T, List<FileCabinetRecord>> dictionary, T key)
-        {
-            if (dictionary.TryGetValue(key, out List<FileCabinetRecord> allValueOfKey))
-            {
-                allValueOfKey.Add(record);
-            }
-            else
-            {
-                List<FileCabinetRecord> valueForDictionary = new List<FileCabinetRecord>() { record };
-                dictionary.Add(key, valueForDictionary);
-            }
-        }
-
-        private static void RemoveFromDictionary<T>(Dictionary<T, List<FileCabinetRecord>> dictionary, T keyForRemove, FileCabinetRecord recordForRemove)
-        {
-            if (dictionary.TryGetValue(keyForRemove, out List<FileCabinetRecord> allValueOfExistingKey))
-            {
-                allValueOfExistingKey.Remove(recordForRemove);
-            }
-        }
-
         private void CreateRecord(FileCabinetRecord record)
         {
             this.list.Add(record);
-
-            AddToIndex(record, this.firstNameDictionary, record.FirstName);
-            AddToIndex(record, this.lastNameDictionary, record.LastName);
-            AddToIndex(record, this.dateOfBirthDictionary, record.DateOfBirth);
         }
     }
 }

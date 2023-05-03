@@ -26,47 +26,46 @@ namespace FileCabinetApp.CommandHandlers
         /// <param name="appCommand">>Configuratiion the application command and options.</param>
         public override void Handle(AppCommandRequest appCommand)
         {
-            if (appCommand.Command.Equals("export", StringComparison.InvariantCultureIgnoreCase))
+            if (!appCommand.Command.Equals("export", StringComparison.InvariantCultureIgnoreCase))
             {
-                var makeSnapshot = this.Service.MakeSnapshot();
+                base.Handle(appCommand);
+                return;
+            }
 
-                var exportParametrs = appCommand.Parameters.Split(' ');
+            var makeSnapshot = this.Service.MakeSnapshot();
 
-                if (exportParametrs.Length != 2)
-                {
-                    Console.WriteLine("You have entered an invalid export parameter. Two are needed.");
-                    return;
-                }
+            var exportParametrs = appCommand.Parameters.Split(' ');
 
-                var format = exportParametrs[0];
-                var path = exportParametrs[1];
+            if (exportParametrs.Length != 2)
+            {
+                Console.WriteLine("You have entered an invalid export parameter. Two are needed.");
+                return;
+            }
 
-                if (format != FileTypeCsv && format != FileTypeXml)
-                {
-                    Console.WriteLine("You entered an invalid format.");
-                    return;
-                }
+            var format = exportParametrs[0];
+            var path = exportParametrs[1];
 
-                var folder = Path.GetDirectoryName(path);
-                if (!Directory.Exists(folder))
-                {
-                    Console.WriteLine($"Export failed: can't open file {path}.");
-                }
-                else if (File.Exists(path))
-                {
-                    if (UserInputHelpers.ReadYesOrNo($"File is exist - rewrite {path}?", true))
-                    {
-                        ExportData(makeSnapshot, format, path);
-                    }
-                }
-                else
+            if (format != FileTypeCsv && format != FileTypeXml)
+            {
+                Console.WriteLine("You entered an invalid format.");
+                return;
+            }
+
+            var folder = Path.GetDirectoryName(path);
+            if (!Directory.Exists(folder))
+            {
+                Console.WriteLine($"Export failed: can't open file {path}.");
+            }
+            else if (File.Exists(path))
+            {
+                if (UserInputHelpers.ReadYesOrNo($"File is exist - rewrite {path}?", true))
                 {
                     ExportData(makeSnapshot, format, path);
                 }
             }
             else
             {
-                base.Handle(appCommand);
+                ExportData(makeSnapshot, format, path);
             }
         }
 

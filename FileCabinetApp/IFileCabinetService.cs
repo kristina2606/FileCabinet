@@ -90,5 +90,19 @@ namespace FileCabinetApp
         /// </summary>
         /// <returns>Count of purged records. Only for FileCabinetFilesystemService.</returns>
         int Purge();
+
+        /// <summary>
+        /// Insert new record.
+        /// </summary>
+        /// <param name="record">New record from user.</param>
+        void Insert(FileCabinetRecord record);
+
+        /// <summary>
+        /// Finds records by parameters.
+        /// </summary>
+        /// <param name="conditions">Contains conditions with search parameters.</param>
+        /// <param name="type">Contains an OR or AND operator.</param>
+        /// <returns>Returns finded records.</returns>
+        IEnumerable<FileCabinetRecord> Find(Condition[] conditions, UnionType type);
     }
 }

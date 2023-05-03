@@ -24,14 +24,13 @@ namespace FileCabinetApp.CommandHandlers
         /// <param name="appCommand">>Configuratiion the application command and options.</param>
         public override void Handle(AppCommandRequest appCommand)
         {
-            if (appCommand.Command.Equals("exit", StringComparison.InvariantCultureIgnoreCase))
-            {
-                this.exit(true);
-            }
-            else
+            if (!appCommand.Command.Equals("exit", StringComparison.InvariantCultureIgnoreCase))
             {
                 base.Handle(appCommand);
+                return;
             }
+
+            this.exit(true);
         }
     }
 }

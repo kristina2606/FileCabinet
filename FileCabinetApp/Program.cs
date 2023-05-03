@@ -126,26 +126,28 @@ namespace FileCabinetApp
         {
             var helpHandler = new HelpCommandHandler();
             var createHandler = new CreateCommandHandler(Program.fileCabinetService, Program.inputValidation);
-            var editHandler = new EditCommandHandler(Program.fileCabinetService, Program.inputValidation);
+            var insertHandler = new InsertCommandHandler(Program.fileCabinetService, Program.inputValidation);
+            var updateHandler = new UpdateCommandHandler(Program.fileCabinetService, Program.inputValidation);
             var listHandler = new ListCommandHandler(Program.fileCabinetService, DefaultRecordPrint);
             var statHandler = new StatCommandHandler(Program.fileCabinetService);
             var findHandler = new FindCommandHandler(Program.fileCabinetService, DefaultRecordPrint);
             var exportHandler = new ExportCommandHandler(Program.fileCabinetService);
             var importHandler = new ImportCommandHandler(Program.fileCabinetService);
-            var removeHandler = new RemoveCommandHandler(Program.fileCabinetService);
+            var deleteHandler = new DeleteCommandHandler(Program.fileCabinetService, Program.inputValidation);
             var purgeHandler = new PurgeCommandHandler(Program.fileCabinetService);
             var exitHandler = new ExitCommandHandler(Exit);
             var missHandler = new MissCommandHandler();
 
             helpHandler.SetNext(createHandler);
-            createHandler.SetNext(editHandler);
-            editHandler.SetNext(listHandler);
+            createHandler.SetNext(insertHandler);
+            insertHandler.SetNext(updateHandler);
+            updateHandler.SetNext(listHandler);
             listHandler.SetNext(statHandler);
             statHandler.SetNext(findHandler);
             findHandler.SetNext(exportHandler);
             exportHandler.SetNext(importHandler);
-            importHandler.SetNext(removeHandler);
-            removeHandler.SetNext(purgeHandler);
+            importHandler.SetNext(deleteHandler);
+            deleteHandler.SetNext(purgeHandler);
             purgeHandler.SetNext(exitHandler);
             exitHandler.SetNext(missHandler);
 

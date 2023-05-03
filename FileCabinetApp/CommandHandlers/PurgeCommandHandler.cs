@@ -22,18 +22,17 @@ namespace FileCabinetApp.CommandHandlers
         /// <param name="appCommand">>Configuratiion the application command and options.</param>
         public override void Handle(AppCommandRequest appCommand)
         {
-            if (appCommand.Command.Equals("purge", StringComparison.InvariantCultureIgnoreCase))
-            {
-                var (activeRecords, deletedRecords) = this.Service.GetStat();
-
-                var purgedRecordsCount = this.Service.Purge();
-
-                Console.WriteLine($"Data file processing is completed: {purgedRecordsCount} of {activeRecords + deletedRecords} records were purged.");
-            }
-            else
+            if (!appCommand.Command.Equals("purge", StringComparison.InvariantCultureIgnoreCase))
             {
                 base.Handle(appCommand);
+                return;
             }
+
+            var (activeRecords, deletedRecords) = this.Service.GetStat();
+
+            var purgedRecordsCount = this.Service.Purge();
+
+            Console.WriteLine($"Data file processing is completed: {purgedRecordsCount} of {activeRecords + deletedRecords} records were purged.");
         }
     }
 }

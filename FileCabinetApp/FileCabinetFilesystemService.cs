@@ -263,6 +263,31 @@ namespace FileCabinetApp
         }
 
         /// <summary>
+        /// Insert new record.
+        /// </summary>
+        /// <param name="record">New record from user.</param>
+        public void Insert(FileCabinetRecord record)
+        {
+            if (this.IsExist(record.Id))
+            {
+                throw new ArgumentException("Record's id is exist.");
+            }
+
+            this.CreateRecord(record);
+        }
+
+        /// <summary>
+        /// Finds records by parameters.
+        /// </summary>
+        /// <param name="conditions">Contains conditions with search parameters.</param>
+        /// <param name="type">Contains an OR or AND operator.</param>
+        /// <returns>Returns finded records.</returns>
+        public IEnumerable<FileCabinetRecord> Find(Condition[] conditions, UnionType type)
+        {
+            return this.GetExistingRecords().Where(x => RecordMatcher.IsMatch(x, conditions, type));
+        }
+
+        /// <summary>
         /// Checks if records with the specified id exists.
         /// </summary>
         /// <param name="id">The id entered by the user.</param>

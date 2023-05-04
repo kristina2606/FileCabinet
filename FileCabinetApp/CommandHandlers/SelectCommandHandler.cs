@@ -80,7 +80,7 @@ namespace FileCabinetApp.CommandHandlers
             int[] columnWidth = new int[fields.Count];
             for (var i = 0; i < fields.Count; i++)
             {
-                var maxRecordColumnWidth = records.Select(x => GetFieldValueInt(x, fields[i])).Max();
+                var maxRecordColumnWidth = records.Select(x => Math.Abs(GetFieldValueLenght(x, fields[i]))).Max();
                 columnWidth[i] = Math.Max(fields[i].ToString().Length, maxRecordColumnWidth);
 
                 if (maxRecordColumnWidth < 0)
@@ -91,7 +91,7 @@ namespace FileCabinetApp.CommandHandlers
 
             Console.WriteLine(GetTableHeader(fields, columnWidth));
 
-            var fieldsToPrint = records.Select(record => fields.Select(field => GetFieldValueString(record, field)));
+            var fieldsToPrint = records.Select(record => fields.Select(field => GetFieldValueString(record, field)).ToArray());
 
             foreach (var field in fieldsToPrint)
             {
@@ -116,7 +116,7 @@ namespace FileCabinetApp.CommandHandlers
             };
         }
 
-        private static int GetFieldValueInt(FileCabinetRecord record, FileCabinetRecordFields field)
+        private static int GetFieldValueLenght(FileCabinetRecord record, FileCabinetRecordFields field)
         {
             return field switch
             {
@@ -157,14 +157,15 @@ namespace FileCabinetApp.CommandHandlers
         {
             var header = new StringBuilder();
             header.Append(GetDemarcationLine(columnWidht));
-            header.Append('\n');
+            header.Append(TableSymbols.NewLine);
 
             for (var i = 0; i < fields.Count; i++)
             {
-                header.Append(CultureInfo.InvariantCulture, $"| {fields[i].ToString().PadRight(Math.Abs(columnWidht[i]))} ");
+                header.Append(CultureInfo.InvariantCulture, $"{TableSymbols.VerticalLine} {fields[i].ToString().PadRight(Math.Abs(columnWidht[i]))} ");
             }
 
-            header.Append("|\n");
+            header.Append(TableSymbols.VerticalLine);
+            header.Append(TableSymbols.NewLine);
 
             header.Append(GetDemarcationLine(columnWidht));
 
@@ -177,26 +178,28 @@ namespace FileCabinetApp.CommandHandlers
 
             foreach (var widht in columnWidht)
             {
-                line.Append(CultureInfo.InvariantCulture, $"+{new string('-', Math.Abs(widht) + 2)}");
+                line.Append(CultureInfo.InvariantCulture, $"{TableSymbols.Intersection}{new string(TableSymbols.HorizontalLine, Math.Abs(widht) + 2)}");
             }
 
-            line.Append('+');
+            line.Append(TableSymbols.Intersection);
 
             return line.ToString();
         }
 
-        private static string GetRow(IEnumerable<string> fieldsToPrint, int[] columnWidth)
+        private static string GetRow(string[] fieldsToPrint, int[] columnWidth)
         {
             var rowBuilder = new StringBuilder();
-            var i = 0;
-            foreach (var field in fieldsToPrint)
+
+            for (var i = 0; i < fieldsToPrint.Length; i++)
             {
-                var format = columnWidth[i] > 0 ? field.PadRight(columnWidth[i]) : field.PadLeft(Math.Abs(columnWidth[i]));
-                rowBuilder.Append(CultureInfo.InvariantCulture, $"| {format} ");
-                i++;
+                var field = fieldsToPrint[i];
+                var widht = columnWidth[i];
+
+                var format = columnWidth[i] > 0 ? field.PadRight(widht) : field.PadLeft(Math.Abs(widht));
+                rowBuilder.Append(CultureInfo.InvariantCulture, $"{TableSymbols.VerticalLine} {format} ");
             }
 
-            rowBuilder.Append('|');
+            rowBuilder.Append(TableSymbols.VerticalLine);
 
             return rowBuilder.ToString();
         }

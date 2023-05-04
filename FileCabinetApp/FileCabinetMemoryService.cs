@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Text;
 
 [assembly: CLSCompliant(true)]
 
@@ -198,7 +200,7 @@ namespace FileCabinetApp
         /// <returns>Returns finded records.</returns>
         public IEnumerable<FileCabinetRecord> Find(Condition[] conditions, UnionType type)
         {
-            string key = $"Find_{string.Join('|', (object[])conditions)}_{type}";
+            string key = CreateKeyForMemorization(conditions, type);
 
             if (this.memorizater.TryGetValue(key, out var records))
             {
@@ -219,6 +221,45 @@ namespace FileCabinetApp
         public bool IsExist(int id)
         {
             return this.list.Any(x => x.Id == id);
+        }
+
+        private static string CreateKeyForMemorization(Condition[] conditions, UnionType type)
+        {
+            var key = new StringBuilder();
+            key.Append(CultureInfo.InvariantCulture, $"Find_ConditionFields:{string.Join(',', conditions.Select(x => x.Field))}");
+
+            var fieldsValueForKey = new List<string>();
+
+            foreach (var condition in conditions)
+            {
+                switch (condition.Field)
+                {
+                    case FileCabinetRecordFields.Id:
+                        fieldsValueForKey.Add(condition.Value.Id.ToString(CultureInfo.InvariantCulture));
+                        break;
+                    case FileCabinetRecordFields.FirstName:
+                        fieldsValueForKey.Add(condition.Value.FirstName);
+                        break;
+                    case FileCabinetRecordFields.LastName:
+                        fieldsValueForKey.Add(condition.Value.LastName);
+                        break;
+                    case FileCabinetRecordFields.DateOfBirth:
+                        fieldsValueForKey.Add(condition.Value.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture));
+                        break;
+                    case FileCabinetRecordFields.Gender:
+                        fieldsValueForKey.Add(condition.Value.Gender.ToString(CultureInfo.InvariantCulture));
+                        break;
+                    case FileCabinetRecordFields.Height:
+                        fieldsValueForKey.Add(condition.Value.Height.ToString(CultureInfo.InvariantCulture));
+                        break;
+                    case FileCabinetRecordFields.Weight:
+                        fieldsValueForKey.Add(condition.Value.Weight.ToString(CultureInfo.InvariantCulture));
+                        break;
+                }
+            }
+
+            key.Append(CultureInfo.InvariantCulture, $"_ConditionValue:{string.Join(',', fieldsValueForKey)}_UnionType:{type}");
+            return key.ToString();
         }
 
         private void CreateRecord(FileCabinetRecord record)

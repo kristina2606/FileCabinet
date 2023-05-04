@@ -200,16 +200,25 @@ namespace FileCabinetApp
         /// <returns>Returns finded records.</returns>
         public IEnumerable<FileCabinetRecord> Find(Condition[] conditions, UnionType type)
         {
-            string key = CreateKeyForMemorization(conditions, type);
+            string key = null;
 
-            if (this.memorizater.TryGetValue(key, out var records))
+            if (conditions.Length > 0)
             {
-                return records;
+                key = CreateKeyForMemorization(conditions, type);
+
+                if (this.memorizater.TryGetValue(key, out var records))
+                {
+                    return records;
+                }
             }
 
             var result = this.list.Where(x => RecordMatcher.IsMatch(x, conditions, type));
 
-            this.memorizater.Add(key, result.ToList());
+            if (key != null)
+            {
+                this.memorizater.Add(key, result.ToList());
+            }
+
             return result;
         }
 

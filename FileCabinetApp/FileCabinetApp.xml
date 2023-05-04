@@ -1572,31 +1572,6 @@
             <param name="type">Contains an OR or AND operator.</param>
             <returns>Returns finded records.</returns>
         </member>
-        <member name="T:FileCabinetApp.TableSymbols">
-            <summary>
-            Symbols to build a table.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.TableSymbols.HorizontalLine">
-            <summary>
-            Used to separate cells in table rows.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.TableSymbols.VerticalLine">
-            <summary>
-            Used to separate cells in table columns.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.TableSymbols.Intersection">
-            <summary>
-            Used to separate cells at table corners.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.TableSymbols.NewLine">
-            <summary>
-            Used to move to a new table row.
-            </summary>
-        </member>
         <member name="T:FileCabinetApp.UnionType">
             <summary>
             Represents the type of union operation.

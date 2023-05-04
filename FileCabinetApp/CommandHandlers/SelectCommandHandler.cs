@@ -80,7 +80,7 @@ namespace FileCabinetApp.CommandHandlers
             int[] columnWidth = new int[fields.Count];
             for (var i = 0; i < fields.Count; i++)
             {
-                var maxRecordColumnWidth = records.Select(x => Math.Abs(GetFieldValueLenght(x, fields[i]))).Max();
+                var maxRecordColumnWidth = records.Select(x => GetFieldValueString(x, fields[i]).Length).Max();
                 columnWidth[i] = Math.Max(fields[i].ToString().Length, maxRecordColumnWidth);
 
                 if (maxRecordColumnWidth < 0)
@@ -116,21 +116,6 @@ namespace FileCabinetApp.CommandHandlers
             };
         }
 
-        private static int GetFieldValueLenght(FileCabinetRecord record, FileCabinetRecordFields field)
-        {
-            return field switch
-            {
-                FileCabinetRecordFields.Id => record.Id.ToString(CultureInfo.InvariantCulture).Length,
-                FileCabinetRecordFields.FirstName => -record.FirstName.Length,
-                FileCabinetRecordFields.LastName => -record.LastName.Length,
-                FileCabinetRecordFields.DateOfBirth => -record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture).Length,
-                FileCabinetRecordFields.Gender => -record.Gender.ToString(CultureInfo.InvariantCulture).Length,
-                FileCabinetRecordFields.Height => record.Height.ToString(CultureInfo.InvariantCulture).Length,
-                FileCabinetRecordFields.Weight => record.Weight.ToString(CultureInfo.InvariantCulture).Length,
-                _ => throw new ArgumentException($"Unknown field: {field}"),
-            };
-        }
-
         private static List<FileCabinetRecordFields> GetFieldsToPrint(string[] fields)
         {
             if (fields == null || fields.Length == 0)
@@ -161,7 +146,7 @@ namespace FileCabinetApp.CommandHandlers
 
             for (var i = 0; i < fields.Count; i++)
             {
-                header.Append(CultureInfo.InvariantCulture, $"{TableSymbols.VerticalLine} {fields[i].ToString().PadRight(Math.Abs(columnWidht[i]))} ");
+                header.Append(CultureInfo.InvariantCulture, $"{TableSymbols.VerticalLine} {fields[i].ToString().PadRight(columnWidht[i])} ");
             }
 
             header.Append(TableSymbols.VerticalLine);
@@ -178,7 +163,7 @@ namespace FileCabinetApp.CommandHandlers
 
             foreach (var widht in columnWidht)
             {
-                line.Append(CultureInfo.InvariantCulture, $"{TableSymbols.Intersection}{new string(TableSymbols.HorizontalLine, Math.Abs(widht) + 2)}");
+                line.Append(CultureInfo.InvariantCulture, $"{TableSymbols.Intersection}{new string(TableSymbols.HorizontalLine, widht + 2)}");
             }
 
             line.Append(TableSymbols.Intersection);
@@ -193,15 +178,23 @@ namespace FileCabinetApp.CommandHandlers
             for (var i = 0; i < fieldsToPrint.Length; i++)
             {
                 var field = fieldsToPrint[i];
-                var widht = columnWidth[i];
+                var width = columnWidth[i];
 
-                var format = columnWidth[i] > 0 ? field.PadRight(widht) : field.PadLeft(Math.Abs(widht));
+                var format = field.Any(char.IsDigit) ? field.PadRight(width) : field.PadLeft(width);
                 rowBuilder.Append(CultureInfo.InvariantCulture, $"{TableSymbols.VerticalLine} {format} ");
             }
 
             rowBuilder.Append(TableSymbols.VerticalLine);
 
             return rowBuilder.ToString();
+        }
+
+        private static class TableSymbols
+        {
+            public const char HorizontalLine = '-';
+            public const char VerticalLine = '|';
+            public const char Intersection = '+';
+            public const char NewLine = '\n';
         }
     }
 }

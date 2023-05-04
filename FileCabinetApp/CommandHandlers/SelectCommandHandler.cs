@@ -180,7 +180,7 @@ namespace FileCabinetApp.CommandHandlers
                 var field = fieldsToPrint[i];
                 var width = columnWidth[i];
 
-                var format = field.Any(char.IsDigit) ? field.PadRight(width) : field.PadLeft(width);
+                var format = field.All(char.IsDigit) ? field.PadRight(width) : field.PadLeft(width);
                 rowBuilder.Append(CultureInfo.InvariantCulture, $"{TableSymbols.VerticalLine} {format} ");
             }
 

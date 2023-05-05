@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -53,11 +52,11 @@ namespace FileCabinetApp
         }
 
         /// <summary>
-        /// Edits an already existing entry by id and saves information about service method calls and passed parameters to a text file.
+        /// Update an already existing entry by id and saves information about service method calls and passed parameters to a text file.
         /// </summary>
         /// <param name="id">The id of the record to be modified.</param>
         /// <param name="fileCabinetRecordNewData">The new date in the record.</param>
-        public void EditRecord(int id, FileCabinetRecordNewData fileCabinetRecordNewData)
+        public void Update(int id, FileCabinetRecordNewData fileCabinetRecordNewData)
         {
             var methodName = "Edit()";
             var methodParameters = $"with parameters FirstName = '{fileCabinetRecordNewData.FirstName}', LastName = '{fileCabinetRecordNewData.LastName}', DateOfBirth = '{fileCabinetRecordNewData.DateOfBirth.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)}', Gender = '{fileCabinetRecordNewData.Gender}', Height = '{fileCabinetRecordNewData.Height}', weight = '{fileCabinetRecordNewData.Weight}' for record '{id}'.";
@@ -65,106 +64,8 @@ namespace FileCabinetApp
             this.LoggingActivity(methodName, methodParameters);
             try
             {
-                this.service.EditRecord(id, fileCabinetRecordNewData);
+                this.service.Update(id, fileCabinetRecordNewData);
                 this.LoggingEndMethod(methodName, $"edited record '{id}'.");
-            }
-            catch (Exception ex)
-            {
-                this.LoggingError(methodName, ex.Message);
-
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// Finds all records by date of birth and saves information about service method calls and passed parameters to a text file.
-        /// </summary>
-        /// <param name="dateOfBirth">The parameter by which you want to find all existing records.</param>
-        /// <returns>Returns all records by date of birth.</returns>
-        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
-        {
-            var methodName = "Find() by date of birth";
-            var methodParameters = $"with parameter DateOfBirth = '{dateOfBirth.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)}'.";
-
-            this.LoggingActivity(methodName, methodParameters);
-            try
-            {
-                this.LoggingEndMethod(methodName, "returned list with finded records.");
-
-                return this.service.FindByDateOfBirth(dateOfBirth);
-            }
-            catch (Exception ex)
-            {
-                this.LoggingError(methodName, ex.Message);
-
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// Finds all records by first name and saves information about service method calls and passed parameters to a text file.
-        /// </summary>
-        /// <param name="firstName">The parameter by which you want to find all existing records.</param>
-        /// <returns>Returns  all records by first name.</returns>
-        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
-        {
-            var methodName = "Find() by first name";
-            var methodParameters = $"with parameter FirstName = '{firstName}'.";
-
-            this.LoggingActivity(methodName, methodParameters);
-            try
-            {
-                this.LoggingEndMethod(methodName, "returned list with finded records.");
-
-                return this.service.FindByFirstName(firstName);
-            }
-            catch (Exception ex)
-            {
-                this.LoggingError(methodName, ex.Message);
-
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// Finds all records by last name and saves information about service method calls and passed parameters to a text file.
-        /// </summary>
-        /// <param name="lastName">The parameter by which you want to find all existing records.</param>
-        /// <returns>Returns all records by last name.</returns>
-        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
-        {
-            var methodName = "Find() by last name";
-            var methodParameters = $"with parameter LastName = '{lastName}'.";
-
-            this.LoggingActivity(methodName, methodParameters);
-            try
-            {
-                this.LoggingEndMethod(methodName, "returned list with finded records.");
-
-                return this.service.FindByLastName(lastName);
-            }
-            catch (Exception ex)
-            {
-                this.LoggingError(methodName, ex.Message);
-
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// Gets all existing records and saves information about service method calls and passed parameters to a text file.
-        /// </summary>
-        /// <returns>Returns all existing records.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> GetRecords()
-        {
-            var methodName = "List()";
-
-            this.LoggingActivity(methodName);
-            try
-            {
-                this.LoggingEndMethod(methodName, "returned all existing records.");
-
-                return this.service.GetRecords();
             }
             catch (Exception ex)
             {
@@ -268,17 +169,17 @@ namespace FileCabinetApp
         }
 
         /// <summary>
-        /// Remove record by id and saves information about service method calls and passed parameters to a text file.
+        /// Delete record by id and saves information about service method calls and passed parameters to a text file.
         /// </summary>
         /// <param name="id">Record id to remove.</param>
-        public void Remove(int id)
+        public void Delete(int id)
         {
             var methodName = "Remove()";
 
             this.LoggingActivity(methodName);
             try
             {
-                this.service.Remove(id);
+                this.service.Delete(id);
                 this.LoggingEndMethod(methodName, $"deleted the record '{id}'.");
             }
             catch

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -15,10 +14,6 @@ namespace FileCabinetApp
         private const int LengthOfOneRecord = 157;
         private const short DefaultStatus = 0;
         private const short MaskForDelete = 0b_0000_0100;
-
-        private readonly Dictionary<string, List<long>> firstNameIndex = new Dictionary<string, List<long>>(StringComparer.InvariantCultureIgnoreCase);
-        private readonly Dictionary<string, List<long>> lastNameIndex = new Dictionary<string, List<long>>(StringComparer.InvariantCultureIgnoreCase);
-        private readonly Dictionary<DateTime, List<long>> dateOfBirthIndex = new Dictionary<DateTime, List<long>>();
 
         private readonly FileStream fileStream;
         private readonly IRecordValidator validator;
@@ -63,11 +58,11 @@ namespace FileCabinetApp
         }
 
         /// <summary>
-        ///  Edits an already existing record in binary file by id.
+        ///  Update an already existing record in binary file by id.
         /// </summary>
         /// <param name="id">The id of the record to be modified.</param>
         /// <param name="fileCabinetRecordNewData">The new date in the record.</param>
-        public void EditRecord(int id, FileCabinetRecordNewData fileCabinetRecordNewData)
+        public void Update(int id, FileCabinetRecordNewData fileCabinetRecordNewData)
         {
             if (!this.IsExist(id))
             {
@@ -81,73 +76,9 @@ namespace FileCabinetApp
                 if (record.Id == id && (status & MaskForDelete) == 0)
                 {
                     this.WriteBinary(ConvertToFileCabinetRecord(fileCabinetRecordNewData, id), DefaultStatus, position);
-
-                    UpdateIndexes(this.firstNameIndex, position, record.FirstName);
-                    AddRecordToIndexes(this.firstNameIndex, fileCabinetRecordNewData.FirstName, position);
-
-                    UpdateIndexes(this.lastNameIndex, position, record.LastName);
-                    AddRecordToIndexes(this.lastNameIndex, fileCabinetRecordNewData.LastName, position);
-
-                    UpdateIndexes(this.dateOfBirthIndex, position, record.DateOfBirth);
-                    AddRecordToIndexes(this.dateOfBirthIndex, fileCabinetRecordNewData.DateOfBirth, position);
-
                     break;
                 }
             }
-        }
-
-        /// <summary>
-        /// Finds all records by date of birth in binary file.
-        /// </summary>
-        /// <param name="dateOfBirth">The parameter by which you want to find all existing records.</param>
-        /// <returns>Returns all records by date of birth.</returns>
-        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
-        {
-            if (this.dateOfBirthIndex.TryGetValue(dateOfBirth, out List<long> offsets))
-            {
-                return this.FindRecordInFile(offsets);
-            }
-
-            return Enumerable.Empty<FileCabinetRecord>();
-        }
-
-        /// <summary>
-        /// Finds all records by first name in binary file.
-        /// </summary>
-        /// <param name="firstName">The parameter by which you want to find all existing records.</param>
-        /// <returns>Returns  all records by first name.</returns>
-        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
-        {
-            if (this.firstNameIndex.TryGetValue(firstName, out List<long> offsets))
-            {
-                return this.FindRecordInFile(offsets);
-            }
-
-            return Enumerable.Empty<FileCabinetRecord>();
-        }
-
-        /// <summary>
-        /// Finds all records by last name in binary file.
-        /// </summary>
-        /// <param name="lastName">The parameter by which you want to find all existing records.</param>
-        /// <returns>Returns all records by last name.</returns>
-        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
-        {
-            if (this.lastNameIndex.TryGetValue(lastName, out List<long> offsets))
-            {
-                return this.FindRecordInFile(offsets);
-            }
-
-            return Enumerable.Empty<FileCabinetRecord>();
-        }
-
-        /// <summary>
-        /// Reads all available records from the data file.
-        /// </summary>
-        /// <returns>Returns all available records from the data file.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> GetRecords()
-        {
-            return new ReadOnlyCollection<FileCabinetRecord>(this.GetExistingRecords().ToList());
         }
 
         /// <summary>
@@ -192,7 +123,7 @@ namespace FileCabinetApp
 
                     if (this.IsExist(record.Id))
                     {
-                        this.EditRecord(record.Id, recordNew);
+                        this.Update(record.Id, recordNew);
                     }
                     else
                     {
@@ -213,10 +144,10 @@ namespace FileCabinetApp
         }
 
         /// <summary>
-        /// Remove record by id.
+        /// Delete record by id.
         /// </summary>
         /// <param name="id">Record id to remove.</param>
-        public void Remove(int id)
+        public void Delete(int id)
         {
             if (!this.IsExist(id))
             {
@@ -233,10 +164,6 @@ namespace FileCabinetApp
 
                         writer.Write(MaskForDelete | status);
                     }
-
-                    RemoveIndex(this.firstNameIndex, record.FirstName, position);
-                    RemoveIndex(this.lastNameIndex, record.LastName, position);
-                    RemoveIndex(this.dateOfBirthIndex, record.DateOfBirth, position);
 
                     break;
                 }
@@ -324,32 +251,6 @@ namespace FileCabinetApp
             return record;
         }
 
-        private static void AddRecordToIndexes<T>(Dictionary<T, List<long>> dictionary, T key, long position)
-        {
-            if (!dictionary.ContainsKey(key))
-            {
-                dictionary.Add(key, new List<long>());
-            }
-
-            dictionary[key].Add(position);
-        }
-
-        private static void UpdateIndexes<T>(Dictionary<T, List<long>> dictionary, long valueForRemove, T oldKey)
-        {
-            if (dictionary.TryGetValue(oldKey, out List<long> allValueOfOldKey))
-            {
-                allValueOfOldKey.Remove(valueForRemove);
-            }
-        }
-
-        private static void RemoveIndex<T>(Dictionary<T, List<long>> dictionary, T keyForRemove, long offsetForRemove)
-        {
-            if (dictionary.TryGetValue(keyForRemove, out List<long> offsets))
-            {
-                offsets.Remove(offsetForRemove);
-            }
-        }
-
         private static (FileCabinetRecord record, short status) ReadOneRecordFromFile(BinaryReader reader, long positionToRead)
         {
             reader.BaseStream.Seek(positionToRead, SeekOrigin.Begin);
@@ -384,10 +285,6 @@ namespace FileCabinetApp
                 writer.Write(record.Gender);
                 writer.Write(record.Height);
                 writer.Write(record.Weight);
-
-                AddRecordToIndexes(this.firstNameIndex, record.FirstName, position);
-                AddRecordToIndexes(this.lastNameIndex, record.LastName, position);
-                AddRecordToIndexes(this.dateOfBirthIndex, record.DateOfBirth, position);
             }
         }
 
@@ -417,17 +314,6 @@ namespace FileCabinetApp
             return this.GetRecordsInternal()
                             .Where(x => (x.status & MaskForDelete) == 0)
                             .Select(record => record.record);
-        }
-
-        private IEnumerable<FileCabinetRecord> FindRecordInFile(List<long> offsets)
-        {
-            using (var reader = new BinaryReader(this.fileStream, Encoding.ASCII, true))
-            {
-                foreach (var offset in offsets)
-                {
-                    yield return ReadOneRecordFromFile(reader, offset).record;
-                }
-            }
         }
     }
 }

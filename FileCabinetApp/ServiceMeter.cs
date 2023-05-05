@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 
 namespace FileCabinetApp
@@ -42,101 +41,22 @@ namespace FileCabinetApp
         }
 
         /// <summary>
-        /// Edits an already existing entry by id and measures the running time of service methods and displays them on the screen.
+        /// Update an already existing entry by id and measures the running time of service methods and displays them on the screen.
         /// </summary>
         /// <param name="id">The id of the record to be modified.</param>
         /// <param name="fileCabinetRecordNewData">The new date in the record.</param>
-        public void EditRecord(int id, FileCabinetRecordNewData fileCabinetRecordNewData)
+        public void Update(int id, FileCabinetRecordNewData fileCabinetRecordNewData)
         {
             Stopwatch stopWatch = Stopwatch.StartNew();
             try
             {
-                this.service.EditRecord(id, fileCabinetRecordNewData);
+                this.service.Update(id, fileCabinetRecordNewData);
             }
             finally
             {
                 stopWatch.Stop();
 
                 MeasuringExecutionTime("Edit", stopWatch);
-            }
-        }
-
-        /// <summary>
-        /// Finds all records by date of birth and measures the running time of service methods and displays them on the screen.
-        /// </summary>
-        /// <param name="dateOfBirth">The parameter by which you want to find all existing records.</param>
-        /// <returns>Returns all records by date of birth.</returns>
-        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
-        {
-            Stopwatch stopWatch = Stopwatch.StartNew();
-            try
-            {
-                return this.service.FindByDateOfBirth(dateOfBirth);
-            }
-            finally
-            {
-                stopWatch.Stop();
-
-                MeasuringExecutionTime("Find by dateOfBirth", stopWatch);
-            }
-        }
-
-        /// <summary>
-        /// Finds all records by first name and measures the running time of service methods and displays them on the screen.
-        /// </summary>
-        /// <param name="firstName">The parameter by which you want to find all existing records.</param>
-        /// <returns>Returns  all records by first name.</returns>
-        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
-        {
-            Stopwatch stopWatch = Stopwatch.StartNew();
-            try
-            {
-                return this.service.FindByFirstName(firstName);
-            }
-            finally
-            {
-                stopWatch.Stop();
-
-                MeasuringExecutionTime("Find by firstName", stopWatch);
-            }
-        }
-
-        /// <summary>
-        /// Finds all records by last name and measures the running time of service methods and displays them on the screen.
-        /// </summary>
-        /// <param name="lastName">The parameter by which you want to find all existing records.</param>
-        /// <returns>Returns all records by last name.</returns>
-        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
-        {
-            Stopwatch stopWatch = Stopwatch.StartNew();
-            try
-            {
-                return this.service.FindByLastName(lastName);
-            }
-            finally
-            {
-                stopWatch.Stop();
-
-                MeasuringExecutionTime("Find by lastName", stopWatch);
-            }
-        }
-
-        /// <summary>
-        /// Gets all existing records and measures the running time of service methods and displays them on the screen.
-        /// </summary>
-        /// <returns>Returns all existing records.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> GetRecords()
-        {
-            Stopwatch stopWatch = Stopwatch.StartNew();
-            try
-            {
-                return this.service.GetRecords();
-            }
-            finally
-            {
-                stopWatch.Stop();
-
-                MeasuringExecutionTime("List", stopWatch);
             }
         }
 
@@ -218,15 +138,15 @@ namespace FileCabinetApp
         }
 
         /// <summary>
-        /// Remove record by id and measures the running time of service methods and displays them on the screen.
+        /// Delete record by id and measures the running time of service methods and displays them on the screen.
         /// </summary>
         /// <param name="id">Record id to remove.</param>
-        public void Remove(int id)
+        public void Delete(int id)
         {
             Stopwatch stopWatch = Stopwatch.StartNew();
             try
             {
-                this.service.Remove(id);
+                this.service.Delete(id);
             }
             finally
             {

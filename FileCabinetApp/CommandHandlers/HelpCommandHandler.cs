@@ -17,14 +17,13 @@ namespace FileCabinetApp.CommandHandlers
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
             new string[] { "stat", "displays statistics on records", "The 'stat' displays statistics on records." },
             new string[] { "create", "creat new record", "The 'create' creat new record." },
-            new string[] { "list", "returns a list of records.", "The 'list' returns a list of records." },
-            new string[] { "find", "finds all existing records by parameter.", "The 'find' finds all existing records by parameter." },
             new string[] { "export", "exports service data to .csv or .xml file.", "The 'export' exports service data to .csv or .xml file." },
             new string[] { "import", "import data from .csv or .xml file.", "The 'import' import data from .csv or .xml file." },
             new string[] { "purge", "defragments the data file.", "The 'purge' command defragments the data file." },
             new string[] { "insert", "adds a record using the passed data.", "The 'insert' adds a record using the passed data." },
             new string[] { "delete", "delete record by predetermined criteria.", "The 'delete' delete record by predetermined criteria." },
             new string[] { "update", "update record fields using the specified search criteria.", "The 'update' update record fields using the specified search criteria." },
+            new string[] { "select", "accept a list of fields to display and search criteria.", "The 'select' accept a list of fields to display and search criteria." },
 };
 
         /// <summary>

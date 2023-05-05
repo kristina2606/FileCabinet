@@ -61,7 +61,7 @@ namespace FileCabinetApp.CommandHandlers
 
                 foreach (var recordId in recordsForDelete.Select(x => x.Id).ToList())
                 {
-                    this.Service.Remove(recordId);
+                    this.Service.Delete(recordId);
 
                     deletedRecords.Add(recordId);
                 }

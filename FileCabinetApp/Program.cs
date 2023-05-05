@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using FileCabinetApp.CommandHandlers;
 
@@ -106,31 +104,14 @@ namespace FileCabinetApp
             isRunning = !exit;
         }
 
-        private static void DefaultRecordPrint(IEnumerable<FileCabinetRecord> records)
-        {
-            foreach (var record in records)
-            {
-                var id = record.Id;
-                var firstName = record.FirstName;
-                var lastName = record.LastName;
-                var dateOfBirth = record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture);
-                var gender = record.Gender;
-                var height = record.Height;
-                var weight = record.Weight;
-
-                Console.WriteLine($"#{id}, {firstName}, {lastName}, {dateOfBirth}, {gender}, {height}, {weight}");
-            }
-        }
-
         private static ICommandHandler CreateCommandHandlers()
         {
             var helpHandler = new HelpCommandHandler();
             var createHandler = new CreateCommandHandler(Program.fileCabinetService, Program.inputValidation);
             var insertHandler = new InsertCommandHandler(Program.fileCabinetService, Program.inputValidation);
             var updateHandler = new UpdateCommandHandler(Program.fileCabinetService, Program.inputValidation);
-            var listHandler = new ListCommandHandler(Program.fileCabinetService, DefaultRecordPrint);
             var statHandler = new StatCommandHandler(Program.fileCabinetService);
-            var findHandler = new FindCommandHandler(Program.fileCabinetService, DefaultRecordPrint);
+            var selectHandler = new SelectCommandHandler(Program.fileCabinetService, Program.inputValidation);
             var exportHandler = new ExportCommandHandler(Program.fileCabinetService);
             var importHandler = new ImportCommandHandler(Program.fileCabinetService);
             var deleteHandler = new DeleteCommandHandler(Program.fileCabinetService, Program.inputValidation);
@@ -141,10 +122,9 @@ namespace FileCabinetApp
             helpHandler.SetNext(createHandler);
             createHandler.SetNext(insertHandler);
             insertHandler.SetNext(updateHandler);
-            updateHandler.SetNext(listHandler);
-            listHandler.SetNext(statHandler);
-            statHandler.SetNext(findHandler);
-            findHandler.SetNext(exportHandler);
+            updateHandler.SetNext(statHandler);
+            statHandler.SetNext(selectHandler);
+            selectHandler.SetNext(exportHandler);
             exportHandler.SetNext(importHandler);
             importHandler.SetNext(deleteHandler);
             deleteHandler.SetNext(purgeHandler);

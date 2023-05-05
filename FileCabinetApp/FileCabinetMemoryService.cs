@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
+using System.Text;
 
 [assembly: CLSCompliant(true)]
 
@@ -14,9 +15,7 @@ namespace FileCabinetApp
     {
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
 
-        private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>(StringComparer.InvariantCultureIgnoreCase);
-        private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>(StringComparer.InvariantCultureIgnoreCase);
-        private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
+        private readonly Dictionary<string, List<FileCabinetRecord>> memorizater = new Dictionary<string, List<FileCabinetRecord>>(StringComparer.InvariantCultureIgnoreCase);
 
         private readonly IIdGenerator idGenerator = new IdGenerator();
         private readonly IRecordValidator validator;
@@ -61,15 +60,6 @@ namespace FileCabinetApp
         }
 
         /// <summary>
-        /// Gets all existing records.
-        /// </summary>
-        /// <returns>Returns all existing records.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> GetRecords()
-        {
-            return new ReadOnlyCollection<FileCabinetRecord>(this.list);
-        }
-
-        /// <summary>
         /// Gets the count of all existed and deleted records.
         /// </summary>
         /// <returns>Returns the count of all existed and deleted records.</returns>
@@ -79,13 +69,15 @@ namespace FileCabinetApp
         }
 
         /// <summary>
-        /// Edits an already existing record by id.
+        /// Update an already existing record by id.
         /// </summary>
         /// <param name="id">The id of the record to be modified.</param>
         /// <param name="fileCabinetRecordNewData">The new date in the record.</param>
         /// <exception cref="ArgumentException">if records with the specified ID do not exist.</exception>
-        public void EditRecord(int id, FileCabinetRecordNewData fileCabinetRecordNewData)
+        public void Update(int id, FileCabinetRecordNewData fileCabinetRecordNewData)
         {
+            this.memorizater.Clear();
+
             if (!this.IsExist(id))
             {
                 throw new ArgumentException("Record's id isn't exist.");
@@ -100,66 +92,12 @@ namespace FileCabinetApp
                 throw new ArgumentException("records with the specified ID do not exist.");
             }
 
-            RemoveFromDictionary(this.firstNameDictionary, result.FirstName, result);
-            AddToIndex(result, this.firstNameDictionary, fileCabinetRecordNewData.FirstName);
-
-            RemoveFromDictionary(this.lastNameDictionary, result.LastName, result);
-            AddToIndex(result, this.lastNameDictionary, fileCabinetRecordNewData.LastName);
-
-            RemoveFromDictionary(this.dateOfBirthDictionary, result.DateOfBirth, result);
-            AddToIndex(result, this.dateOfBirthDictionary, fileCabinetRecordNewData.DateOfBirth);
-
             result.FirstName = fileCabinetRecordNewData.FirstName;
             result.LastName = fileCabinetRecordNewData.LastName;
             result.DateOfBirth = fileCabinetRecordNewData.DateOfBirth;
             result.Gender = fileCabinetRecordNewData.Gender;
             result.Height = fileCabinetRecordNewData.Height;
             result.Weight = fileCabinetRecordNewData.Weight;
-        }
-
-        /// <summary>
-        /// Finds all records by first name.
-        /// </summary>
-        /// <param name="firstName">The parameter by which you want to find all existing records.</param>
-        /// <returns>Returns  all records by first name.</returns>
-        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
-        {
-            if (this.firstNameDictionary.TryGetValue(firstName, out List<FileCabinetRecord> allValueOfKey))
-            {
-                return allValueOfKey;
-            }
-
-            return Enumerable.Empty<FileCabinetRecord>();
-        }
-
-        /// <summary>
-        /// Finds all records by last name.
-        /// </summary>
-        /// <param name="lastName">The parameter by which you want to find all existing records.</param>
-        /// <returns>Returns all records by last name.</returns>
-        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
-        {
-            if (this.lastNameDictionary.TryGetValue(lastName, out List<FileCabinetRecord> allValueOfKey))
-            {
-                return allValueOfKey;
-            }
-
-            return Enumerable.Empty<FileCabinetRecord>();
-        }
-
-        /// <summary>
-        /// Finds all records by date of birth.
-        /// </summary>
-        /// <param name="dateOfBirth">The parameter by which you want to find all existing records.</param>
-        /// <returns>Returns all records by date of birth.</returns>
-        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
-        {
-            if (this.dateOfBirthDictionary.TryGetValue(dateOfBirth, out List<FileCabinetRecord> allValueOfKey))
-            {
-                return allValueOfKey;
-            }
-
-            return Enumerable.Empty<FileCabinetRecord>();
         }
 
         /// <summary>
@@ -191,7 +129,7 @@ namespace FileCabinetApp
                     this.validator.ValidateParametrs(recordNew);
                     if (this.IsExist(record.Id))
                     {
-                        this.EditRecord(record.Id, recordNew);
+                        this.Update(record.Id, recordNew);
                     }
                     else
                     {
@@ -212,11 +150,13 @@ namespace FileCabinetApp
         }
 
         /// <summary>
-        /// Remove record by id.
+        /// Delete record by id.
         /// </summary>
         /// <param name="id">Record id to remove.</param>
-        public void Remove(int id)
+        public void Delete(int id)
         {
+            this.memorizater.Clear();
+
             if (!this.IsExist(id))
             {
                 throw new ArgumentException("Record's id isn't exist.");
@@ -225,10 +165,6 @@ namespace FileCabinetApp
             var valueForRemove = this.list.Find(x => x.Id == id);
 
             this.list.Remove(valueForRemove);
-
-            RemoveFromDictionary(this.firstNameDictionary, valueForRemove.FirstName, valueForRemove);
-            RemoveFromDictionary(this.lastNameDictionary, valueForRemove.LastName, valueForRemove);
-            RemoveFromDictionary(this.dateOfBirthDictionary, valueForRemove.DateOfBirth, valueForRemove);
         }
 
         /// <summary>
@@ -241,11 +177,13 @@ namespace FileCabinetApp
         }
 
         /// <summary>
-        /// Insert new record.
+        /// Checks if records with the specified id exists.
         /// </summary>
         /// <param name="record">New record from user.</param>
         public void Insert(FileCabinetRecord record)
         {
+            this.memorizater.Clear();
+
             if (this.IsExist(record.Id))
             {
                 throw new ArgumentException("Record's id is exist.");
@@ -262,7 +200,26 @@ namespace FileCabinetApp
         /// <returns>Returns finded records.</returns>
         public IEnumerable<FileCabinetRecord> Find(Condition[] conditions, UnionType type)
         {
-            return this.list.Where(x => RecordMatcher.IsMatch(x, conditions, type));
+            string key = null;
+
+            if (conditions.Length > 0)
+            {
+                key = CreateKeyForMemorization(conditions, type);
+
+                if (this.memorizater.TryGetValue(key, out var records))
+                {
+                    return records;
+                }
+            }
+
+            var result = this.list.Where(x => RecordMatcher.IsMatch(x, conditions, type));
+
+            if (key != null)
+            {
+                this.memorizater.Add(key, result.ToList());
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -275,34 +232,48 @@ namespace FileCabinetApp
             return this.list.Any(x => x.Id == id);
         }
 
-        private static void AddToIndex<T>(FileCabinetRecord record, Dictionary<T, List<FileCabinetRecord>> dictionary, T key)
+        private static string CreateKeyForMemorization(Condition[] conditions, UnionType type)
         {
-            if (dictionary.TryGetValue(key, out List<FileCabinetRecord> allValueOfKey))
-            {
-                allValueOfKey.Add(record);
-            }
-            else
-            {
-                List<FileCabinetRecord> valueForDictionary = new List<FileCabinetRecord>() { record };
-                dictionary.Add(key, valueForDictionary);
-            }
-        }
+            var key = new StringBuilder();
+            key.Append(CultureInfo.InvariantCulture, $"Find_ConditionFields:{string.Join(',', conditions.Select(x => x.Field))}");
 
-        private static void RemoveFromDictionary<T>(Dictionary<T, List<FileCabinetRecord>> dictionary, T keyForRemove, FileCabinetRecord recordForRemove)
-        {
-            if (dictionary.TryGetValue(keyForRemove, out List<FileCabinetRecord> allValueOfExistingKey))
+            var fieldsValueForKey = new List<string>();
+
+            foreach (var condition in conditions)
             {
-                allValueOfExistingKey.Remove(recordForRemove);
+                switch (condition.Field)
+                {
+                    case FileCabinetRecordFields.Id:
+                        fieldsValueForKey.Add(condition.Value.Id.ToString(CultureInfo.InvariantCulture));
+                        break;
+                    case FileCabinetRecordFields.FirstName:
+                        fieldsValueForKey.Add(condition.Value.FirstName);
+                        break;
+                    case FileCabinetRecordFields.LastName:
+                        fieldsValueForKey.Add(condition.Value.LastName);
+                        break;
+                    case FileCabinetRecordFields.DateOfBirth:
+                        fieldsValueForKey.Add(condition.Value.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture));
+                        break;
+                    case FileCabinetRecordFields.Gender:
+                        fieldsValueForKey.Add(condition.Value.Gender.ToString(CultureInfo.InvariantCulture));
+                        break;
+                    case FileCabinetRecordFields.Height:
+                        fieldsValueForKey.Add(condition.Value.Height.ToString(CultureInfo.InvariantCulture));
+                        break;
+                    case FileCabinetRecordFields.Weight:
+                        fieldsValueForKey.Add(condition.Value.Weight.ToString(CultureInfo.InvariantCulture));
+                        break;
+                }
             }
+
+            key.Append(CultureInfo.InvariantCulture, $"_ConditionValue:{string.Join(',', fieldsValueForKey)}_UnionType:{type}");
+            return key.ToString();
         }
 
         private void CreateRecord(FileCabinetRecord record)
         {
             this.list.Add(record);
-
-            AddToIndex(record, this.firstNameDictionary, record.FirstName);
-            AddToIndex(record, this.lastNameDictionary, record.LastName);
-            AddToIndex(record, this.dateOfBirthDictionary, record.DateOfBirth);
         }
     }
 }

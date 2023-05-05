@@ -11,11 +11,16 @@ namespace FileCabinetApp.CommandHandlers
     /// </summary>
     public class SelectCommandHandler : ServiceCommandHandlerBase
     {
+        private const char HorizontalLine = '-';
+        private const char VerticalLine = '|';
+        private const char Intersection = '+';
+        private const char NewLine = '\n';
+
         private readonly StringComparison stringComparison = StringComparison.InvariantCultureIgnoreCase;
         private readonly IUserInputValidation validationRules;
 
-        private readonly List<string> leftAlignedColumns = new List<string>();
-        private readonly List<string> rightAlignedColumns = new List<string>();
+        private readonly FileCabinetRecordFields[] leftAlignedColumns = new[] { FileCabinetRecordFields.FirstName, FileCabinetRecordFields.LastName, FileCabinetRecordFields.DateOfBirth, FileCabinetRecordFields.Gender };
+        private readonly FileCabinetRecordFields[] rightAlignedColumns = new[] { FileCabinetRecordFields.Id, FileCabinetRecordFields.Height, FileCabinetRecordFields.Weight };
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SelectCommandHandler"/> class.
@@ -89,11 +94,11 @@ namespace FileCabinetApp.CommandHandlers
 
             Console.WriteLine(GetTableHeader(fields, columnWidth));
 
-            var fieldsToPrint = records.Select(record => fields.Select(field => this.GetFieldValueString(record, field)).ToArray());
+            var table = records.Select(record => fields.Select(field => this.GetFieldValueString(record, field)).ToArray());
 
-            foreach (var field in fieldsToPrint)
+            foreach (var rowValues in table)
             {
-                Console.WriteLine(this.GetRow(field, columnWidth));
+                Console.WriteLine(this.GetRow(rowValues, fields, columnWidth));
             }
 
             Console.WriteLine(GetDemarcationLine(columnWidth));
@@ -101,8 +106,6 @@ namespace FileCabinetApp.CommandHandlers
 
         private string GetFieldValueString(FileCabinetRecord record, FileCabinetRecordFields field)
         {
-            this.AddAlignmentType(record, field);
-
             return field switch
             {
                 FileCabinetRecordFields.Id => record.Id.ToString(CultureInfo.InvariantCulture),
@@ -114,36 +117,6 @@ namespace FileCabinetApp.CommandHandlers
                 FileCabinetRecordFields.Weight => record.Weight.ToString(CultureInfo.InvariantCulture),
                 _ => throw new ArgumentException($"Unknown field: {field}"),
             };
-        }
-
-        private void AddAlignmentType(FileCabinetRecord record, FileCabinetRecordFields field)
-        {
-            switch (field)
-            {
-                case FileCabinetRecordFields.Id:
-                    this.rightAlignedColumns.Add(record.Id.ToString(CultureInfo.InvariantCulture));
-                    break;
-                case FileCabinetRecordFields.FirstName:
-                    this.leftAlignedColumns.Add(record.FirstName);
-                    break;
-                case FileCabinetRecordFields.LastName:
-                    this.leftAlignedColumns.Add(record.LastName);
-                    break;
-                case FileCabinetRecordFields.DateOfBirth:
-                    this.leftAlignedColumns.Add(record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture));
-                    break;
-                case FileCabinetRecordFields.Gender:
-                    this.leftAlignedColumns.Add(record.Gender.ToString(CultureInfo.InvariantCulture));
-                    break;
-                case FileCabinetRecordFields.Height:
-                    this.rightAlignedColumns.Add(record.Height.ToString(CultureInfo.InvariantCulture));
-                    break;
-                case FileCabinetRecordFields.Weight:
-                    this.rightAlignedColumns.Add(record.Weight.ToString(CultureInfo.InvariantCulture));
-                    break;
-                default:
-                    throw new ArgumentException($"Unknown field: {field}");
-            }
         }
 
         private static List<FileCabinetRecordFields> GetFieldsToPrint(string[] fields)
@@ -172,15 +145,15 @@ namespace FileCabinetApp.CommandHandlers
         {
             var header = new StringBuilder();
             header.Append(GetDemarcationLine(columnWidht));
-            header.Append(TableSymbols.NewLine);
+            header.Append(NewLine);
 
             for (var i = 0; i < fields.Count; i++)
             {
-                header.Append(CultureInfo.InvariantCulture, $"{TableSymbols.VerticalLine} {fields[i].ToString().PadRight(columnWidht[i])} ");
+                header.Append(CultureInfo.InvariantCulture, $"{VerticalLine} {fields[i].ToString().PadRight(columnWidht[i])} ");
             }
 
-            header.Append(TableSymbols.VerticalLine);
-            header.Append(TableSymbols.NewLine);
+            header.Append(VerticalLine);
+            header.Append(NewLine);
 
             header.Append(GetDemarcationLine(columnWidht));
 
@@ -193,45 +166,38 @@ namespace FileCabinetApp.CommandHandlers
 
             foreach (var widht in columnWidht)
             {
-                line.Append(CultureInfo.InvariantCulture, $"{TableSymbols.Intersection}{new string(TableSymbols.HorizontalLine, widht + 2)}");
+                line.Append(CultureInfo.InvariantCulture, $"{Intersection}{new string(HorizontalLine, widht + 2)}");
             }
 
-            line.Append(TableSymbols.Intersection);
+            line.Append(Intersection);
 
             return line.ToString();
         }
 
-        private string GetRow(string[] fieldsToPrint, int[] columnWidth)
+        private string GetRow(string[] values, List<FileCabinetRecordFields> fields, int[] columnWidth)
         {
             var rowBuilder = new StringBuilder();
 
-            for (var i = 0; i < fieldsToPrint.Length; i++)
+            for (var i = 0; i < values.Length; i++)
             {
-                var field = fieldsToPrint[i];
+                var field = fields[i];
+                var value = values[i];
                 var width = columnWidth[i];
 
                 if (this.rightAlignedColumns.Contains(field))
                 {
-                    rowBuilder.Append(CultureInfo.InvariantCulture, $"{TableSymbols.VerticalLine} {field.PadRight(width)} ");
+                    rowBuilder.Append(CultureInfo.InvariantCulture, $"{VerticalLine} {value.PadRight(width)} ");
                 }
 
                 if (this.leftAlignedColumns.Contains(field))
                 {
-                    rowBuilder.Append(CultureInfo.InvariantCulture, $"{TableSymbols.VerticalLine} {field.PadLeft(width)} ");
+                    rowBuilder.Append(CultureInfo.InvariantCulture, $"{VerticalLine} {value.PadLeft(width)} ");
                 }
             }
 
-            rowBuilder.Append(TableSymbols.VerticalLine);
+            rowBuilder.Append(VerticalLine);
 
             return rowBuilder.ToString();
-        }
-
-        private static class TableSymbols
-        {
-            public const char HorizontalLine = '-';
-            public const char VerticalLine = '|';
-            public const char Intersection = '+';
-            public const char NewLine = '\n';
         }
     }
 }

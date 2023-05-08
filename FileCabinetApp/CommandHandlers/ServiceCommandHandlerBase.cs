@@ -1,4 +1,7 @@
-﻿namespace FileCabinetApp.CommandHandlers
+﻿using FileCabinetApp.CommandHandlers.Commands;
+using FileCabinetApp.FileCabinetService;
+
+namespace FileCabinetApp.CommandHandlers
 {
     /// <summary>
     /// Create interface instance IFileCabinetServise.

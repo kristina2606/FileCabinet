@@ -1,6 +1,11 @@
 ﻿using System;
 using System.IO;
 using FileCabinetApp.CommandHandlers;
+using FileCabinetApp.CommandHandlers.Commands;
+using FileCabinetApp.FileCabinetService;
+using FileCabinetApp.FileCabinetService.ServiceComponents;
+using FileCabinetApp.RecordValidator;
+using FileCabinetApp.UserInputValidator;
 
 namespace FileCabinetApp
 {

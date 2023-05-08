@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -44,9 +44,9 @@ namespace FileCabinetApp.FileCabinetService
         /// The gender isn't equal 'f' or 'm'. The height is less than 0 or greater than 250. The weight is less than 0.</exception>
         public int CreateRecord(FileCabinetRecordNewData fileCabinetRecordNewData)
         {
-            validator.ValidateParametrs(fileCabinetRecordNewData);
+            this.validator.ValidateParametrs(fileCabinetRecordNewData);
 
-            var id = idGenerator.GetNext();
+            var id = this.idGenerator.GetNext();
 
             var record = new FileCabinetRecord
             {
@@ -59,7 +59,7 @@ namespace FileCabinetApp.FileCabinetService
                 Weight = fileCabinetRecordNewData.Weight,
             };
 
-            CreateRecord(record);
+            this.CreateRecord(record);
             return record.Id;
         }
 
@@ -69,7 +69,7 @@ namespace FileCabinetApp.FileCabinetService
         /// <returns>Returns the count of all existed and deleted records.</returns>
         public (int activeRecords, int deletedRecords) GetStat()
         {
-            return (list.Count, 0);
+            return (this.list.Count, 0);
         }
 
         /// <summary>
@@ -80,16 +80,16 @@ namespace FileCabinetApp.FileCabinetService
         /// <exception cref="ArgumentException">if records with the specified ID do not exist.</exception>
         public void Update(int id, FileCabinetRecordNewData fileCabinetRecordNewData)
         {
-            memorizater.Clear();
+            this.memorizater.Clear();
 
-            if (!IsExist(id))
+            if (!this.IsExist(id))
             {
                 throw new ArgumentException("Record's id isn't exist.");
             }
 
-            validator.ValidateParametrs(fileCabinetRecordNewData);
+            this.validator.ValidateParametrs(fileCabinetRecordNewData);
 
-            var result = list.FirstOrDefault(x => x.Id == id);
+            var result = this.list.FirstOrDefault(x => x.Id == id);
 
             if (result is null)
             {
@@ -110,34 +110,34 @@ namespace FileCabinetApp.FileCabinetService
         /// <returns>Class containing the state of an object.</returns>
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
-            return new FileCabinetServiceSnapshot(list.ToArray());
+            return new FileCabinetServiceSnapshot(this.list.ToArray());
         }
 
         /// <summary>
         /// Adding imported records to existing records.
         /// </summary>
-        /// <param name="fileCabinetServiceSnapshot">�lass instance.</param>
+        /// <param name="fileCabinetServiceSnapshot">Сlass instance.</param>
         public void Restore(FileCabinetServiceSnapshot fileCabinetServiceSnapshot)
         {
             var records = fileCabinetServiceSnapshot.Records;
-            Dictionary<int, string> importExceptionByRecordId = new Dictionary<int, string>();
+            var importExceptionByRecordId = new Dictionary<int, string>();
             bool isError = false;
 
             foreach (var record in records)
             {
-                idGenerator.SkipId(record.Id);
+                this.idGenerator.SkipId(record.Id);
 
                 var recordNew = new FileCabinetRecordNewData(record.FirstName, record.LastName, record.DateOfBirth, record.Gender, record.Height, record.Weight);
                 try
                 {
-                    validator.ValidateParametrs(recordNew);
-                    if (IsExist(record.Id))
+                    this.validator.ValidateParametrs(recordNew);
+                    if (this.IsExist(record.Id))
                     {
-                        Update(record.Id, recordNew);
+                        this.Update(record.Id, recordNew);
                     }
                     else
                     {
-                        CreateRecord(record);
+                        this.CreateRecord(record);
                     }
                 }
                 catch (Exception ex)
@@ -159,16 +159,16 @@ namespace FileCabinetApp.FileCabinetService
         /// <param name="id">Record id to remove.</param>
         public void Delete(int id)
         {
-            memorizater.Clear();
+            this.memorizater.Clear();
 
-            if (!IsExist(id))
+            if (!this.IsExist(id))
             {
                 throw new ArgumentException("Record's id isn't exist.");
             }
 
-            var valueForRemove = list.Find(x => x.Id == id);
+            var valueForRemove = this.list.Find(x => x.Id == id);
 
-            list.Remove(valueForRemove);
+            this.list.Remove(valueForRemove);
         }
 
         /// <summary>
@@ -186,14 +186,14 @@ namespace FileCabinetApp.FileCabinetService
         /// <param name="record">New record from user.</param>
         public void Insert(FileCabinetRecord record)
         {
-            memorizater.Clear();
+            this.memorizater.Clear();
 
-            if (IsExist(record.Id))
+            if (this.IsExist(record.Id))
             {
                 throw new ArgumentException("Record's id is exist.");
             }
 
-            CreateRecord(record);
+            this.CreateRecord(record);
         }
 
         /// <summary>
@@ -210,17 +210,17 @@ namespace FileCabinetApp.FileCabinetService
             {
                 key = CreateKeyForMemorization(conditions, type);
 
-                if (memorizater.TryGetValue(key, out var records))
+                if (this.memorizater.TryGetValue(key, out var records))
                 {
                     return records;
                 }
             }
 
-            var result = list.Where(x => RecordMatcher.IsMatch(x, conditions, type));
+            var result = this.list.Where(x => RecordMatcher.IsMatch(x, conditions, type));
 
             if (key != null)
             {
-                memorizater.Add(key, result.ToList());
+                this.memorizater.Add(key, result.ToList());
             }
 
             return result;
@@ -233,7 +233,7 @@ namespace FileCabinetApp.FileCabinetService
         /// <returns>True if records exists and false if records don't exist.</returns>
         public bool IsExist(int id)
         {
-            return list.Any(x => x.Id == id);
+            return this.list.Any(x => x.Id == id);
         }
 
         private static string CreateKeyForMemorization(Condition[] conditions, UnionType type)
@@ -277,7 +277,7 @@ namespace FileCabinetApp.FileCabinetService
 
         private void CreateRecord(FileCabinetRecord record)
         {
-            list.Add(record);
+            this.list.Add(record);
         }
     }
 }

@@ -19,7 +19,7 @@ namespace FileCabinetApp.RecordValidator
         public ValidatorBuilder ValidateFirstName(int minLenght, int maxLenght)
         {
             var firstName = new FirstNameValidator(minLenght, maxLenght);
-            validators.Add(firstName);
+            this.validators.Add(firstName);
             return this;
         }
 
@@ -32,7 +32,7 @@ namespace FileCabinetApp.RecordValidator
         public ValidatorBuilder ValidateLastName(int minLenght, int maxLenght)
         {
             var lastName = new LastNameValidator(minLenght, maxLenght);
-            validators.Add(lastName);
+            this.validators.Add(lastName);
             return this;
         }
 
@@ -45,7 +45,7 @@ namespace FileCabinetApp.RecordValidator
         public ValidatorBuilder ValidateDateOfBirth(DateTime from, DateTime to)
         {
             var dateOfBirth = new DateOfBirthValidator(from, to);
-            validators.Add(dateOfBirth);
+            this.validators.Add(dateOfBirth);
             return this;
         }
 
@@ -58,7 +58,7 @@ namespace FileCabinetApp.RecordValidator
         public ValidatorBuilder ValidateDateOfBirth(int minAge, int maxAge)
         {
             var dateOfBirth = new DateOfBirthValidator(minAge, maxAge);
-            validators.Add(dateOfBirth);
+            this.validators.Add(dateOfBirth);
             return this;
         }
 
@@ -72,7 +72,7 @@ namespace FileCabinetApp.RecordValidator
         public ValidatorBuilder ValidateGender(char requiredFirstValue, char requiredSecondValue, StringComparison sc)
         {
             var gender = new GenderValidator(requiredFirstValue, requiredSecondValue, sc);
-            validators.Add(gender);
+            this.validators.Add(gender);
             return this;
         }
 
@@ -85,7 +85,7 @@ namespace FileCabinetApp.RecordValidator
         public ValidatorBuilder ValidateHeight(int minValue, int maxValue)
         {
             var heignt = new HeightValidator(minValue, maxValue);
-            validators.Add(heignt);
+            this.validators.Add(heignt);
             return this;
         }
 
@@ -98,7 +98,7 @@ namespace FileCabinetApp.RecordValidator
         public ValidatorBuilder ValidateWeight(int minValue, int maxValue)
         {
             var weignt = new WeightValidator(minValue, maxValue);
-            validators.Add(weignt);
+            this.validators.Add(weignt);
             return this;
         }
 
@@ -108,7 +108,7 @@ namespace FileCabinetApp.RecordValidator
         /// <returns>Returns a set of validator.</returns>
         public IRecordValidator Create()
         {
-            return new CompositeValidator(validators);
+            return new CompositeValidator(this.validators);
         }
     }
 }

@@ -29,8 +29,8 @@ namespace FileCabinetApp.RecordValidator
         /// <param name="maxAge">Max age.</param>
         public DateOfBirthValidator(int minAge, int maxAge)
         {
-            from = DateTime.Now.AddYears(-minAge);
-            to = DateTime.Now.AddYears(-maxAge);
+            this.from = DateTime.Now.AddYears(-minAge);
+            this.to = DateTime.Now.AddYears(-maxAge);
         }
 
         /// <summary>
@@ -40,9 +40,9 @@ namespace FileCabinetApp.RecordValidator
         /// <exception cref="ArgumentException">Exception if the incoming entry does not match the parameters.</exception>
         public void ValidateParametrs(FileCabinetRecordNewData fileCabinetRecordNewData)
         {
-            if (fileCabinetRecordNewData.DateOfBirth < from || fileCabinetRecordNewData.DateOfBirth > to)
+            if (fileCabinetRecordNewData.DateOfBirth < this.from || fileCabinetRecordNewData.DateOfBirth > this.to)
             {
-                throw new ArgumentException($"date of birth less than {from.ToShortDateString()} or greater than {to.ToShortDateString()}");
+                throw new ArgumentException($"date of birth less than {this.from.ToShortDateString()} or greater than {this.to.ToShortDateString()}");
             }
         }
     }

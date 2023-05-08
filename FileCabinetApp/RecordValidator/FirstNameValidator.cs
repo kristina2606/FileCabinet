@@ -35,9 +35,9 @@ namespace FileCabinetApp.RecordValidator
                 throw new ArgumentNullException(nameof(fileCabinetRecordNewData));
             }
 
-            if (fileCabinetRecordNewData.FirstName.Length < minLenght || fileCabinetRecordNewData.FirstName.Length > maxLenght)
+            if (fileCabinetRecordNewData.FirstName.Length < this.minLenght || fileCabinetRecordNewData.FirstName.Length > this.maxLenght)
             {
-                throw new ArgumentException($"first name length is less than {minLenght} or greater than {maxLenght}.");
+                throw new ArgumentException($"first name length is less than {this.minLenght} or greater than {this.maxLenght}.");
             }
         }
     }

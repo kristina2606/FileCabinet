@@ -13,7 +13,7 @@ namespace FileCabinetApp.CommandHandlers.Commands
     public class InsertCommandHandler : ServiceCommandHandlerBase
     {
         private const int NumberFieldsInRecord = 7;
-        private readonly StringComparison stringComparison = StringComparison.InvariantCultureIgnoreCase;
+        private readonly StringComparison stringComparison = StringComparison.OrdinalIgnoreCase;
         private readonly IUserInputValidation validationRules;
 
         /// <summary>
@@ -24,7 +24,7 @@ namespace FileCabinetApp.CommandHandlers.Commands
         public InsertCommandHandler(IFileCabinetService service, IUserInputValidation inputValidation)
             : base(service)
         {
-            validationRules = inputValidation;
+            this.validationRules = inputValidation;
         }
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace FileCabinetApp.CommandHandlers.Commands
         /// <param name="appCommand">>Configuratiion the application command and options.</param>
         public override void Handle(AppCommandRequest appCommand)
         {
-            if (!appCommand.Command.Equals("insert", stringComparison))
+            if (!appCommand.Command.Equals("insert", this.stringComparison))
             {
                 base.Handle(appCommand);
                 return;
@@ -47,13 +47,13 @@ namespace FileCabinetApp.CommandHandlers.Commands
                 return;
             }
 
-            string[] fields = parametrs[0].Replace("(", string.Empty, stringComparison)
-                                          .Replace(")", string.Empty, stringComparison)
+            string[] fields = parametrs[0].Replace("(", string.Empty, this.stringComparison)
+                                          .Replace(")", string.Empty, this.stringComparison)
                                           .Split(',');
 
-            string[] values = parametrs[1].Replace("(", string.Empty, stringComparison)
-                                          .Replace(")", string.Empty, stringComparison)
-                                          .Replace("'", string.Empty, stringComparison)
+            string[] values = parametrs[1].Replace("(", string.Empty, this.stringComparison)
+                                          .Replace(")", string.Empty, this.stringComparison)
+                                          .Replace("'", string.Empty, this.stringComparison)
                                           .Split(',');
 
             if (fields.Length != NumberFieldsInRecord || values.Length != NumberFieldsInRecord)
@@ -76,27 +76,27 @@ namespace FileCabinetApp.CommandHandlers.Commands
                             record.Id = Converter.IntConverter(valueForInsert).Item3;
                             break;
                         case "firstname":
-                            record.FirstName = UserInputHelpers.Convert(Converter.StringConverter, validationRules.ValidateFirstName, valueForInsert);
+                            record.FirstName = UserInputHelpers.Convert(Converter.StringConverter, this.validationRules.ValidateFirstName, valueForInsert);
                             break;
                         case "lastname":
-                            record.LastName = UserInputHelpers.Convert(Converter.StringConverter, validationRules.ValidateLastName, valueForInsert);
+                            record.LastName = UserInputHelpers.Convert(Converter.StringConverter, this.validationRules.ValidateLastName, valueForInsert);
                             break;
                         case "dateofbirth":
-                            record.DateOfBirth = UserInputHelpers.Convert(Converter.DateConverter, validationRules.ValidateDateOfBirth, valueForInsert);
+                            record.DateOfBirth = UserInputHelpers.Convert(Converter.DateConverter, this.validationRules.ValidateDateOfBirth, valueForInsert);
                             break;
                         case "gender":
-                            record.Gender = UserInputHelpers.Convert(Converter.CharConverter, validationRules.ValidateGender, valueForInsert);
+                            record.Gender = UserInputHelpers.Convert(Converter.CharConverter, this.validationRules.ValidateGender, valueForInsert);
                             break;
                         case "height":
-                            record.Height = UserInputHelpers.Convert(Converter.ShortConverter, validationRules.ValidateHeight, valueForInsert);
+                            record.Height = UserInputHelpers.Convert(Converter.ShortConverter, this.validationRules.ValidateHeight, valueForInsert);
                             break;
                         case "weight":
-                            record.Weight = UserInputHelpers.Convert(Converter.DecimalConverter, validationRules.ValidateWeight, valueForInsert);
+                            record.Weight = UserInputHelpers.Convert(Converter.DecimalConverter, this.validationRules.ValidateWeight, valueForInsert);
                             break;
                     }
                 }
 
-                Service.Insert(record);
+                this.Service.Insert(record);
             }
             catch (ArgumentException ex)
             {

@@ -22,7 +22,7 @@ namespace FileCabinetApp.CommandHandlers.Commands
         public CreateCommandHandler(IFileCabinetService service, IUserInputValidation inputValidation)
             : base(service)
         {
-            validationRules = inputValidation;
+            this.validationRules = inputValidation;
         }
 
         /// <summary>
@@ -31,32 +31,32 @@ namespace FileCabinetApp.CommandHandlers.Commands
         /// <param name="appCommand">>Configuratiion the application command and options.</param>
         public override void Handle(AppCommandRequest appCommand)
         {
-            if (!appCommand.Command.Equals("create", StringComparison.InvariantCultureIgnoreCase))
+            if (!appCommand.Command.Equals("create", StringComparison.OrdinalIgnoreCase))
             {
                 base.Handle(appCommand);
                 return;
             }
 
             Console.Write("First name: ");
-            var firstName = UserInputHelpers.ReadInput(Converter.StringConverter, validationRules.ValidateFirstName);
+            var firstName = UserInputHelpers.ReadInput(Converter.StringConverter, this.validationRules.ValidateFirstName);
 
             Console.Write("Last name: ");
-            var lastName = UserInputHelpers.ReadInput(Converter.StringConverter, validationRules.ValidateLastName);
+            var lastName = UserInputHelpers.ReadInput(Converter.StringConverter, this.validationRules.ValidateLastName);
 
             Console.Write("Date of birth: ");
-            var dateOfBirth = UserInputHelpers.ReadInput(Converter.DateConverter, validationRules.ValidateDateOfBirth);
+            var dateOfBirth = UserInputHelpers.ReadInput(Converter.DateConverter, this.validationRules.ValidateDateOfBirth);
 
             Console.Write("Gender (man - 'm' or woman - 'f'): ");
-            var gender = UserInputHelpers.ReadInput(Converter.CharConverter, validationRules.ValidateGender);
+            var gender = UserInputHelpers.ReadInput(Converter.CharConverter, this.validationRules.ValidateGender);
 
             Console.Write("Height: ");
-            var height = UserInputHelpers.ReadInput(Converter.ShortConverter, validationRules.ValidateHeight);
+            var height = UserInputHelpers.ReadInput(Converter.ShortConverter, this.validationRules.ValidateHeight);
 
             Console.Write("Weight: ");
-            var weight = UserInputHelpers.ReadInput(Converter.DecimalConverter, validationRules.ValidateWeight);
+            var weight = UserInputHelpers.ReadInput(Converter.DecimalConverter, this.validationRules.ValidateWeight);
 
-            FileCabinetRecordNewData fileCabinetRecordNewData = new FileCabinetRecordNewData(firstName, lastName, dateOfBirth, gender, height, weight);
-            int recordId = Service.CreateRecord(fileCabinetRecordNewData);
+            var fileCabinetRecordNewData = new FileCabinetRecordNewData(firstName, lastName, dateOfBirth, gender, height, weight);
+            int recordId = this.Service.CreateRecord(fileCabinetRecordNewData);
 
             Console.WriteLine($"Record #{recordId} is created.");
         }

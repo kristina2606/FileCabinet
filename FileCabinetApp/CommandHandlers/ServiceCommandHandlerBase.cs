@@ -12,7 +12,7 @@ namespace FileCabinetApp.CommandHandlers
         /// Initializes a new instance of the <see cref="ServiceCommandHandlerBase"/> class.
         /// </summary>
         /// <param name="service">Interface instance IFileCabinetServise.</param>
-        public ServiceCommandHandlerBase(IFileCabinetService service)
+        protected ServiceCommandHandlerBase(IFileCabinetService service)
         {
             this.Service = service;
         }

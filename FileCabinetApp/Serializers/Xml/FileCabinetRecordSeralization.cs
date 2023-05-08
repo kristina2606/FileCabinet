@@ -40,8 +40,8 @@ namespace FileCabinetApp.Serializers.Xml
         [XmlElement("dateOfBirth")]
         public string DateOfBirthString
         {
-            get { return DateOfBirth.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture); }
-            set => DateOfBirth = DateTime.ParseExact(value, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None);
+            get { return this.DateOfBirth.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture); }
+            set => this.DateOfBirth = DateTime.ParseExact(value, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None);
         }
 
         /// <summary>
@@ -60,8 +60,8 @@ namespace FileCabinetApp.Serializers.Xml
         [XmlElement("gender")]
         public string GenderString
         {
-            get { return Gender.ToString(); }
-            set { Gender = value.Single(); }
+            get { return this.Gender.ToString(); }
+            set { this.Gender = value.Single(); }
         }
 
         /// <summary>

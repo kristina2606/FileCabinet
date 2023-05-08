@@ -26,31 +26,31 @@ namespace FileCabinetApp.FileCabinetService.Writer
         /// <param name="record">Record for write.</param>
         public void Write(FileCabinetRecord record)
         {
-            writer.WriteStartElement("record");
-            writer.WriteAttributeString("id", record.Id.ToString(CultureInfo.InvariantCulture));
+            this.writer.WriteStartElement("record");
+            this.writer.WriteAttributeString("id", record.Id.ToString(CultureInfo.InvariantCulture));
 
-            writer.WriteStartElement("name");
-            writer.WriteAttributeString("first", record.FirstName);
-            writer.WriteAttributeString("last", record.LastName);
-            writer.WriteEndElement();
+            this.writer.WriteStartElement("name");
+            this.writer.WriteAttributeString("first", record.FirstName);
+            this.writer.WriteAttributeString("last", record.LastName);
+            this.writer.WriteEndElement();
 
-            writer.WriteStartElement("dateOfBirth");
-            writer.WriteString(record.DateOfBirth.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture));
-            writer.WriteEndElement();
+            this.writer.WriteStartElement("dateOfBirth");
+            this.writer.WriteString(record.DateOfBirth.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture));
+            this.writer.WriteEndElement();
 
-            writer.WriteStartElement("gender");
-            writer.WriteString(record.Gender.ToString(CultureInfo.InvariantCulture));
-            writer.WriteEndElement();
+            this.writer.WriteStartElement("gender");
+            this.writer.WriteString(record.Gender.ToString(CultureInfo.InvariantCulture));
+            this.writer.WriteEndElement();
 
-            writer.WriteStartElement("height");
-            writer.WriteString(record.Height.ToString(CultureInfo.InvariantCulture));
-            writer.WriteEndElement();
+            this.writer.WriteStartElement("height");
+            this.writer.WriteString(record.Height.ToString(CultureInfo.InvariantCulture));
+            this.writer.WriteEndElement();
 
-            writer.WriteStartElement("weight");
-            writer.WriteString(record.Weight.ToString(CultureInfo.InvariantCulture));
-            writer.WriteEndElement();
+            this.writer.WriteStartElement("weight");
+            this.writer.WriteString(record.Weight.ToString(CultureInfo.InvariantCulture));
+            this.writer.WriteEndElement();
 
-            writer.WriteEndElement();
+            this.writer.WriteEndElement();
         }
     }
 }

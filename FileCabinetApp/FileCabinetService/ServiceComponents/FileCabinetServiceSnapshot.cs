@@ -44,10 +44,10 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
         /// <param name="streamWriter">Path to create a file with records.</param>
         public void SaveToCsv(StreamWriter streamWriter)
         {
-            FileCabinetRecordCsvWriter fileCabinetRecordCsv = new FileCabinetRecordCsvWriter(streamWriter);
+            var fileCabinetRecordCsv = new FileCabinetRecordCsvWriter(streamWriter);
             streamWriter.WriteLine("Id,First Name,Last Name,Date of Birth,Gender,Height,Weight");
 
-            foreach (var record in records)
+            foreach (var record in this.records)
             {
                 fileCabinetRecordCsv.Write(record);
             }
@@ -61,11 +61,11 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
         {
             using (XmlWriter xmlWriter = XmlWriter.Create(streamWriter))
             {
-                FileCabinetRecordXmlWriter fileCabinetRecordXml = new FileCabinetRecordXmlWriter(xmlWriter);
+                var fileCabinetRecordXml = new FileCabinetRecordXmlWriter(xmlWriter);
 
                 xmlWriter.WriteStartElement("records");
 
-                foreach (var record in records)
+                foreach (var record in this.records)
                 {
                     fileCabinetRecordXml.Write(record);
                 }
@@ -80,8 +80,8 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
         /// <param name="reader">Path to import a file with records.</param>
         public void LoadFromCsv(StreamReader reader)
         {
-            FileCabinetRecordCsvReader fileCabinetRecordCsvReader = new FileCabinetRecordCsvReader(reader);
-            Records = new ReadOnlyCollection<FileCabinetRecord>(fileCabinetRecordCsvReader.ReadAll());
+            var fileCabinetRecordCsvReader = new FileCabinetRecordCsvReader(reader);
+            this.Records = new ReadOnlyCollection<FileCabinetRecord>(fileCabinetRecordCsvReader.ReadAll());
         }
 
         /// <summary>
@@ -92,8 +92,8 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
         {
             using (XmlReader xmlReader = XmlReader.Create(reader))
             {
-                FileCabinetRecordXmlReader fileCabinetRecordXmlReader = new FileCabinetRecordXmlReader(xmlReader);
-                Records = new ReadOnlyCollection<FileCabinetRecord>(fileCabinetRecordXmlReader.ReadAll());
+                var fileCabinetRecordXmlReader = new FileCabinetRecordXmlReader(xmlReader);
+                this.Records = new ReadOnlyCollection<FileCabinetRecord>(fileCabinetRecordXmlReader.ReadAll());
             }
         }
     }

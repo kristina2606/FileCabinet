@@ -26,7 +26,7 @@ namespace FileCabinetApp.RecordValidator
         /// <param name="fileCabinetRecordNewData">The new date in the record.</param>
         public void ValidateParametrs(FileCabinetRecordNewData fileCabinetRecordNewData)
         {
-            foreach (var validator in validators)
+            foreach (var validator in this.validators)
             {
                 validator.ValidateParametrs(fileCabinetRecordNewData);
             }

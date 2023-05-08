@@ -32,7 +32,7 @@ namespace FileCabinetApp.CommandHandlers.Commands
         /// <param name="appCommand">>Configuratiion the application command and options.</param>
         public override void Handle(AppCommandRequest appCommand)
         {
-            if (!appCommand.Command.Equals("help", StringComparison.InvariantCultureIgnoreCase))
+            if (!appCommand.Command.Equals("help", StringComparison.OrdinalIgnoreCase))
             {
                 base.Handle(appCommand);
                 return;
@@ -40,10 +40,10 @@ namespace FileCabinetApp.CommandHandlers.Commands
 
             if (!string.IsNullOrEmpty(appCommand.Parameters))
             {
-                var index = Array.FindIndex(helpMessages, 0, helpMessages.Length, i => string.Equals(i[CommandHelpIndex], appCommand.Parameters, StringComparison.InvariantCultureIgnoreCase));
+                var index = Array.FindIndex(this.helpMessages, 0, this.helpMessages.Length, i => string.Equals(i[CommandHelpIndex], appCommand.Parameters, StringComparison.OrdinalIgnoreCase));
                 if (index >= 0)
                 {
-                    Console.WriteLine(helpMessages[index][ExplanationHelpIndex]);
+                    Console.WriteLine(this.helpMessages[index][ExplanationHelpIndex]);
                 }
                 else
                 {
@@ -54,7 +54,7 @@ namespace FileCabinetApp.CommandHandlers.Commands
             {
                 Console.WriteLine("Available commands:");
 
-                foreach (var helpMessage in helpMessages)
+                foreach (var helpMessage in this.helpMessages)
                 {
                     Console.WriteLine("\t{0}\t- {1}", helpMessage[CommandHelpIndex], helpMessage[DescriptionHelpIndex]);
                 }

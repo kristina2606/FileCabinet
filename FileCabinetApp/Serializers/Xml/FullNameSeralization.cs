@@ -14,8 +14,8 @@ namespace FileCabinetApp.Serializers.Xml
         /// <param name="lastName">The last name of a person.</param>
         public FullNameSeralization(string firstName, string lastName)
         {
-            FirstName = firstName;
-            LastName = lastName;
+            this.FirstName = firstName;
+            this.LastName = lastName;
         }
 
         /// <summary>

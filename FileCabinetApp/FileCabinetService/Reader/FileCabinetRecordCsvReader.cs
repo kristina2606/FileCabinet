@@ -32,10 +32,10 @@ namespace FileCabinetApp.FileCabinetService.Reader
         {
             IList<FileCabinetRecord> records = new List<FileCabinetRecord>();
 
-            reader.ReadLine();
-            while (reader.Peek() != -1)
+            this.reader.ReadLine();
+            while (this.reader.Peek() != -1)
             {
-                var csvLine = reader.ReadLine();
+                var csvLine = this.reader.ReadLine();
                 string[] values = csvLine
                     .Split(',')
                     .Select(p => p.Trim())
@@ -46,7 +46,7 @@ namespace FileCabinetApp.FileCabinetService.Reader
                     Id = Converter.IntConverter(values[0]).Item3,
                     FirstName = Converter.StringConverter(values[1]).Item3,
                     LastName = Converter.StringConverter(values[2]).Item3,
-                    DateOfBirth = Convert.ToDateTime(values[3], CultureInfo.CurrentCulture),
+                    DateOfBirth = Convert.ToDateTime(values[3], CultureInfo.InvariantCulture),
                     Gender = Converter.CharConverter(values[4]).Item3,
                     Height = Converter.ShortConverter(values[5]).Item3,
                     Weight = Converter.DecimalConverter(values[6]).Item3,

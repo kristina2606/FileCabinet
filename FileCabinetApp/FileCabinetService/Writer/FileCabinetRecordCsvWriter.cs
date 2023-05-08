@@ -25,7 +25,7 @@ namespace FileCabinetApp.FileCabinetService.Writer
         /// <param name="record">Record for write.</param>
         public void Write(FileCabinetRecord record)
         {
-            writer.WriteLine($"{record.Id}, {record.FirstName}, {record.LastName}, {record.DateOfBirth}, {record.Gender}, {record.Height}, {record.Weight}");
+            this.writer.WriteLine($"{record.Id}, {record.FirstName}, {record.LastName}, {record.DateOfBirth}, {record.Gender}, {record.Height}, {record.Weight}");
         }
     }
 }

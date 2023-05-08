@@ -29,7 +29,7 @@ namespace FileCabinetApp.CommandHandlers.Commands
         /// <param name="appCommand">>Configuratiion the application command and options.</param>
         public override void Handle(AppCommandRequest appCommand)
         {
-            if (!appCommand.Command.Equals("import", StringComparison.InvariantCultureIgnoreCase))
+            if (!appCommand.Command.Equals("import", StringComparison.OrdinalIgnoreCase))
             {
                 base.Handle(appCommand);
                 return;
@@ -58,10 +58,10 @@ namespace FileCabinetApp.CommandHandlers.Commands
                 return;
             }
 
-            using (FileStream fs = new FileStream(path, FileMode.Open))
+            using (var fs = new FileStream(path, FileMode.Open))
             {
-                FileCabinetServiceSnapshot fileCabinetServiceSnapshot = new FileCabinetServiceSnapshot();
-                using (StreamReader sr = new StreamReader(fs))
+                var fileCabinetServiceSnapshot = new FileCabinetServiceSnapshot();
+                using (var sr = new StreamReader(fs))
                 {
                     switch (format)
                     {
@@ -76,7 +76,7 @@ namespace FileCabinetApp.CommandHandlers.Commands
 
                 try
                 {
-                    Service.Restore(fileCabinetServiceSnapshot);
+                    this.Service.Restore(fileCabinetServiceSnapshot);
                 }
                 catch (ImportException dict)
                 {

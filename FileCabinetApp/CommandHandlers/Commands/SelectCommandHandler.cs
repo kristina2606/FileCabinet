@@ -20,7 +20,7 @@ namespace FileCabinetApp.CommandHandlers.Commands
         private const char Intersection = '+';
         private const char NewLine = '\n';
 
-        private readonly StringComparison stringComparison = StringComparison.InvariantCultureIgnoreCase;
+        private readonly StringComparison stringComparison = StringComparison.OrdinalIgnoreCase;
         private readonly IUserInputValidation validationRules;
 
         private readonly FileCabinetRecordFields[] leftAlignedColumns = new[] { FileCabinetRecordFields.FirstName, FileCabinetRecordFields.LastName, FileCabinetRecordFields.DateOfBirth, FileCabinetRecordFields.Gender };
@@ -34,7 +34,7 @@ namespace FileCabinetApp.CommandHandlers.Commands
         public SelectCommandHandler(IFileCabinetService service, IUserInputValidation inputValidation)
             : base(service)
         {
-            validationRules = inputValidation;
+            this.validationRules = inputValidation;
         }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace FileCabinetApp.CommandHandlers.Commands
         /// <param name="appCommand">>Configuratiion the application command and options.</param>
         public override void Handle(AppCommandRequest appCommand)
         {
-            if (!appCommand.Command.Equals("select", stringComparison))
+            if (!appCommand.Command.Equals("select", this.stringComparison))
             {
                 base.Handle(appCommand);
                 return;
@@ -69,17 +69,17 @@ namespace FileCabinetApp.CommandHandlers.Commands
                 if (parameters.Length > 1)
                 {
                     var searchCriteria = parameters[1].ToLowerInvariant()
-                                  .Replace(" ", string.Empty, stringComparison)
-                                  .Replace("'", string.Empty, stringComparison)
+                                  .Replace(" ", string.Empty, this.stringComparison)
+                                  .Replace("'", string.Empty, this.stringComparison)
                                   .Split(conditionalOperator.ToString().ToLowerInvariant(), StringSplitOptions.RemoveEmptyEntries);
 
-                    conditionsToSearch = UserInputHelpers.CreateConditions(searchCriteria, validationRules);
+                    conditionsToSearch = UserInputHelpers.CreateConditions(searchCriteria, this.validationRules);
                 }
 
                 var fieldsToPrint = GetFieldsToPrint(printFields);
-                var recordsToPrint = Service.Find(conditionsToSearch, conditionalOperator);
+                var recordsToPrint = this.Service.Find(conditionsToSearch, conditionalOperator);
 
-                PrintTable(recordsToPrint, fieldsToPrint);
+                this.PrintTable(recordsToPrint, fieldsToPrint);
             }
             catch (ArgumentException ex)
             {
@@ -87,28 +87,7 @@ namespace FileCabinetApp.CommandHandlers.Commands
             }
         }
 
-        private void PrintTable(IEnumerable<FileCabinetRecord> records, List<FileCabinetRecordFields> fields)
-        {
-            int[] columnWidth = new int[fields.Count];
-            for (var i = 0; i < fields.Count; i++)
-            {
-                var maxRecordColumnWidth = records.Select(x => GetFieldValueString(x, fields[i]).Length).Max();
-                columnWidth[i] = Math.Max(fields[i].ToString().Length, maxRecordColumnWidth);
-            }
-
-            Console.WriteLine(GetTableHeader(fields, columnWidth));
-
-            var table = records.Select(record => fields.Select(field => GetFieldValueString(record, field)).ToArray());
-
-            foreach (var rowValues in table)
-            {
-                Console.WriteLine(GetRow(rowValues, fields, columnWidth));
-            }
-
-            Console.WriteLine(GetDemarcationLine(columnWidth));
-        }
-
-        private string GetFieldValueString(FileCabinetRecord record, FileCabinetRecordFields field)
+        private static string GetFieldValueString(FileCabinetRecord record, FileCabinetRecordFields field)
         {
             return field switch
             {
@@ -178,6 +157,27 @@ namespace FileCabinetApp.CommandHandlers.Commands
             return line.ToString();
         }
 
+        private void PrintTable(IEnumerable<FileCabinetRecord> records, List<FileCabinetRecordFields> fields)
+        {
+            int[] columnWidth = new int[fields.Count];
+            for (var i = 0; i < fields.Count; i++)
+            {
+                var maxRecordColumnWidth = records.Select(x => GetFieldValueString(x, fields[i]).Length).Max();
+                columnWidth[i] = Math.Max(fields[i].ToString().Length, maxRecordColumnWidth);
+            }
+
+            Console.WriteLine(GetTableHeader(fields, columnWidth));
+
+            var table = records.Select(record => fields.Select(field => GetFieldValueString(record, field)).ToArray());
+
+            foreach (var rowValues in table)
+            {
+                Console.WriteLine(this.GetRow(rowValues, fields, columnWidth));
+            }
+
+            Console.WriteLine(GetDemarcationLine(columnWidth));
+        }
+
         private string GetRow(string[] values, List<FileCabinetRecordFields> fields, int[] columnWidth)
         {
             var rowBuilder = new StringBuilder();
@@ -188,12 +188,12 @@ namespace FileCabinetApp.CommandHandlers.Commands
                 var value = values[i];
                 var width = columnWidth[i];
 
-                if (rightAlignedColumns.Contains(field))
+                if (this.rightAlignedColumns.Contains(field))
                 {
                     rowBuilder.Append(CultureInfo.InvariantCulture, $"{VerticalLine} {value.PadRight(width)} ");
                 }
 
-                if (leftAlignedColumns.Contains(field))
+                if (this.leftAlignedColumns.Contains(field))
                 {
                     rowBuilder.Append(CultureInfo.InvariantCulture, $"{VerticalLine} {value.PadLeft(width)} ");
                 }

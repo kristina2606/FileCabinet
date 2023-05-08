@@ -29,13 +29,13 @@ namespace FileCabinetApp.CommandHandlers.Commands
         /// <param name="appCommand">>Configuratiion the application command and options.</param>
         public override void Handle(AppCommandRequest appCommand)
         {
-            if (!appCommand.Command.Equals("export", StringComparison.InvariantCultureIgnoreCase))
+            if (!appCommand.Command.Equals("export", StringComparison.OrdinalIgnoreCase))
             {
                 base.Handle(appCommand);
                 return;
             }
 
-            var makeSnapshot = Service.MakeSnapshot();
+            var makeSnapshot = this.Service.MakeSnapshot();
 
             var exportParametrs = appCommand.Parameters.Split(' ');
 
@@ -74,7 +74,7 @@ namespace FileCabinetApp.CommandHandlers.Commands
 
         private static void ExportData(FileCabinetServiceSnapshot makeSnapshot, string format, string path)
         {
-            using (StreamWriter sw = new StreamWriter(path))
+            using (var sw = new StreamWriter(path))
             {
                 switch (format)
                 {

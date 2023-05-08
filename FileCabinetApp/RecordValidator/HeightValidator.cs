@@ -29,9 +29,9 @@ namespace FileCabinetApp.RecordValidator
         /// <exception cref="ArgumentException">Exception if the incoming entry does not match the parameters.</exception>
         public void ValidateParametrs(FileCabinetRecordNewData fileCabinetRecordNewData)
         {
-            if (fileCabinetRecordNewData.Height <= minValue || fileCabinetRecordNewData.Height > maxValue)
+            if (fileCabinetRecordNewData.Height <= this.minValue || fileCabinetRecordNewData.Height > this.maxValue)
             {
-                throw new ArgumentException($"height less then {minValue} or more then{maxValue}.");
+                throw new ArgumentException($"height less then {this.minValue} or more then{this.maxValue}.");
             }
         }
     }

@@ -31,7 +31,7 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
             Stopwatch stopWatch = Stopwatch.StartNew();
             try
             {
-                return service.CreateRecord(fileCabinetRecordNewData);
+                return this.service.CreateRecord(fileCabinetRecordNewData);
             }
             finally
             {
@@ -51,7 +51,7 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
             Stopwatch stopWatch = Stopwatch.StartNew();
             try
             {
-                service.Update(id, fileCabinetRecordNewData);
+                this.service.Update(id, fileCabinetRecordNewData);
             }
             finally
             {
@@ -70,7 +70,7 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
             Stopwatch stopWatch = Stopwatch.StartNew();
             try
             {
-                return service.GetStat();
+                return this.service.GetStat();
             }
             finally
             {
@@ -90,7 +90,7 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
             Stopwatch stopWatch = Stopwatch.StartNew();
             try
             {
-                return service.IsExist(id);
+                return this.service.IsExist(id);
             }
             finally
             {
@@ -109,7 +109,7 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
             Stopwatch stopWatch = Stopwatch.StartNew();
             try
             {
-                return service.MakeSnapshot();
+                return this.service.MakeSnapshot();
             }
             finally
             {
@@ -128,7 +128,7 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
             Stopwatch stopWatch = Stopwatch.StartNew();
             try
             {
-                return service.Purge();
+                return this.service.Purge();
             }
             finally
             {
@@ -147,7 +147,7 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
             Stopwatch stopWatch = Stopwatch.StartNew();
             try
             {
-                service.Delete(id);
+                this.service.Delete(id);
             }
             finally
             {
@@ -166,7 +166,7 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
             Stopwatch stopWatch = Stopwatch.StartNew();
             try
             {
-                service.Restore(fileCabinetServiceSnapshot);
+                this.service.Restore(fileCabinetServiceSnapshot);
             }
             finally
             {
@@ -185,7 +185,7 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
             Stopwatch stopWatch = Stopwatch.StartNew();
             try
             {
-                service.Insert(record);
+                this.service.Insert(record);
             }
             finally
             {
@@ -206,7 +206,7 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
             Stopwatch stopWatch = Stopwatch.StartNew();
             try
             {
-                return service.Find(conditions, type);
+                return this.service.Find(conditions, type);
             }
             finally
             {

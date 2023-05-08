@@ -35,19 +35,21 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
         public int CreateRecord(FileCabinetRecordNewData fileCabinetRecordNewData)
         {
             var methodName = "Create()";
-            var methodParameters = $"with parameters FirstName = '{fileCabinetRecordNewData.FirstName}', LastName = '{fileCabinetRecordNewData.LastName}', DateOfBirth = '{fileCabinetRecordNewData.DateOfBirth.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)}', Gender = '{fileCabinetRecordNewData.Gender}', Height = '{fileCabinetRecordNewData.Height}', weight = '{fileCabinetRecordNewData.Weight}'.";
+            var methodParameters = $"with parameters FirstName = '{fileCabinetRecordNewData.FirstName}', LastName = '{fileCabinetRecordNewData.LastName}', " +
+                                   $"DateOfBirth = '{fileCabinetRecordNewData.DateOfBirth.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)}', " +
+                                   $"Gender = '{fileCabinetRecordNewData.Gender}', Height = '{fileCabinetRecordNewData.Height}', weight = '{fileCabinetRecordNewData.Weight}'.";
 
-            LoggingActivity(methodName, methodParameters);
+            this.LoggingActivity(methodName, methodParameters);
 
             try
             {
-                int id = service.CreateRecord(fileCabinetRecordNewData);
-                LoggingEndMethod(methodName, $"returned '{id}'.");
+                int id = this.service.CreateRecord(fileCabinetRecordNewData);
+                this.LoggingEndMethod(methodName, $"returned '{id}'.");
                 return id;
             }
             catch (Exception ex)
             {
-                LoggingError(methodName, ex.Message);
+                this.LoggingError(methodName, ex.Message);
 
                 throw;
             }
@@ -61,17 +63,19 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
         public void Update(int id, FileCabinetRecordNewData fileCabinetRecordNewData)
         {
             var methodName = "Edit()";
-            var methodParameters = $"with parameters FirstName = '{fileCabinetRecordNewData.FirstName}', LastName = '{fileCabinetRecordNewData.LastName}', DateOfBirth = '{fileCabinetRecordNewData.DateOfBirth.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)}', Gender = '{fileCabinetRecordNewData.Gender}', Height = '{fileCabinetRecordNewData.Height}', weight = '{fileCabinetRecordNewData.Weight}' for record '{id}'.";
+            var methodParameters = $"with parameters FirstName = '{fileCabinetRecordNewData.FirstName}', LastName = '{fileCabinetRecordNewData.LastName}', " +
+                                   $"DateOfBirth = '{fileCabinetRecordNewData.DateOfBirth.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)}', " +
+                                   $"Gender = '{fileCabinetRecordNewData.Gender}', Height = '{fileCabinetRecordNewData.Height}', weight = '{fileCabinetRecordNewData.Weight}' for record '{id}'.";
 
-            LoggingActivity(methodName, methodParameters);
+            this.LoggingActivity(methodName, methodParameters);
             try
             {
-                service.Update(id, fileCabinetRecordNewData);
-                LoggingEndMethod(methodName, $"edited record '{id}'.");
+                this.service.Update(id, fileCabinetRecordNewData);
+                this.LoggingEndMethod(methodName, $"edited record '{id}'.");
             }
             catch (Exception ex)
             {
-                LoggingError(methodName, ex.Message);
+                this.LoggingError(methodName, ex.Message);
 
                 throw;
             }
@@ -85,16 +89,16 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
         {
             var methodName = "Stat()";
 
-            LoggingActivity(methodName);
+            this.LoggingActivity(methodName);
             try
             {
-                var (activeRecords, deletedRecords) = service.GetStat();
-                LoggingEndMethod(methodName, $"returned count of all active records '{activeRecords}' and all deleted records '{deletedRecords}'.");
+                var (activeRecords, deletedRecords) = this.service.GetStat();
+                this.LoggingEndMethod(methodName, $"returned count of all active records '{activeRecords}' and all deleted records '{deletedRecords}'.");
                 return (activeRecords, deletedRecords);
             }
             catch (Exception ex)
             {
-                LoggingError(methodName, ex.Message);
+                this.LoggingError(methodName, ex.Message);
 
                 throw;
             }
@@ -109,16 +113,16 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
         {
             var methodName = "IsExist()";
 
-            LoggingActivity(methodName);
+            this.LoggingActivity(methodName);
             try
             {
-                var status = service.IsExist(id);
-                LoggingEndMethod(methodName, $"returned status of records '{status}'.");
+                var status = this.service.IsExist(id);
+                this.LoggingEndMethod(methodName, $"returned status of records '{status}'.");
                 return status;
             }
             catch (Exception ex)
             {
-                LoggingError(methodName, ex.Message);
+                this.LoggingError(methodName, ex.Message);
 
                 throw;
             }
@@ -132,16 +136,16 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
         {
             var methodName = "Export()";
 
-            LoggingActivity(methodName);
+            this.LoggingActivity(methodName);
             try
             {
-                LoggingEndMethod(methodName, "returned an instance of the class.");
+                this.LoggingEndMethod(methodName, "returned an instance of the class.");
 
-                return service.MakeSnapshot();
+                return this.service.MakeSnapshot();
             }
             catch (Exception ex)
             {
-                LoggingError(methodName, ex.Message);
+                this.LoggingError(methodName, ex.Message);
 
                 throw;
             }
@@ -155,16 +159,16 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
         {
             string methodName = "Purge()";
 
-            LoggingActivity(methodName);
+            this.LoggingActivity(methodName);
             try
             {
-                var countPurgedRecords = service.Purge();
-                LoggingEndMethod(methodName, $"returned a count of purged records '{countPurgedRecords}'.");
+                var countPurgedRecords = this.service.Purge();
+                this.LoggingEndMethod(methodName, $"returned a count of purged records '{countPurgedRecords}'.");
                 return countPurgedRecords;
             }
             catch (Exception ex)
             {
-                LoggingError(methodName, ex.Message);
+                this.LoggingError(methodName, ex.Message);
 
                 throw;
             }
@@ -178,15 +182,15 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
         {
             var methodName = "Remove()";
 
-            LoggingActivity(methodName);
+            this.LoggingActivity(methodName);
             try
             {
-                service.Delete(id);
-                LoggingEndMethod(methodName, $"deleted the record '{id}'.");
+                this.service.Delete(id);
+                this.LoggingEndMethod(methodName, $"deleted the record '{id}'.");
             }
             catch
             {
-                LoggingError(methodName, $"Record #{id} doesn't exists.");
+                this.LoggingError(methodName, $"Record #{id} doesn't exists.");
 
                 throw;
             }
@@ -200,19 +204,19 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
         {
             var methodName = "Import()";
 
-            LoggingActivity(methodName);
+            this.LoggingActivity(methodName);
             try
             {
-                service.Restore(fileCabinetServiceSnapshot);
-                LoggingEndMethod(methodName, "import all records.");
+                this.service.Restore(fileCabinetServiceSnapshot);
+                this.LoggingEndMethod(methodName, "import all records.");
             }
             catch (ImportException dict)
             {
-                WriteDateAndTime();
+                this.WriteDateAndTime();
 
                 foreach (var exeption in dict.ImportExceptionByRecordId)
                 {
-                    streamWriter.WriteLine($"Record with id = {exeption.Key} - {exeption.Value}.");
+                    this.streamWriter.WriteLine($"Record with id = {exeption.Key} - {exeption.Value}.");
                 }
 
                 throw;
@@ -227,15 +231,15 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
         {
             var methodName = "Insert()";
 
-            LoggingActivity(methodName);
+            this.LoggingActivity(methodName);
             try
             {
-                service.Insert(record);
-                LoggingEndMethod(methodName, $"insert the record '{record.Id}'.");
+                this.service.Insert(record);
+                this.LoggingEndMethod(methodName, $"insert the record '{record.Id}'.");
             }
             catch
             {
-                LoggingError(methodName, $"Record #{record.Id} is exists.");
+                this.LoggingError(methodName, $"Record #{record.Id} is exists.");
 
                 throw;
             }
@@ -252,16 +256,16 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
             var methodName = "Find()";
             var methodParameters = $"with parameter: '{string.Join(",", conditions.Select(x => x.Field))}'.";
 
-            LoggingActivity(methodName, methodParameters);
+            this.LoggingActivity(methodName, methodParameters);
             try
             {
-                LoggingEndMethod(methodName, "returned list with finded records.");
+                this.LoggingEndMethod(methodName, "returned list with finded records.");
 
-                return service.Find(conditions, type);
+                return this.service.Find(conditions, type);
             }
             catch (Exception ex)
             {
-                LoggingError(methodName, ex.Message);
+                this.LoggingError(methodName, ex.Message);
 
                 throw;
             }
@@ -269,31 +273,31 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
 
         private void WriteDateAndTime()
         {
-            streamWriter.Write(DateTime.Now.ToString("MM/dd/yyyy HH:mm", CultureInfo.InvariantCulture) + " ");
+            this.streamWriter.Write(DateTime.Now.ToString("MM/dd/yyyy HH:mm", CultureInfo.InvariantCulture) + " ");
         }
 
         private void LoggingError(string methodName, string exceptionMessage)
         {
-            WriteDateAndTime();
-            streamWriter.WriteLine(methodName, exceptionMessage);
+            this.WriteDateAndTime();
+            this.streamWriter.WriteLine(methodName, exceptionMessage);
         }
 
         private void LoggingActivity(string methodName, string methodParameters = "")
         {
-            WriteDateAndTime();
-            streamWriter.Write($"Calling {methodName}");
+            this.WriteDateAndTime();
+            this.streamWriter.Write($"Calling {methodName}");
             if (!string.IsNullOrEmpty(methodParameters))
             {
-                streamWriter.Write($" with parameter {methodParameters}");
+                this.streamWriter.Write($" with parameter {methodParameters}");
             }
 
-            streamWriter.WriteLine();
+            this.streamWriter.WriteLine();
         }
 
         private void LoggingEndMethod(string methodName, string resultOfMethod)
         {
-            WriteDateAndTime();
-            streamWriter.WriteLine($"{methodName} {resultOfMethod}");
+            this.WriteDateAndTime();
+            this.streamWriter.WriteLine($"{methodName} {resultOfMethod}");
         }
     }
 }

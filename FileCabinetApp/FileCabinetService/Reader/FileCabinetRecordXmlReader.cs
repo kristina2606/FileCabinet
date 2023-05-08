@@ -30,7 +30,7 @@ namespace FileCabinetApp.FileCabinetService.Reader
         {
             var serializer = new XmlSerializer(typeof(RecordsSeralization));
 
-            var records = (RecordsSeralization)serializer.Deserialize(reader);
+            var records = (RecordsSeralization)serializer.Deserialize(this.reader);
 
             IList<FileCabinetRecord> result = new List<FileCabinetRecord>();
             foreach (var record in records.Records)

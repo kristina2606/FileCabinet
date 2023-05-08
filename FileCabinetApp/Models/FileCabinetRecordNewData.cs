@@ -42,36 +42,36 @@ namespace FileCabinetApp.Models
         ///  Gets first name from user input.
         /// </summary>
         /// <value> New first name of a person. </value>
-        public string FirstName => firstName;
+        public string FirstName => this.firstName;
 
         /// <summary>
         /// Gets last name from user input.
         /// </summary>
         /// <value> New last name of a person. </value>
-        public string LastName => lastName;
+        public string LastName => this.lastName;
 
         /// <summary>
         /// Gets date of birth from user input.
         /// </summary>
         /// <value> New date of birth of a person. </value>
-        public DateTime DateOfBirth => dateOfBirth;
+        public DateTime DateOfBirth => this.dateOfBirth;
 
         /// <summary>
         /// Gets gender from user input.
         /// </summary>
         /// <value> New gender of a person. </value>
-        public char Gender => gender;
+        public char Gender => this.gender;
 
         /// <summary>
         /// Gets height from user input.
         /// </summary>
         /// <value> New height of a person. </value>
-        public short Height => height;
+        public short Height => this.height;
 
         /// <summary>
         /// Gets weight from user input.
         /// </summary>
         /// <value> New weight of a person. </value>
-        public decimal Weight => weight;
+        public decimal Weight => this.weight;
     }
 }

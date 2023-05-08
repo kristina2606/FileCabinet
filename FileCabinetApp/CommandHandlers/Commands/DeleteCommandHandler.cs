@@ -13,7 +13,7 @@ namespace FileCabinetApp.CommandHandlers.Commands
     /// </summary>
     public class DeleteCommandHandler : ServiceCommandHandlerBase
     {
-        private readonly StringComparison stringComparison = StringComparison.InvariantCultureIgnoreCase;
+        private readonly StringComparison stringComparison = StringComparison.OrdinalIgnoreCase;
         private readonly IUserInputValidation validationRules;
 
         /// <summary>
@@ -24,7 +24,7 @@ namespace FileCabinetApp.CommandHandlers.Commands
         public DeleteCommandHandler(IFileCabinetService service, IUserInputValidation inputValidation)
             : base(service)
         {
-            validationRules = inputValidation;
+            this.validationRules = inputValidation;
         }
 
         /// <summary>
@@ -33,13 +33,13 @@ namespace FileCabinetApp.CommandHandlers.Commands
         /// <param name="appCommand">>Configuratiion the application command and options.</param>
         public override void Handle(AppCommandRequest appCommand)
         {
-            if (!appCommand.Command.Equals("delete", stringComparison))
+            if (!appCommand.Command.Equals("delete", this.stringComparison))
             {
                 base.Handle(appCommand);
                 return;
             }
 
-            if (!appCommand.Parameters.Contains(QueryConstants.Where, stringComparison))
+            if (!appCommand.Parameters.Contains(QueryConstants.Where, this.stringComparison))
             {
                 Console.WriteLine("Invalid command syntax. Missing 'where' clause.");
                 return;
@@ -53,19 +53,19 @@ namespace FileCabinetApp.CommandHandlers.Commands
             }
 
             var parametrs = appCommand.Parameters.ToLowerInvariant()
-                                                 .Replace(QueryConstants.Where, string.Empty, stringComparison)
-                                                 .Replace("'", string.Empty, stringComparison)
+                                                 .Replace(QueryConstants.Where, string.Empty, this.stringComparison)
+                                                 .Replace("'", string.Empty, this.stringComparison)
                                                  .Split(conditionalOperator.ToString().ToLowerInvariant(), StringSplitOptions.RemoveEmptyEntries);
 
             try
             {
                 var deletedRecords = new List<int>();
-                Condition[] conditionsToSearch = UserInputHelpers.CreateConditions(parametrs, validationRules);
-                var recordsForDelete = Service.Find(conditionsToSearch, conditionalOperator);
+                Condition[] conditionsToSearch = UserInputHelpers.CreateConditions(parametrs, this.validationRules);
+                var recordsForDelete = this.Service.Find(conditionsToSearch, conditionalOperator);
 
                 foreach (var recordId in recordsForDelete.Select(x => x.Id).ToList())
                 {
-                    Service.Delete(recordId);
+                    this.Service.Delete(recordId);
 
                     deletedRecords.Add(recordId);
                 }

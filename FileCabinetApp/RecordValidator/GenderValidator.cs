@@ -34,9 +34,9 @@ namespace FileCabinetApp.RecordValidator
         {
             var gender = fileCabinetRecordNewData.Gender.ToString();
 
-            if (!gender.Equals(requiredFirstValue, sc) && !gender.Equals(requiredSecondValue, sc))
+            if (!gender.Equals(this.requiredFirstValue, this.sc) && !gender.Equals(this.requiredSecondValue, this.sc))
             {
-                throw new ArgumentException($"gender must be {requiredFirstValue} or {requiredSecondValue}.");
+                throw new ArgumentException($"gender must be {this.requiredFirstValue} or {this.requiredSecondValue}.");
             }
         }
     }

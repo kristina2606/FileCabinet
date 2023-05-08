@@ -15,7 +15,7 @@ namespace FileCabinetApp.Helpers
         /// <returns>Next id.</returns>
         public int GetNext()
         {
-            return currentId++;
+            return this.currentId++;
         }
 
         /// <summary>
@@ -24,7 +24,7 @@ namespace FileCabinetApp.Helpers
         /// <param name="id">Initial id.</param>
         public void SkipId(int id)
         {
-            currentId = Math.Max(currentId, id + 1);
+            this.currentId = Math.Max(this.currentId, id + 1);
         }
     }
 }

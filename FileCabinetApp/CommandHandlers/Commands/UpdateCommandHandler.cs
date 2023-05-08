@@ -11,7 +11,7 @@ namespace FileCabinetApp.CommandHandlers.Commands
     /// </summary>
     public class UpdateCommandHandler : ServiceCommandHandlerBase
     {
-        private readonly StringComparison stringComparison = StringComparison.InvariantCultureIgnoreCase;
+        private readonly StringComparison stringComparison = StringComparison.OrdinalIgnoreCase;
         private readonly IUserInputValidation validationRules;
 
         /// <summary>
@@ -22,7 +22,7 @@ namespace FileCabinetApp.CommandHandlers.Commands
         public UpdateCommandHandler(IFileCabinetService service, IUserInputValidation inputValidation)
             : base(service)
         {
-            validationRules = inputValidation;
+            this.validationRules = inputValidation;
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace FileCabinetApp.CommandHandlers.Commands
         /// <param name="appCommand">>Configuratiion the application command and options.</param>
         public override void Handle(AppCommandRequest appCommand)
         {
-            if (!appCommand.Command.Equals("update", stringComparison))
+            if (!appCommand.Command.Equals("update", this.stringComparison))
             {
                 base.Handle(appCommand);
                 return;
@@ -39,8 +39,8 @@ namespace FileCabinetApp.CommandHandlers.Commands
 
             var parameters = appCommand.Parameters.Split(QueryConstants.Where, StringSplitOptions.RemoveEmptyEntries);
 
-            var updateFields = parameters[0].Replace(QueryConstants.Set, string.Empty, stringComparison)
-                                           .Replace("'", string.Empty, stringComparison)
+            var updateFields = parameters[0].Replace(QueryConstants.Set, string.Empty, this.stringComparison)
+                                           .Replace("'", string.Empty, this.stringComparison)
                                            .Split(',', StringSplitOptions.RemoveEmptyEntries);
 
             var conditionalOperator = UnionType.Or;
@@ -56,20 +56,20 @@ namespace FileCabinetApp.CommandHandlers.Commands
                 if (parameters.Length > 1)
                 {
                     var searchCriteria = parameters[1].ToLowerInvariant()
-                                  .Replace("'", string.Empty, stringComparison)
+                                  .Replace("'", string.Empty, this.stringComparison)
                                   .Split(conditionalOperator.ToString().ToLowerInvariant(), StringSplitOptions.RemoveEmptyEntries);
 
-                    conditionsToSearch = UserInputHelpers.CreateConditions(searchCriteria, validationRules);
+                    conditionsToSearch = UserInputHelpers.CreateConditions(searchCriteria, this.validationRules);
                 }
 
-                Condition[] conditionsToUpdate = UserInputHelpers.CreateConditions(updateFields, validationRules);
+                Condition[] conditionsToUpdate = UserInputHelpers.CreateConditions(updateFields, this.validationRules);
 
-                var recordsToUpdate = Service.Find(conditionsToSearch, conditionalOperator);
+                var recordsToUpdate = this.Service.Find(conditionsToSearch, conditionalOperator);
 
                 foreach (var record in recordsToUpdate)
                 {
                     var newData = GetNewDataFromFields(record, conditionsToUpdate);
-                    Service.Update(record.Id, newData);
+                    this.Service.Update(record.Id, newData);
                 }
 
                 Console.WriteLine($"Record(s) updated.");

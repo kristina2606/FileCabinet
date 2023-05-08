@@ -23,8 +23,9 @@ namespace FileCabinetApp.Helpers
         /// </summary>
         /// <param name="dictionary">Dictionary with key 'id of rrecords' and value 'exeption'.</param>
         public ImportException(Dictionary<int, string> dictionary)
+            : base()
         {
-            importExceptionByRecordId = dictionary;
+            this.importExceptionByRecordId = dictionary;
         }
 
         /// <summary>
@@ -33,6 +34,6 @@ namespace FileCabinetApp.Helpers
         /// <value>
         /// Returns dictionary with key 'id of records' and value 'exeption'.
         /// </value>
-        public ReadOnlyDictionary<int, string> ImportExceptionByRecordId => new ReadOnlyDictionary<int, string>(importExceptionByRecordId);
+        public ReadOnlyDictionary<int, string> ImportExceptionByRecordId => new ReadOnlyDictionary<int, string>(this.importExceptionByRecordId);
     }
 }

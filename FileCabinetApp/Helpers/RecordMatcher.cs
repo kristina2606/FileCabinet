@@ -28,8 +28,8 @@ namespace FileCabinetApp.Helpers
                 bool isMatch = condition.Field switch
                 {
                     FileCabinetRecordFields.Id => record.Id == condition.Value.Id,
-                    FileCabinetRecordFields.FirstName => record.FirstName.Equals(condition.Value.FirstName, StringComparison.InvariantCultureIgnoreCase),
-                    FileCabinetRecordFields.LastName => record.LastName.Equals(condition.Value.LastName, StringComparison.InvariantCultureIgnoreCase),
+                    FileCabinetRecordFields.FirstName => record.FirstName.Equals(condition.Value.FirstName, StringComparison.OrdinalIgnoreCase),
+                    FileCabinetRecordFields.LastName => record.LastName.Equals(condition.Value.LastName, StringComparison.OrdinalIgnoreCase),
                     FileCabinetRecordFields.DateOfBirth => record.DateOfBirth == condition.Value.DateOfBirth,
                     FileCabinetRecordFields.Gender => record.Gender == condition.Value.Gender,
                     FileCabinetRecordFields.Height => record.Height == condition.Value.Height,

@@ -15,7 +15,7 @@ namespace FileCabinetApp.CommandHandlers.Commands
         /// <param name="isRunning">Application settings(on/off).</param>
         public ExitCommandHandler(Action<bool> isRunning)
         {
-            exit = isRunning;
+            this.exit = isRunning;
         }
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace FileCabinetApp.CommandHandlers.Commands
                 return;
             }
 
-            exit(true);
+            this.exit(true);
         }
     }
 }

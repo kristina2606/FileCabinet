@@ -13,10 +13,7 @@
         /// <param name="appCommand">Configuratiion the application command and options.</param>
         public virtual void Handle(AppCommandRequest appCommand)
         {
-            if (nextHandler != null)
-            {
-                nextHandler.Handle(appCommand);
-            }
+            this.nextHandler?.Handle(appCommand);
         }
 
         /// <summary>
@@ -25,7 +22,7 @@
         /// <param name="commandHandler">Next handler in the chain.</param>
         public void SetNext(ICommandHandler commandHandler)
         {
-            nextHandler = commandHandler;
+            this.nextHandler = commandHandler;
         }
     }
 }

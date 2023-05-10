@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 namespace FileCabinetApp.Helpers
 {
     /// <summary>
-    /// An ImportException is thrown when a record fails validation.
+    /// Represents an exception that is thrown when a record fails validation during import.
     /// </summary>
     public class ImportException : Exception
     {
@@ -21,19 +21,17 @@ namespace FileCabinetApp.Helpers
         /// <summary>
         /// Initializes a new instance of the <see cref="ImportException"/> class.
         /// </summary>
-        /// <param name="dictionary">Dictionary with key 'id of rrecords' and value 'exeption'.</param>
-        public ImportException(Dictionary<int, string> dictionary)
+        /// <param name="exceptions">A dictionary containing the exceptions associated with record IDs.</param>
+        public ImportException(Dictionary<int, string> exceptions)
             : base()
         {
-            this.importExceptionByRecordId = dictionary;
+            this.importExceptionByRecordId = exceptions;
         }
 
         /// <summary>
-        /// Gets returns dictionary with key 'id of records' and value 'exeption'.
+        /// Gets a read-only dictionary containing the exceptions associated with record IDs.
         /// </summary>
-        /// <value>
-        /// Returns dictionary with key 'id of records' and value 'exeption'.
-        /// </value>
+        /// <value>A read-only dictionary with record IDs as keys and exception messages as values.</value>
         public ReadOnlyDictionary<int, string> ImportExceptionByRecordId => new ReadOnlyDictionary<int, string>(this.importExceptionByRecordId);
     }
 }

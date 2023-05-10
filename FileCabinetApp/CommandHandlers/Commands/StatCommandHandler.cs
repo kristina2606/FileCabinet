@@ -4,23 +4,23 @@ using FileCabinetApp.FileCabinetService;
 namespace FileCabinetApp.CommandHandlers.Commands
 {
     /// <summary>
-    /// Contain code for handling stat requests.
+    /// Represents a command handler for handling stat requests.
     /// </summary>
     public class StatCommandHandler : ServiceCommandHandlerBase
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="StatCommandHandler"/> class.
         /// </summary>
-        /// <param name="service">Interface instance IFileCabinetServise.</param>
+        /// <param name="service">The file cabinet service.</param>
         public StatCommandHandler(IFileCabinetService service)
             : base(service)
         {
         }
 
         /// <summary>
-        /// Handling for stat requests.
+        /// Handles 'stat' requests.
         /// </summary>
-        /// <param name="appCommand">>Configuratiion the application command and options.</param>
+        /// <param name="appCommand">The application command and options configuration.</param>
         public override void Handle(AppCommandRequest appCommand)
         {
             if (!appCommand.Command.Equals("stat", StringComparison.OrdinalIgnoreCase))

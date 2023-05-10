@@ -4,7 +4,7 @@ using FileCabinetApp.Models;
 namespace FileCabinetApp.RecordValidator
 {
     /// <summary>
-    /// Validate a new record from user input with 'gender' validate parametrs.
+    /// Validates a new record from user input based on 'gender' validation parametrs.
     /// </summary>
     public class GenderValidator : IRecordValidator
     {
@@ -15,9 +15,9 @@ namespace FileCabinetApp.RecordValidator
         /// <summary>
         /// Initializes a new instance of the <see cref="GenderValidator"/> class.
         /// </summary>
-        /// <param name="requiredFirstValue">First gender identities.</param>
-        /// <param name="requiredSecondValue">Second gender identities.</param>
-        /// <param name="sc">Specifies culture and case.</param>
+        /// <param name="requiredFirstValue">The first gender identity.</param>
+        /// <param name="requiredSecondValue">The second gender identity.</param>
+        /// <param name="sc">The string comparison type.</param>
         public GenderValidator(char requiredFirstValue, char requiredSecondValue, StringComparison sc)
         {
             this.requiredFirstValue = requiredFirstValue.ToString();
@@ -26,17 +26,17 @@ namespace FileCabinetApp.RecordValidator
         }
 
         /// <summary>
-        /// Validate a new record from user input with 'gender' validate parametrs.
+        /// Validates a new record from user input based on 'gender' validation parametrs.
         /// </summary>
-        /// <param name="fileCabinetRecordNewData">The new date in the record.</param>
-        /// <exception cref="ArgumentException">Exception if the incoming entry does not match the parameters.</exception>
+        /// <param name="fileCabinetRecordNewData">The new data in the record.</param>
+        /// <exception cref="ArgumentException">Thrown if the 'gender' value does not match the allowed values.</exception>
         public void ValidateParametrs(FileCabinetRecordNewData fileCabinetRecordNewData)
         {
             var gender = fileCabinetRecordNewData.Gender.ToString();
 
             if (!gender.Equals(this.requiredFirstValue, this.sc) && !gender.Equals(this.requiredSecondValue, this.sc))
             {
-                throw new ArgumentException($"gender must be {this.requiredFirstValue} or {this.requiredSecondValue}.");
+                throw new ArgumentException($"Gender must be {this.requiredFirstValue} or {this.requiredSecondValue}.");
             }
         }
     }

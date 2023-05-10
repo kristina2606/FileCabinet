@@ -15,7 +15,7 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
         /// <summary>
         /// Initializes a new instance of the <see cref="ServiceMeter"/> class.
         /// </summary>
-        /// <param name="service">Interface instance IFileCabinetServise.</param>
+        /// <param name="service">The file cabinet service.</param>
         public ServiceMeter(IFileCabinetService service)
         {
             this.service = service;
@@ -42,7 +42,7 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
         }
 
         /// <summary>
-        /// Update an already existing entry by id and measures the running time of service methods and displays them on the screen.
+        /// Updates an already existing entry by id and measures the running time of service methods and displays them on the screen.
         /// </summary>
         /// <param name="id">The id of the record to be modified.</param>
         /// <param name="fileCabinetRecordNewData">The new date in the record.</param>
@@ -64,7 +64,7 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
         /// <summary>
         /// Gets the count of all existed and deleted records and measures the running time of service methods and displays them on the screen.
         /// </summary>
-        /// <returns>Returns the count of all existing records.</returns>
+        /// <returns>Returns the number of all existed and deleted records.</returns>
         public (int activeRecords, int deletedRecords) GetStat()
         {
             Stopwatch stopWatch = Stopwatch.StartNew();
@@ -81,10 +81,10 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
         }
 
         /// <summary>
-        /// Checks if records with the specified id exists and measures the running time of service methods and displays them on the screen.
+        /// Checks if a record with the specified id exists and measures the running time of service methods and displays them on the screen.
         /// </summary>
         /// <param name="id">The id entered by the user.</param>
-        /// <returns>True if records exists and false if records don't exist.</returns>
+        /// <returns>True if the record exists, false if the record does not exist.</returns>
         public bool IsExist(int id)
         {
             Stopwatch stopWatch = Stopwatch.StartNew();
@@ -103,7 +103,7 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
         /// <summary>
         /// Passes the state of an object and measures the running time of service methods and displays them on the screen.
         /// </summary>
-        /// <returns>Class containing the state of an object.</returns>
+        /// <returns>A class containing the state of an object.</returns>
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
             Stopwatch stopWatch = Stopwatch.StartNew();
@@ -139,9 +139,9 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
         }
 
         /// <summary>
-        /// Delete record by id and measures the running time of service methods and displays them on the screen.
+        /// Deletes a record by id and measures the running time of service methods and displays them on the screen.
         /// </summary>
-        /// <param name="id">Record id to remove.</param>
+        /// <param name="id">The id of the record to remove.</param>
         public void Delete(int id)
         {
             Stopwatch stopWatch = Stopwatch.StartNew();
@@ -158,7 +158,7 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
         }
 
         /// <summary>
-        /// Adding imported records to existing records and measures the running time of service methods and displays them on the screen.
+        /// Adds imported records to existing records and measures the running time of service methods and displays them on the screen.
         /// </summary>
         /// <param name="fileCabinetServiceSnapshot">Сlass instance.</param>
         public void Restore(FileCabinetServiceSnapshot fileCabinetServiceSnapshot)
@@ -177,9 +177,9 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
         }
 
         /// <summary>
-        /// Insert new record and measures the running time of service methods and displays them on the screen.
+        /// Inserts new record and measures the running time of service methods and displays them on the screen.
         /// </summary>
-        /// <param name="record">New record from user.</param>
+        /// <param name="record">New record from the user.</param>
         public void Insert(FileCabinetRecord record)
         {
             Stopwatch stopWatch = Stopwatch.StartNew();
@@ -200,7 +200,7 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
         /// </summary>
         /// <param name="conditions">Contains conditions with search parameters.</param>
         /// <param name="type">Contains an OR or AND operator.</param>
-        /// <returns>Returns finded records.</returns>
+        /// <returns>Returns found records.</returns>
         public IEnumerable<FileCabinetRecord> Find(Condition[] conditions, UnionType type)
         {
             Stopwatch stopWatch = Stopwatch.StartNew();

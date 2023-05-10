@@ -3,50 +3,50 @@
 namespace FileCabinetApp.Models
 {
     /// <summary>
-    /// Fields for creating a record.
+    /// Represents a record in the FileCabinetApp.
     /// </summary>
     public class FileCabinetRecord
     {
         /// <summary>
-        /// Gets or sets record id.
+        /// Gets or sets the record id.
         /// </summary>
-        /// <value>Record id of a person.</value>
+        /// <value>The id of the record.</value>
         public int Id { get; set; }
 
         /// <summary>
-        /// Gets or sets the first name of a person.
+        /// Gets or sets the first name of the person.
         /// </summary>
-        /// <value>The first name of a person.</value>
+        /// <value>The first name of the person.</value>
         public string FirstName { get; set; }
 
         /// <summary>
-        /// Gets or sets the last name of a person.
+        /// Gets or sets the last name of the person.
         /// </summary>
-        /// <value>The last name of a person.</value>
+        /// <value>The last name of the person.</value>
         public string LastName { get; set; }
 
         /// <summary>
-        /// Gets or sets the date of birth of a person.
+        /// Gets or sets the date of birth of the person.
         /// </summary>
-        /// <value>The date of birth of a person.</value>
+        /// <value>The date of birth of the person.</value>
         public DateTime DateOfBirth { get; set; }
 
         /// <summary>
-        /// Gets or sets the gender of a person.
+        /// Gets or sets the gender of the person.
         /// </summary>
-        /// <value>The gender of a person.</value>
+        /// <value>The gender of the person.</value>
         public char Gender { get; set; }
 
         /// <summary>
-        /// Gets or sets the height of a person.
+        /// Gets or sets the height of the person.
         /// </summary>
-        /// <value>The height of a person.</value>
+        /// <value>The height of the person.</value>
         public short Height { get; set; }
 
         /// <summary>
-        /// Gets or sets the weight of a person.
+        /// Gets or sets the weight of the person.
         /// </summary>
-        /// <value>The weight of a person.</value>
+        /// <value>The weight of the person.</value>
         public decimal Weight { get; set; }
     }
 }

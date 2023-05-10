@@ -3,7 +3,7 @@
 namespace FileCabinetApp.Serializers.Xml
 {
     /// <summary>
-    /// Fields for creating the full name of a person.
+    /// Represents the fields for creating the full name of a person in XML serialization.
     /// </summary>
     public class FullNameSeralization
     {
@@ -29,14 +29,14 @@ namespace FileCabinetApp.Serializers.Xml
         /// Gets or sets the first name of a person.
         /// </summary>
         /// <value>The first name of a person.</value>
-        [XmlAttribute(AttributeName = "first")]
+        [XmlAttribute("first")]
         public string FirstName { get; set; }
 
         /// <summary>
         /// Gets or sets the last name of a person.
         /// </summary>
         /// <value>The last name of a person.</value>
-        [XmlAttribute(AttributeName = "last")]
+        [XmlAttribute("last")]
         public string LastName { get; set; }
     }
 }

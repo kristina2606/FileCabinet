@@ -4,25 +4,23 @@ using FileCabinetApp.FileCabinetService;
 namespace FileCabinetApp.CommandHandlers
 {
     /// <summary>
-    /// Create interface instance IFileCabinetServise.
+    /// Base class for command handlers that operate on an instance of IFileCabinetService.
     /// </summary>
     public abstract class ServiceCommandHandlerBase : CommandHandlerBase
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ServiceCommandHandlerBase"/> class.
         /// </summary>
-        /// <param name="service">Interface instance IFileCabinetServise.</param>
+        /// <param name="service">The file cabinet service.</param>
         protected ServiceCommandHandlerBase(IFileCabinetService service)
         {
             this.Service = service;
         }
 
         /// <summary>
-        /// Gets contain interface instance IFileCabinetServise.
+        /// Gets the instance of IFileCabinetServise.
         /// </summary>
-        /// <value>
-        /// Interface instance IFileCabinetServise.
-        /// </value>
+        /// <value>The instance IFileCabinetServise.</value>
         protected IFileCabinetService Service { get; }
     }
 }

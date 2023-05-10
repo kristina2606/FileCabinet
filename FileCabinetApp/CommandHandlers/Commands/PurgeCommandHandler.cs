@@ -4,23 +4,23 @@ using FileCabinetApp.FileCabinetService;
 namespace FileCabinetApp.CommandHandlers.Commands
 {
     /// <summary>
-    /// Contain code for handling purge requests.
+    /// Represents a command handler for handling purge requests.
     /// </summary>
     public class PurgeCommandHandler : ServiceCommandHandlerBase
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="PurgeCommandHandler"/> class.
         /// </summary>
-        /// <param name="service">Interface instance IFileCabinetServise.</param>
+        /// <param name="service">The file cabinet service.</param>
         public PurgeCommandHandler(IFileCabinetService service)
             : base(service)
         {
         }
 
         /// <summary>
-        /// Handling for purge requests.
+        /// Handles 'purge' requests.
         /// </summary>
-        /// <param name="appCommand">>Configuratiion the application command and options.</param>
+        /// <param name="appCommand">The application command and options.</param>
         public override void Handle(AppCommandRequest appCommand)
         {
             if (!appCommand.Command.Equals("purge", StringComparison.OrdinalIgnoreCase))
@@ -33,7 +33,7 @@ namespace FileCabinetApp.CommandHandlers.Commands
 
             var purgedRecordsCount = this.Service.Purge();
 
-            Console.WriteLine($"Data file processing is completed: {purgedRecordsCount} of {activeRecords + deletedRecords} records were purged.");
+            Console.WriteLine($"Data file processing completed: {purgedRecordsCount} of {activeRecords + deletedRecords} records were purged.");
         }
     }
 }

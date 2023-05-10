@@ -1,15 +1,15 @@
 ﻿namespace FileCabinetApp.CommandHandlers
 {
     /// <summary>
-    /// Configures the application command and options.
+    /// Represents a request for an application command with customizable options.
     /// </summary>
     public class AppCommandRequest
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="AppCommandRequest"/> class.
         /// </summary>
-        /// <param name="command">customizable command.</param>
-        /// <param name="parameters">customizable options.</param>
+        /// <param name="command">The customizable command.</param>
+        /// <param name="parameters">The customizable options.</param>
         public AppCommandRequest(string command, string parameters)
         {
             this.Command = command;
@@ -17,19 +17,15 @@
         }
 
         /// <summary>
-        /// Gets customizable command.
+        /// Gets the customizable command.
         /// </summary>
-        /// <value>
-        /// Customizable command.
-        /// </value>
+        /// <value>The customizable command.</value>
         public string Command { get; }
 
         /// <summary>
-        /// Getscustomizable options.
+        /// Gets the customizable options.
         /// </summary>
-        /// <value>
-        /// Customizable options.
-        /// </value>
+        /// <value>The customizable options.</value>
         public string Parameters { get; }
     }
 }

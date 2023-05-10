@@ -5,7 +5,7 @@ using FileCabinetApp.Models;
 namespace FileCabinetApp.FileCabinetService.Writer
 {
     /// <summary>
-    /// Export application data to a XML file.
+    /// Provides functionality to export application data to an XML file.
     /// </summary>
     public class FileCabinetRecordXmlWriter
     {
@@ -14,16 +14,16 @@ namespace FileCabinetApp.FileCabinetService.Writer
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetRecordXmlWriter"/> class.
         /// </summary>
-        /// <param name="writer">Path to create a file with records.</param>
+        /// <param name="writer">The XML writer used to create the file with records.</param>
         public FileCabinetRecordXmlWriter(XmlWriter writer)
         {
             this.writer = writer;
         }
 
         /// <summary>
-        /// Write the record to the file.
+        /// Writes a record to the file.
         /// </summary>
-        /// <param name="record">Record for write.</param>
+        /// <param name="record">The record to write.</param>
         public void Write(FileCabinetRecord record)
         {
             this.writer.WriteStartElement("record");
@@ -34,21 +34,10 @@ namespace FileCabinetApp.FileCabinetService.Writer
             this.writer.WriteAttributeString("last", record.LastName);
             this.writer.WriteEndElement();
 
-            this.writer.WriteStartElement("dateOfBirth");
-            this.writer.WriteString(record.DateOfBirth.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture));
-            this.writer.WriteEndElement();
-
-            this.writer.WriteStartElement("gender");
-            this.writer.WriteString(record.Gender.ToString(CultureInfo.InvariantCulture));
-            this.writer.WriteEndElement();
-
-            this.writer.WriteStartElement("height");
-            this.writer.WriteString(record.Height.ToString(CultureInfo.InvariantCulture));
-            this.writer.WriteEndElement();
-
-            this.writer.WriteStartElement("weight");
-            this.writer.WriteString(record.Weight.ToString(CultureInfo.InvariantCulture));
-            this.writer.WriteEndElement();
+            this.writer.WriteElementString("dateOfBirth", record.DateOfBirth.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture));
+            this.writer.WriteElementString("gender", record.Gender.ToString(CultureInfo.InvariantCulture));
+            this.writer.WriteElementString("height", record.Height.ToString(CultureInfo.InvariantCulture));
+            this.writer.WriteElementString("weight", record.Weight.ToString(CultureInfo.InvariantCulture));
 
             this.writer.WriteEndElement();
         }

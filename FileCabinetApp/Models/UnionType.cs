@@ -6,12 +6,12 @@
     public enum UnionType
     {
         /// <summary>
-        /// An operator that combines results by multiple parameters.
+        /// The AND operator combines results by multiple parameters.
         /// </summary>
         And,
 
         /// <summary>
-        /// An operator that produces a result with multiple parameters.
+        /// The OR operator produces a result with multiple parameters.
         /// </summary>
         Or,
     }

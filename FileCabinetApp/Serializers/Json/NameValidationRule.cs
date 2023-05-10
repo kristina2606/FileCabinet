@@ -3,25 +3,21 @@
 namespace FileCabinetApp.Serializers.Json
 {
     /// <summary>
-    /// Create name parametr fron .json configuration file.
+    /// Represents the name validation rule loaded from a JSON configuration file.
     /// </summary>
     public class NameValidationRule
     {
         /// <summary>
-        /// Gets or sets minimum name length validation parametrs.
+        /// Gets or sets the minimum name length for validation.
         /// </summary>
-        /// <value>
-        /// First name validation parametrs.
-        /// </value>
+        /// <value>The minimum name length for validation.</value>
         [JsonProperty("minLenght")]
         public int MinLenght { get; set; }
 
         /// <summary>
-        /// Gets or sets maximum name length validation parametrs.
+        /// Gets or sets the maximum name length for validation.
         /// </summary>
-        /// <value>
-        /// First name validation parametrs.
-        /// </value>
+        /// <value>The maximum name length for validation.</value>
         [JsonProperty("maxLenght")]
         public int MaxLenght { get; set; }
     }

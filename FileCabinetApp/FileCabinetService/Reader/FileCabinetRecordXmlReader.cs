@@ -7,7 +7,7 @@ using FileCabinetApp.Serializers.Xml;
 namespace FileCabinetApp.FileCabinetService.Reader
 {
     /// <summary>
-    /// Imports data from a xml file.
+    /// Reads data from an XML file and imports it.
     /// </summary>
     public class FileCabinetRecordXmlReader
     {
@@ -16,16 +16,16 @@ namespace FileCabinetApp.FileCabinetService.Reader
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetRecordXmlReader"/> class.
         /// </summary>
-        /// <param name="reader">Path to import a xml file with records.</param>
+        /// <param name="reader">The XmlReader for the XML file.</param>
         public FileCabinetRecordXmlReader(XmlReader reader)
         {
             this.reader = reader;
         }
 
         /// <summary>
-        /// Imports all datas from a xml file.
+        /// Reads all data from the XML file and returns it as a list of FileCabinetRecord objects.
         /// </summary>
-        /// <returns>Returns all datas from a xml file.</returns>
+        /// <returns>A list of FileCabinetRecord objects.</returns>
         public IList<FileCabinetRecord> ReadAll()
         {
             var serializer = new XmlSerializer(typeof(RecordsSeralization));

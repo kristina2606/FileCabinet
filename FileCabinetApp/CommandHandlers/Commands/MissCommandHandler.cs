@@ -4,16 +4,16 @@ using System.Collections.Generic;
 namespace FileCabinetApp.CommandHandlers.Commands
 {
     /// <summary>
-    /// Contain code for handling miss command requests.
+    /// Represents a command handler for handling unknown commands.
     /// </summary>
     public class MissCommandHandler : CommandHandlerBase
     {
         private readonly string[] allCommands = { "help", "exit", "stat", "create", "select", "export", "import", "purge", "insert", "delete", "update" };
 
         /// <summary>
-        /// Handling for miss command requests.
+        /// Handles the unknown command request.
         /// </summary>
-        /// <param name="appCommand">>Configuratiion the application command and options.</param>
+        /// <param name="appCommand">The application command and options.</param>
         public override void Handle(AppCommandRequest appCommand)
         {
             if (string.IsNullOrEmpty(appCommand.Command))
@@ -22,7 +22,7 @@ namespace FileCabinetApp.CommandHandlers.Commands
                 return;
             }
 
-            Console.WriteLine($"'{appCommand.Command}' is not a command. See 'help'.");
+            Console.WriteLine($"'{appCommand.Command}' is not a valid command. See 'help'.");
             Console.WriteLine();
 
             var similarCommands = new List<string>();
@@ -38,7 +38,7 @@ namespace FileCabinetApp.CommandHandlers.Commands
 
             if (similarCommands.Count > 0)
             {
-                Console.WriteLine("The most similar commands are");
+                Console.WriteLine("The most similar commands are:");
                 foreach (var command in similarCommands)
                 {
                     Console.WriteLine(command);

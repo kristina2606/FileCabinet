@@ -3,25 +3,25 @@
 namespace FileCabinetApp.Helpers
 {
     /// <summary>
-    /// Generates the following id.
+    /// Generates unique identifiers.
     /// </summary>
     public class IdGenerator : IIdGenerator
     {
         private int currentId = 1;
 
         /// <summary>
-        /// Generates the following id.
+        /// Generates the next unique identifier.
         /// </summary>
-        /// <returns>Next id.</returns>
+        /// <returns>The next unique identifier.</returns>
         public int GetNext()
         {
             return this.currentId++;
         }
 
         /// <summary>
-        /// Sets initial id.
+        /// Sets the initial unique identifier.
         /// </summary>
-        /// <param name="id">Initial id.</param>
+        /// <param name="id">The initial unique identifier.</param>
         public void SkipId(int id)
         {
             this.currentId = Math.Max(this.currentId, id + 1);

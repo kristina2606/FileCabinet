@@ -13,8 +13,8 @@ namespace FileCabinetApp.RecordValidator
         /// <summary>
         /// Initializes a new instance of the <see cref="FirstNameValidator"/> class.
         /// </summary>
-        /// <param name="minLenght">Min lenght of first name.</param>
-        /// <param name="maxLenght">Max lenght of first name.</param>
+        /// <param name="minLenght">The minimum lenght of the first name allowed.</param>
+        /// <param name="maxLenght">The maximum length of the first name allowed.</param>
         /// <returns>Returns ValidatorBuilder type.</returns>
         public ValidatorBuilder ValidateFirstName(int minLenght, int maxLenght)
         {
@@ -26,8 +26,8 @@ namespace FileCabinetApp.RecordValidator
         /// <summary>
         /// Initializes a new instance of the <see cref="LastNameValidator"/> class.
         /// </summary>
-        /// <param name="minLenght">Min lenght of last name.</param>
-        /// <param name="maxLenght">Max lenght of last name.</param>
+        /// <param name="minLenght">The minimum lenght of the last name allowed.</param>
+        /// <param name="maxLenght">The maximum length of the last name allowed.</param>
         /// <returns>Returns ValidatorBuilder type.</returns>
         public ValidatorBuilder ValidateLastName(int minLenght, int maxLenght)
         {
@@ -39,8 +39,8 @@ namespace FileCabinetApp.RecordValidator
         /// <summary>
         /// Initializes a new instance of the <see cref="DateOfBirthValidator"/> class.
         /// </summary>
-        /// <param name="from">Min date of birth.</param>
-        /// <param name="to">Max date of birth.</param>
+        /// <param name="from">The minimum date of birth allowed.</param>
+        /// <param name="to">The maximum date of birth allowed.</param>
         /// <returns>Returns ValidatorBuilder type.</returns>
         public ValidatorBuilder ValidateDateOfBirth(DateTime from, DateTime to)
         {
@@ -52,8 +52,8 @@ namespace FileCabinetApp.RecordValidator
         /// <summary>
         /// Initializes a new instance of the <see cref="DateOfBirthValidator"/> class.
         /// </summary>
-        /// <param name="minAge">Min age.</param>
-        /// <param name="maxAge">Max age.</param>
+        /// <param name="minAge">The minimum age allowed.</param>
+        /// <param name="maxAge">The maximum age allowed.</param>
         /// <returns>Returns ValidatorBuilder type.</returns>
         public ValidatorBuilder ValidateDateOfBirth(int minAge, int maxAge)
         {
@@ -65,9 +65,9 @@ namespace FileCabinetApp.RecordValidator
         /// <summary>
         /// Initializes a new instance of the <see cref="GenderValidator"/> class.
         /// </summary>
-        /// <param name="requiredFirstValue">First gender identities.</param>
-        /// <param name="requiredSecondValue">Second gender identities.</param>
-        /// <param name="sc">Specifies culture and case.</param>
+        /// <param name="requiredFirstValue">The first gender identity.</param>
+        /// <param name="requiredSecondValue">The second gender identity.</param>
+        /// <param name="sc">The string comparison type.</param>
         /// <returns>Returns ValidatorBuilder type.</returns>
         public ValidatorBuilder ValidateGender(char requiredFirstValue, char requiredSecondValue, StringComparison sc)
         {
@@ -79,8 +79,8 @@ namespace FileCabinetApp.RecordValidator
         /// <summary>
         /// Initializes a new instance of the <see cref="HeightValidator"/> class.
         /// </summary>
-        /// <param name="minValue">Min height.</param>
-        /// <param name="maxValue">Max height.</param>
+        /// <param name="minValue">The minimum allowed height.</param>
+        /// <param name="maxValue">The maximum allowed height.</param>
         /// <returns>Returns ValidatorBuilder type.</returns>
         public ValidatorBuilder ValidateHeight(int minValue, int maxValue)
         {
@@ -92,8 +92,8 @@ namespace FileCabinetApp.RecordValidator
         /// <summary>
         /// Initializes a new instance of the <see cref="WeightValidator"/> class.
         /// </summary>
-        /// <param name="minValue">Min weight.</param>
-        /// <param name="maxValue">Max weight.</param>
+        /// <param name="minValue">The minimum allowed weight.</param>
+        /// <param name="maxValue">The maximum allowed weight.</param>
         /// <returns>Returns ValidatorBuilder type.</returns>
         public ValidatorBuilder ValidateWeight(int minValue, int maxValue)
         {
@@ -103,9 +103,9 @@ namespace FileCabinetApp.RecordValidator
         }
 
         /// <summary>
-        /// Crerate a set of validator.
+        /// Crerate a set of validators.
         /// </summary>
-        /// <returns>Returns a set of validator.</returns>
+        /// <returns>Returns a set of validators.</returns>
         public IRecordValidator Create()
         {
             return new CompositeValidator(this.validators);

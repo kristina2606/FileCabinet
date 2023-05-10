@@ -4,7 +4,7 @@ using System.Xml.Serialization;
 namespace FileCabinetApp.Serializers.Xml
 {
     /// <summary>
-    ///  Fields for creating a list of record.
+    /// Represents the fields for creating a list of records in XML serialization.
     /// </summary>
     [XmlRoot("records")]
     public class RecordsSeralization
@@ -12,9 +12,7 @@ namespace FileCabinetApp.Serializers.Xml
         /// <summary>
         /// Gets or sets a list of record.
         /// </summary>
-        /// <value>
-        /// A list of record.
-        /// </value>
+        /// <value>A list of record.</value>
         [XmlElement("record")]
         public List<FileCabinetRecordSeralization> Records { get; set; }
     }

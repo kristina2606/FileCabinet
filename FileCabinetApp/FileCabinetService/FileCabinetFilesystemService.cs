@@ -11,7 +11,7 @@ using FileCabinetApp.RecordValidator;
 namespace FileCabinetApp.FileCabinetService
 {
     /// <summary>
-    /// Works with binary notation.
+    /// Provides functionality to work with the file system using binary notation.
     /// </summary>
     public class FileCabinetFilesystemService : IFileCabinetService
     {
@@ -27,8 +27,8 @@ namespace FileCabinetApp.FileCabinetService
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetFilesystemService"/> class.
         /// </summary>
-        /// <param name="fileStream">Open binary record stream.</param>
-        /// <param name="validator">Validation parameter.</param>
+        /// <param name="fileStream">The open binary file stream.</param>
+        /// <param name="validator">The record validator.</param>
         public FileCabinetFilesystemService(FileStream fileStream, IRecordValidator validator)
         {
             this.fileStream = fileStream;
@@ -40,9 +40,6 @@ namespace FileCabinetApp.FileCabinetService
         /// </summary>
         /// <param name="fileCabinetRecordNewData">The new date in the record.</param>
         /// <returns>Returns the id of the created record.</returns>
-        /// <exception cref="ArgumentNullException">If the firstName or lastName is equal null.</exception>
-        /// <exception cref="ArgumentException">The firstName or lastName length is less than 2 or greater than 60.The dateOfBirth is less than 01-Jun-1950 or greater today's date.
-        /// The gender isn't equal 'f' or 'm'. The height is less than 0 or greater than 250. The weight is less than 0.</exception>
         public int CreateRecord(FileCabinetRecordNewData fileCabinetRecordNewData)
         {
             this.validator.ValidateParametrs(fileCabinetRecordNewData);
@@ -62,7 +59,7 @@ namespace FileCabinetApp.FileCabinetService
         }
 
         /// <summary>
-        ///  Update an already existing record in binary file by id.
+        /// Updates an already existing record by id.
         /// </summary>
         /// <param name="id">The id of the record to be modified.</param>
         /// <param name="fileCabinetRecordNewData">The new date in the record.</param>
@@ -86,9 +83,9 @@ namespace FileCabinetApp.FileCabinetService
         }
 
         /// <summary>
-        /// Gets the number of all existed and deleted records stored in the file.
+        /// Gets the number of all existed and deleted records.
         /// </summary>
-        /// <returns>Returns the number of all existed and deleted records stored in the file.</returns>
+        /// <returns>Returns the number of all existed and deleted records.</returns>
         public (int activeRecords, int deletedRecords) GetStat()
         {
             int allRecords = (int)this.fileStream.Length / LengthOfOneRecord;
@@ -100,14 +97,14 @@ namespace FileCabinetApp.FileCabinetService
         /// <summary>
         /// Passes the state of an object.
         /// </summary>
-        /// <returns>Class containing the state of an object.</returns>
+        /// <returns>A class containing the state of an object.</returns>
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
             return new FileCabinetServiceSnapshot(this.GetExistingRecords().ToArray());
         }
 
         /// <summary>
-        /// Adding imported records to existing records.
+        /// Adds imported records to existing records.
         /// </summary>
         /// <param name="fileCabinetServiceSnapshot">Сlass instance.</param>
         public void Restore(FileCabinetServiceSnapshot fileCabinetServiceSnapshot)
@@ -148,9 +145,9 @@ namespace FileCabinetApp.FileCabinetService
         }
 
         /// <summary>
-        /// Delete record by id.
+        /// Deletes a record by id.
         /// </summary>
-        /// <param name="id">Record id to remove.</param>
+        /// <param name="id">The id of the record to remove.</param>
         public void Delete(int id)
         {
             if (!this.IsExist(id))
@@ -194,9 +191,9 @@ namespace FileCabinetApp.FileCabinetService
         }
 
         /// <summary>
-        /// Insert new record.
+        /// Inserts a new record.
         /// </summary>
-        /// <param name="record">New record from user.</param>
+        /// <param name="record">New record from the user.</param>
         public void Insert(FileCabinetRecord record)
         {
             if (this.IsExist(record.Id))
@@ -212,17 +209,17 @@ namespace FileCabinetApp.FileCabinetService
         /// </summary>
         /// <param name="conditions">Contains conditions with search parameters.</param>
         /// <param name="type">Contains an OR or AND operator.</param>
-        /// <returns>Returns finded records.</returns>
+        /// <returns>Returns found records.</returns>
         public IEnumerable<FileCabinetRecord> Find(Condition[] conditions, UnionType type)
         {
             return this.GetExistingRecords().Where(x => RecordMatcher.IsMatch(x, conditions, type));
         }
 
         /// <summary>
-        /// Checks if records with the specified id exists.
+        /// Checks if a record with the specified id exists.
         /// </summary>
         /// <param name="id">The id entered by the user.</param>
-        /// <returns>True if records exists and false if records don't exist.</returns>
+        /// <returns>True if the record exists, false if the record does not exist.</returns>
         public bool IsExist(int id)
         {
             return this.GetExistingRecords().Any(x => x.Id == id);

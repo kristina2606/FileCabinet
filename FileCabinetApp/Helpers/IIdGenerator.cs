@@ -1,20 +1,20 @@
 ﻿namespace FileCabinetApp.Helpers
 {
     /// <summary>
-    /// Generates the following id.
+    /// Generates unique identifiers.
     /// </summary>
     public interface IIdGenerator
     {
         /// <summary>
-        /// Generates the following id.
+        /// Generates the next unique identifier.
         /// </summary>
-        /// <returns>Next id.</returns>
+        /// <returns>The next unique identifier.</returns>
         int GetNext();
 
         /// <summary>
-        /// Sets initial id.
+        /// Sets the initial unique identifier.
         /// </summary>
-        /// <param name="id">Initial id.</param>
+        /// <param name="id">The initial unique identifier.</param>
         void SkipId(int id);
     }
 }

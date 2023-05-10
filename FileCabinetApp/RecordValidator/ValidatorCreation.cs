@@ -10,14 +10,13 @@ namespace FileCabinetApp.RecordValidator
     public static class ValidatorCreation
     {
         /// <summary>
-        /// Crerate a set of default validator.
+        /// Crerates a set of default validator.
         /// </summary>
-        /// <param name="validatorBuilder">The class to which the extension method belongs.</param>
+        /// <param name="validatorBuilder">The ValidatorBuilder instance.</param>
         /// <returns>Returns a set of default validator.</returns>
         public static IRecordValidator CreateDefault(this ValidatorBuilder validatorBuilder)
         {
             IConfigurationRoot config = GetConfigurationFromJsonFile();
-
             string validationRule = "default";
 
             var recordValidationConfig = config.GetSection(validationRule).Get<RecordValidationConfig>();
@@ -26,14 +25,13 @@ namespace FileCabinetApp.RecordValidator
         }
 
         /// <summary>
-        /// Crerate a set of custom validator.
+        /// Crerates a set of custom validator.
         /// </summary>
-        /// <param name="validatorBuilder">The class to which the extension method belongs.</param>
+        /// <param name="validatorBuilder">The ValidatorBuilder instance.</param>
         /// <returns>Returns a set of custom validator.</returns>
         public static IRecordValidator CreateCustom(this ValidatorBuilder validatorBuilder)
         {
             IConfigurationRoot config = GetConfigurationFromJsonFile();
-
             string validationRule = "custom";
 
             var recordValidationConfig = config.GetSection(validationRule).Get<RecordValidationConfig>();

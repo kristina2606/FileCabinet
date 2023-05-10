@@ -7,7 +7,7 @@ using FileCabinetApp.FileCabinetService.ServiceComponents;
 namespace FileCabinetApp.CommandHandlers.Commands
 {
     /// <summary>
-    /// Contain code for handling export requests.
+    /// Represents a command handler for handling export requests.
     /// </summary>
     public class ExportCommandHandler : ServiceCommandHandlerBase
     {
@@ -17,16 +17,16 @@ namespace FileCabinetApp.CommandHandlers.Commands
         /// <summary>
         /// Initializes a new instance of the <see cref="ExportCommandHandler"/> class.
         /// </summary>
-        /// <param name="service">Interface instance IFileCabinetServise.</param>
+        /// <param name="service">The file cabinet service.</param>
         public ExportCommandHandler(IFileCabinetService service)
             : base(service)
         {
         }
 
         /// <summary>
-        /// Handling for export requests.
+        /// Handles 'export' requests.
         /// </summary>
-        /// <param name="appCommand">>Configuratiion the application command and options.</param>
+        /// <param name="appCommand">The application command and options.</param>
         public override void Handle(AppCommandRequest appCommand)
         {
             if (!appCommand.Command.Equals("export", StringComparison.OrdinalIgnoreCase))
@@ -41,7 +41,7 @@ namespace FileCabinetApp.CommandHandlers.Commands
 
             if (exportParametrs.Length != 2)
             {
-                Console.WriteLine("You have entered an invalid export parameter. Two are needed.");
+                Console.WriteLine("Invalid export parameter. Two parameters are needed.");
                 return;
             }
 
@@ -50,18 +50,18 @@ namespace FileCabinetApp.CommandHandlers.Commands
 
             if (format != FileTypeCsv && format != FileTypeXml)
             {
-                Console.WriteLine("You entered an invalid format.");
+                Console.WriteLine("Invalid format entered.");
                 return;
             }
 
             var folder = Path.GetDirectoryName(path);
             if (!Directory.Exists(folder))
             {
-                Console.WriteLine($"Export failed: can't open file {path}.");
+                Console.WriteLine($"Export failed: Unable to open file {path}.");
             }
             else if (File.Exists(path))
             {
-                if (UserInputHelpers.ReadYesOrNo($"File is exist - rewrite {path}?", true))
+                if (UserInputHelpers.ReadYesOrNo($"The file already exists. Do you want to overwrite {path}?", true))
                 {
                     ExportData(makeSnapshot, format, path);
                 }
@@ -87,7 +87,7 @@ namespace FileCabinetApp.CommandHandlers.Commands
                 }
             }
 
-            Console.WriteLine($"All records are exported to file {path}.");
+            Console.WriteLine($"All records are exported to the file {path}.");
         }
     }
 }

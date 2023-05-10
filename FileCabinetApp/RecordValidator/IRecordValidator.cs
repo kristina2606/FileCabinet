@@ -10,7 +10,7 @@ namespace FileCabinetApp.RecordValidator
         /// <summary>
         /// Validate a new record from user input with new validate parametrs.
         /// </summary>
-        /// <param name="fileCabinetRecordNewData">The new date in the record.</param>
+        /// <param name="fileCabinetRecordNewData">The new data in the record.</param>
         void ValidateParametrs(FileCabinetRecordNewData fileCabinetRecordNewData);
     }
 }

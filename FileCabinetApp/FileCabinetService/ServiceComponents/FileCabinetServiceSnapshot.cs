@@ -8,7 +8,7 @@ using FileCabinetApp.Models;
 namespace FileCabinetApp.FileCabinetService.ServiceComponents
 {
     /// <summary>
-    /// Passes the state of an object.
+    /// Represents a snapshot of the FileCabinetService.
     /// </summary>
     public class FileCabinetServiceSnapshot
     {
@@ -31,17 +31,17 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
         }
 
         /// <summary>
-        /// Gets all imported data from a csv file.
+        /// Gets all records in the snapshot.
         /// </summary>
         /// <value>
-        /// All imported data from a csv file.
+        /// All records in the snapshot.
         /// </value>
         public ReadOnlyCollection<FileCabinetRecord> Records { get; private set; }
 
         /// <summary>
-        /// Creates an instance of the class and call the function to write the record to the .csv file.
+        /// Saves the records to a CSV file.
         /// </summary>
-        /// <param name="streamWriter">Path to create a file with records.</param>
+        /// <param name="streamWriter">The StreamWriter for the CSV file.</param>
         public void SaveToCsv(StreamWriter streamWriter)
         {
             var fileCabinetRecordCsv = new FileCabinetRecordCsvWriter(streamWriter);
@@ -54,9 +54,9 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
         }
 
         /// <summary>
-        /// Creates an instance of the class and call the function to write the record to the .xml file.
+        /// Saves the records to an XML file.
         /// </summary>
-        /// <param name="streamWriter">Path to create a file with records.</param>
+        /// <param name="streamWriter">The StreamWriter for the XML file.</param>
         public void SaveToXml(StreamWriter streamWriter)
         {
             using (XmlWriter xmlWriter = XmlWriter.Create(streamWriter))
@@ -75,9 +75,9 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
         }
 
         /// <summary>
-        /// Gets all imported data from a csv file.
+        /// Loads records from a CSV file.
         /// </summary>
-        /// <param name="reader">Path to import a file with records.</param>
+        /// <param name="reader">The StreamReader for the CSV file.</param>
         public void LoadFromCsv(StreamReader reader)
         {
             var fileCabinetRecordCsvReader = new FileCabinetRecordCsvReader(reader);
@@ -85,9 +85,9 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
         }
 
         /// <summary>
-        /// Gets all imported data from a xml file.
+        /// Loads records from an XML file.
         /// </summary>
-        /// <param name="reader">Path to import a file with records.</param>
+        /// <param name="reader">The StreamReader for the XML file.</param>
         public void LoadFromXml(StreamReader reader)
         {
             using (XmlReader xmlReader = XmlReader.Create(reader))

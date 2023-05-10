@@ -1,32 +1,32 @@
 ﻿namespace FileCabinetApp.CommandHandlers.Helpers
 {
     /// <summary>
-    /// Contain constant fo processing sql similar queries.
+    /// Contain constant fo processing SQL-similar queries.
     /// </summary>
     public static class QueryConstants
     {
         /// <summary>
-        /// Сonstant for customizing the field to update the record.
+        /// Constant for specifying the fields to update in a record.
         /// </summary>
         public const string Set = "set";
 
         /// <summary>
-        /// Record search constant.
+        /// Constant for specifying the record search condition.
         /// </summary>
         public const string Where = "where";
 
         /// <summary>
-        /// Constant with values for adding a new entry.
+        /// Constant for specifying the values for adding a new entry.
         /// </summary>
         public const string Values = "values";
 
         /// <summary>
-        /// Constant to union records.
+        /// Constant for specifying the logical AND operator.
         /// </summary>
         public const string And = "and";
 
         /// <summary>
-        /// Constant to union records.
+        /// Constant for specifying the logical OR operator.
         /// </summary>
         public const string Or = "or";
     }

@@ -3,7 +3,7 @@
 namespace FileCabinetApp.CommandHandlers.Commands
 {
     /// <summary>
-    /// Contain code for handling help requests.
+    /// Represents a command handler for handling help requests.
     /// </summary>
     public class HelpCommandHandler : CommandHandlerBase
     {
@@ -16,20 +16,20 @@ namespace FileCabinetApp.CommandHandlers.Commands
             new string[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
             new string[] { "stat", "displays statistics on records", "The 'stat' displays statistics on records." },
-            new string[] { "create", "creat new record", "The 'create' creat new record." },
-            new string[] { "export", "exports service data to .csv or .xml file.", "The 'export' exports service data to .csv or .xml file." },
-            new string[] { "import", "import data from .csv or .xml file.", "The 'import' import data from .csv or .xml file." },
+            new string[] { "create", "creates new record", "The 'create' creates new record." },
+            new string[] { "export", "exports service data to a .csv or .xml file.", "The 'export' exports service data to a .csv or .xml file." },
+            new string[] { "import", "imports data from a .csv or .xml file.", "The 'import' imports data from a .csv or .xml file." },
             new string[] { "purge", "defragments the data file.", "The 'purge' command defragments the data file." },
             new string[] { "insert", "adds a record using the passed data.", "The 'insert' adds a record using the passed data." },
-            new string[] { "delete", "delete record by predetermined criteria.", "The 'delete' delete record by predetermined criteria." },
-            new string[] { "update", "update record fields using the specified search criteria.", "The 'update' update record fields using the specified search criteria." },
-            new string[] { "select", "accept a list of fields to display and search criteria.", "The 'select' accept a list of fields to display and search criteria." },
+            new string[] { "delete", "deletes record based on the spetified criteria.", "The 'delete' deletes record  based on the spetified criteria." },
+            new string[] { "update", "updates record fields using the specified search criteria.", "The 'update' updates record fields using the specified search criteria." },
+            new string[] { "select", "accepts a list of fields to display and search criteria.", "The 'select' accepts a list of fields to display and search criteria." },
 };
 
         /// <summary>
-        /// Handling for help requests.
+        /// Handles 'help' requests.
         /// </summary>
-        /// <param name="appCommand">>Configuratiion the application command and options.</param>
+        /// <param name="appCommand">The application command and options.</param>
         public override void Handle(AppCommandRequest appCommand)
         {
             if (!appCommand.Command.Equals("help", StringComparison.OrdinalIgnoreCase))
@@ -47,7 +47,7 @@ namespace FileCabinetApp.CommandHandlers.Commands
                 }
                 else
                 {
-                    Console.WriteLine($"There is no explanation for '{appCommand.Parameters}' command.");
+                    Console.WriteLine($"There is no explanation for the '{appCommand.Parameters}' command.");
                 }
             }
             else
@@ -56,7 +56,7 @@ namespace FileCabinetApp.CommandHandlers.Commands
 
                 foreach (var helpMessage in this.helpMessages)
                 {
-                    Console.WriteLine("\t{0}\t- {1}", helpMessage[CommandHelpIndex], helpMessage[DescriptionHelpIndex]);
+                    Console.WriteLine($"\t{helpMessage[CommandHelpIndex]}\t- {helpMessage[DescriptionHelpIndex]}");
                 }
             }
 

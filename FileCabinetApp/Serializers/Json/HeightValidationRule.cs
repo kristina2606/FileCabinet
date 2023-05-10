@@ -3,25 +3,21 @@
 namespace FileCabinetApp.Serializers.Json
 {
     /// <summary>
-    /// Create anthropometry parametr fron .json configuration file.
+    /// Represents the height validation rule loaded from a JSON configuration file.
     /// </summary>
     public class HeightValidationRule
     {
         /// <summary>
-        /// Gets or sets minimum height value validation parametrs.
+        /// Gets or sets the minimum height value for validation.
         /// </summary>
-        /// <value>
-        /// First name validation parametrs.
-        /// </value>
+        /// <value>The minimum height value for validation.</value>
         [JsonProperty("minValue")]
         public int MinValue { get; set; }
 
         /// <summary>
-        /// Gets or sets maximum height value validation parametrs.
+        /// Gets or sets  the maximum height value for validation.
         /// </summary>
-        /// <value>
-        /// First name validation parametrs.
-        /// </value>
+        /// <value>The maximum height value for validation.</value>
         [JsonProperty("maxValue")]
         public int MaxValue { get; set; }
     }

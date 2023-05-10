@@ -9,7 +9,7 @@ using FileCabinetApp.Models;
 namespace FileCabinetApp.FileCabinetService.Reader
 {
     /// <summary>
-    /// Imports data from a csv file.
+    /// Reads data from a CSV file and imports it.
     /// </summary>
     public class FileCabinetRecordCsvReader
     {
@@ -18,16 +18,16 @@ namespace FileCabinetApp.FileCabinetService.Reader
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetRecordCsvReader"/> class.
         /// </summary>
-        /// <param name="reader">Path to import a csv file with records.</param>
+        /// <param name="reader">The StreamReader for the CSV file.</param>
         public FileCabinetRecordCsvReader(StreamReader reader)
         {
             this.reader = reader;
         }
 
         /// <summary>
-        /// Imports all datas from a csv file.
+        /// Reads all data from the CSV file and returns it as a list of FileCabinetRecord objects.
         /// </summary>
-        /// <returns>Returns all datas from a csv file.</returns>
+        /// <returns>A list of FileCabinetRecord objects.</returns>
         public IList<FileCabinetRecord> ReadAll()
         {
             IList<FileCabinetRecord> records = new List<FileCabinetRecord>();

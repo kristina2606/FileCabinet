@@ -14,14 +14,14 @@ namespace FileCabinetApp.RecordValidator
         /// <summary>
         /// Initializes a new instance of the <see cref="CompositeValidator"/> class.
         /// </summary>
-        /// <param name="validators">Type of validate parametrs.</param>
+        /// <param name="validators">The validators to include in the composite validator.</param>
         public CompositeValidator(IEnumerable<IRecordValidator> validators)
         {
             this.validators = validators.ToList();
         }
 
         /// <summary>
-        /// Validate a new record from user input with new validate parametrs.
+        /// Validates a new record with the specified parametrs.
         /// </summary>
         /// <param name="fileCabinetRecordNewData">The new date in the record.</param>
         public void ValidateParametrs(FileCabinetRecordNewData fileCabinetRecordNewData)

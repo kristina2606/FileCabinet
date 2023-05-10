@@ -3,7 +3,7 @@
 namespace FileCabinetApp.Models
 {
     /// <summary>
-    /// Gets new data from user input.
+    /// Represents the new data obtained from user input.
     /// </summary>
     public class FileCabinetRecordNewData
     {
@@ -22,12 +22,12 @@ namespace FileCabinetApp.Models
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetRecordNewData"/> class.
         /// </summary>
-        /// <param name="firstName">Gets first name from user input.</param>
-        /// <param name="lastName">Gets last name from user input.</param>
-        /// <param name="dateOfBirth">Gets date of birth from user input.</param>
-        /// <param name="gender">Gets gender from user input.</param>
-        /// <param name="height">Gets height from user input.</param>
-        /// <param name="weight">Gets weight from user input.</param>
+        /// <param name="firstName">The new first name obtained from user input.</param>
+        /// <param name="lastName">The new last name obtained from user input.</param>
+        /// <param name="dateOfBirth">The new date of birth obtained from user input.</param>
+        /// <param name="gender">The new gender obtained from user input.</param>
+        /// <param name="height">The new height obtained from user input.</param>
+        /// <param name="weight">The new weight obtained from user input.</param>
         public FileCabinetRecordNewData(string firstName, string lastName, DateTime dateOfBirth, char gender, short height, decimal weight)
         {
             this.firstName = firstName;
@@ -39,39 +39,39 @@ namespace FileCabinetApp.Models
         }
 
         /// <summary>
-        ///  Gets first name from user input.
+        ///  Gets the new first name obtained from user input.
         /// </summary>
-        /// <value> New first name of a person. </value>
+        /// <value>The new first name of a person. </value>
         public string FirstName => this.firstName;
 
         /// <summary>
-        /// Gets last name from user input.
+        /// Gets the new last name obtained from user input.
         /// </summary>
-        /// <value> New last name of a person. </value>
+        /// <value>The new last name of a person. </value>
         public string LastName => this.lastName;
 
         /// <summary>
-        /// Gets date of birth from user input.
+        /// Gets the new date of birth obtained from user input.
         /// </summary>
-        /// <value> New date of birth of a person. </value>
+        /// <value>The new date of birth of a person. </value>
         public DateTime DateOfBirth => this.dateOfBirth;
 
         /// <summary>
-        /// Gets gender from user input.
+        /// Gets the new gender obtained from user input.
         /// </summary>
-        /// <value> New gender of a person. </value>
+        /// <value>The new gender of a person. </value>
         public char Gender => this.gender;
 
         /// <summary>
-        /// Gets height from user input.
+        /// Gets the new height obtained from user input.
         /// </summary>
-        /// <value> New height of a person. </value>
+        /// <value>The new height of a person. </value>
         public short Height => this.height;
 
         /// <summary>
-        /// Gets weight from user input.
+        /// Gets the new weight obtained from user input.
         /// </summary>
-        /// <value> New weight of a person. </value>
+        /// <value>The new weight of a person. </value>
         public decimal Weight => this.weight;
     }
 }

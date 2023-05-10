@@ -4,15 +4,15 @@ using System.Globalization;
 namespace FileCabinetApp.UserInputValidator
 {
     /// <summary>
-    /// Validate a new record from user input with settings for adults.
+    /// Represents a user input validation for a new record with custom settings for adult.
     /// </summary>
     public class UserInputValidationCustom : IUserInputValidation
     {
         /// <summary>
-        /// Gets first name from user input.
+        /// Validates the first name from user input.
         /// </summary>
-        /// <param name="firstName">First name of a person.</param>
-        /// <returns>Returns information about how the validation went and the value being validated.</returns>
+        /// <param name="firstName">The first name of a person.</param>
+        /// <returns>Returns a tuple with information about how the validation went and the value being validated.</returns>
         public Tuple<bool, string> ValidateFirstName(string firstName)
         {
             bool validationStatus = true;
@@ -25,10 +25,10 @@ namespace FileCabinetApp.UserInputValidator
         }
 
         /// <summary>
-        /// Gets last name from user input.
+        /// Validates the last name from user input.
         /// </summary>
-        /// <param name="lastName">Last name of a person.</param>
-        /// <returns>Returns information about how the validation went and the value being validated.</returns>
+        /// <param name="lastName">The last name of a person.</param>
+        /// <returns>Returns a tuple with information about how the validation went and the value being validated.</returns>
         public Tuple<bool, string> ValidateLastName(string lastName)
         {
             bool validationStatus = true;
@@ -41,10 +41,10 @@ namespace FileCabinetApp.UserInputValidator
         }
 
         /// <summary>
-        /// Gets date of birth from user input.
+        /// Validates the date of birth from user input.
         /// </summary>
-        /// <param name="dateOfBirth">Date of birth of a person.</param>
-        /// <returns>Returns information about how the validation went and the value being validated.</returns>
+        /// <param name="dateOfBirth">The date of birth of a person.</param>
+        /// <returns>Returns a tuple with information about how the validation went and the value being validated.</returns>
         public Tuple<bool, string> ValidateDateOfBirth(DateTime dateOfBirth)
         {
             bool validationStatus = true;
@@ -57,10 +57,10 @@ namespace FileCabinetApp.UserInputValidator
         }
 
         /// <summary>
-        /// Gets gender from user input.
+        /// Validates the gender from user input.
         /// </summary>
-        /// <param name="gender">Gender of a person.</param>
-        /// <returns>Returns information about how the validation went and the value being validated.</returns>
+        /// <param name="gender">The gender of a person.</param>
+        /// <returns>Returns a tuple with information about how the validation went and the value being validated.</returns>
         public Tuple<bool, string> ValidateGender(char gender)
         {
             bool validationStatus = true;
@@ -73,10 +73,10 @@ namespace FileCabinetApp.UserInputValidator
         }
 
         /// <summary>
-        /// Gets height from user input.
+        /// Validates the height from user input.
         /// </summary>
-        /// <param name="height">Height of a person.</param>
-        /// <returns>Returns information about how the validation went and the value being validated.</returns>
+        /// <param name="height">The height of a person.</param>
+        /// <returns>Returns a tuple with information about how the validation went and the value being validated.</returns>
         public Tuple<bool, string> ValidateHeight(short height)
         {
             bool validationStatus = true;
@@ -89,10 +89,10 @@ namespace FileCabinetApp.UserInputValidator
         }
 
         /// <summary>
-        /// Gets weight from user input.
+        /// Validates the weight from user input.
         /// </summary>
-        /// <param name="weight">Weight of a person.</param>
-        /// <returns>Returns information about how the validation went and the value being validated.</returns>
+        /// <param name="weight">The weight of a person.</param>
+        /// <returns>Returns a tuple with information about how the validation went and the value being validated.</returns>
         public Tuple<bool, string> ValidateWeight(decimal weight)
         {
             bool validationStatus = true;

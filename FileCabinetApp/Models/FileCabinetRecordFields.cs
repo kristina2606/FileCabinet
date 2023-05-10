@@ -1,7 +1,7 @@
 ﻿namespace FileCabinetApp.Models
 {
     /// <summary>
-    /// Fields for searchig parapetrs.
+    /// Represents the fields used for searchig parameters in FileCabinetRecord.
     /// </summary>
     public enum FileCabinetRecordFields
     {
@@ -21,7 +21,7 @@
         LastName,
 
         /// <summary>
-        /// The  date of birth field.
+        /// The date of birth field.
         /// </summary>
         DateOfBirth,
 

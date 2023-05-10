@@ -3,25 +3,21 @@
 namespace FileCabinetApp.Serializers.Json
 {
     /// <summary>
-    /// Create anthropometry parametr fron .json configuration file.
+    /// Represents the weight validation parameters loaded from a JSON configuration file.
     /// </summary>
     public class WeightValidationRule
     {
         /// <summary>
-        /// Gets or sets minimum weight value validation parametrs.
+        /// Gets or sets the minimum weight value for validation.
         /// </summary>
-        /// <value>
-        /// First name validation parametrs.
-        /// </value>
+        /// <value>The minimum weight value for validation.</value>
         [JsonProperty("minValue")]
         public int MinValue { get; set; }
 
         /// <summary>
-        /// Gets or sets maximum weight value validation parametrs.
+        /// Gets or sets the maximum weight value for validation.
         /// </summary>
-        /// <value>
-        /// First name validation parametrs.
-        /// </value>
+        /// <value>The maximum weight value for validation.</value>
         [JsonProperty("maxValue")]
         public int MaxValue { get; set; }
     }

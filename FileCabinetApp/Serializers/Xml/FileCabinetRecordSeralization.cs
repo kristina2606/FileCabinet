@@ -6,14 +6,14 @@ using System.Xml.Serialization;
 namespace FileCabinetApp.Serializers.Xml
 {
     /// <summary>
-    /// Fields for creating a record.
+    /// Represents the fields for creating a record in XML serialization.
     /// </summary>
     public class FileCabinetRecordSeralization
     {
         /// <summary>
         /// Gets or sets record id.
         /// </summary>
-        /// <value>Record id of a person.</value>
+        /// <value>The record id of a person.</value>
         [XmlAttribute(AttributeName = "id")]
         public int Id { get; set; }
 
@@ -32,11 +32,9 @@ namespace FileCabinetApp.Serializers.Xml
         public DateTime DateOfBirth { get; set; }
 
         /// <summary>
-        /// Gets or sets dummy string with correct DateTime format.
+        /// Gets or sets the string representation of the date of birth.
         /// </summary>
-        /// <value>
-        /// Dummy string with correct DateTime format.
-        /// </value>
+        /// <value>The string representation of the date of birth.</value>
         [XmlElement("dateOfBirth")]
         public string DateOfBirthString
         {
@@ -52,11 +50,9 @@ namespace FileCabinetApp.Serializers.Xml
         public char Gender { get; set; }
 
         /// <summary>
-        /// Gets or sets dummy string with correct char format.
+        /// Gets or sets the string representation of the gender.
         /// </summary>
-        /// <value>
-        /// Dummy string with correct char format.
-        /// </value>
+        /// <value>The string representation of the gender.</value>
         [XmlElement("gender")]
         public string GenderString
         {

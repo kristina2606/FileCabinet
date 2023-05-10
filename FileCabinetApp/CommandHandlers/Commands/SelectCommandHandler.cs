@@ -11,7 +11,7 @@ using FileCabinetApp.UserInputValidator;
 namespace FileCabinetApp.CommandHandlers.Commands
 {
     /// <summary>
-    /// Contain code for handling select requests.
+    /// Represents a command handler for handling select requests.
     /// </summary>
     public class SelectCommandHandler : ServiceCommandHandlerBase
     {
@@ -29,8 +29,8 @@ namespace FileCabinetApp.CommandHandlers.Commands
         /// <summary>
         /// Initializes a new instance of the <see cref="SelectCommandHandler"/> class.
         /// </summary>
-        /// <param name="service">Interface instance IFileCabinetServise.</param>
-        /// <param name="inputValidation">Interface instance IUserInputValidation.</param>
+        /// <param name="service">The file cabinet service.</param>
+        /// <param name="inputValidation">The user input validation.</param>
         public SelectCommandHandler(IFileCabinetService service, IUserInputValidation inputValidation)
             : base(service)
         {
@@ -38,9 +38,9 @@ namespace FileCabinetApp.CommandHandlers.Commands
         }
 
         /// <summary>
-        /// Handling for select requests.
+        /// Handles 'select' requests.
         /// </summary>
-        /// <param name="appCommand">>Configuratiion the application command and options.</param>
+        /// <param name="appCommand">The application command and options.</param>
         public override void Handle(AppCommandRequest appCommand)
         {
             if (!appCommand.Command.Equals("select", this.stringComparison))
@@ -83,7 +83,7 @@ namespace FileCabinetApp.CommandHandlers.Commands
             }
             catch (ArgumentException ex)
             {
-                Console.WriteLine($"Error. {ex.Message}.");
+                Console.WriteLine($"Error: {ex.Message}.");
             }
         }
 
@@ -115,7 +115,7 @@ namespace FileCabinetApp.CommandHandlers.Commands
             {
                 if (!Enum.TryParse<FileCabinetRecordFields>(field, true, out var enumField))
                 {
-                    throw new ArgumentException("You entered wrong parameters for print.");
+                    throw new ArgumentException("Invalid parameters for printing.");
                 }
 
                 fieldsToPrinr.Add(enumField);

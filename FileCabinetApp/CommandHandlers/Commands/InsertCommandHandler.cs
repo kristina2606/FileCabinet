@@ -8,7 +8,7 @@ using FileCabinetApp.UserInputValidator;
 namespace FileCabinetApp.CommandHandlers.Commands
 {
     /// <summary>
-    /// Contain code for handling insert requests.
+    /// Represents a command handler for handling insert requests.
     /// </summary>
     public class InsertCommandHandler : ServiceCommandHandlerBase
     {
@@ -19,8 +19,8 @@ namespace FileCabinetApp.CommandHandlers.Commands
         /// <summary>
         /// Initializes a new instance of the <see cref="InsertCommandHandler"/> class.
         /// </summary>
-        /// <param name="service">Interface instance IFileCabinetServise.</param>
-        /// <param name="inputValidation">Interface instance IUserInputValidation.</param>
+        /// <param name="service">The file cabinet service.</param>
+        /// <param name="inputValidation">The user input validation.</param>
         public InsertCommandHandler(IFileCabinetService service, IUserInputValidation inputValidation)
             : base(service)
         {
@@ -28,9 +28,9 @@ namespace FileCabinetApp.CommandHandlers.Commands
         }
 
         /// <summary>
-        /// Handling for insert requests.
+        /// Handles 'insert' requests.
         /// </summary>
-        /// <param name="appCommand">>Configuratiion the application command and options.</param>
+        /// <param name="appCommand">The application command and options.</param>
         public override void Handle(AppCommandRequest appCommand)
         {
             if (!appCommand.Command.Equals("insert", this.stringComparison))
@@ -43,7 +43,7 @@ namespace FileCabinetApp.CommandHandlers.Commands
 
             if (parametrs.Length != 2)
             {
-                Console.WriteLine("You introduced an incorrect data.");
+                Console.WriteLine("Incorrect data entered.");
                 return;
             }
 

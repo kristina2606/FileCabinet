@@ -3,61 +3,49 @@
 namespace FileCabinetApp.Serializers.Json
 {
     /// <summary>
-    /// Create structure to validation parametrs fron .json configuration file.
+    /// Represents the record validation configuration loaded from a JSON configuration file.
     /// </summary>
     public class RecordValidationConfig
     {
         /// <summary>
-        /// Gets or sets first name validation parametrs.
+        /// Gets or sets the validation parameters for the first name.
         /// </summary>
-        /// <value>
-        /// First name validation parametrs.
-        /// </value>
+        /// <value>The validation parameters for the first name.</value>
         [JsonProperty("firstName")]
         public NameValidationRule FirstName { get; set; }
 
         /// <summary>
-        /// Gets or sets last name validation parametrs.
+        /// Gets or sets the validation parameters for the last name.
         /// </summary>
-        /// <value>
-        /// Last name validation parametrs.
-        /// </value>
+        /// <value>The validation parameters for the last name.</value>
         [JsonProperty("lastName")]
         public NameValidationRule LastName { get; set; }
 
         /// <summary>
-        /// Gets or sets date of birth validation parametrs.
+        /// Gets or sets the validation parameters for the date of birth.
         /// </summary>
-        /// <value>
-        /// Date of birth name validation parametrs.
-        /// </value>
+        /// <value>The validation parameters for the date of birth.</value>
         [JsonProperty("dateOfBirth")]
         public DateOfBirthValidationRule DateOfBirth { get; set; }
 
         /// <summary>
-        /// Gets or sets gender validation parametrs.
+        /// Gets or sets the validation parameters for the gender.
         /// </summary>
-        /// <value>
-        /// Gender validation parametrs.
-        /// </value>
+        /// <value>The validation parameters for the gender.</value>
         [JsonProperty("gender")]
         public GenderValidationRule Gender { get; set; }
 
         /// <summary>
-        /// Gets or sets height validation parametrs.
+        /// Gets or sets the validation parameters for the height.
         /// </summary>
-        /// <value>
-        /// Height validation parametrs.
-        /// </value>
+        /// <value>The validation parameters for the height.</value>
         [JsonProperty("height")]
         public HeightValidationRule Height { get; set; }
 
         /// <summary>
-        /// Gets or sets weight validation parametrs.
+        /// Gets or sets the validation parameters for the weight.
         /// </summary>
-        /// <value>
-        /// Weight validation parametrs.
-        /// </value>
+        /// <value>The validation parameters for the weight.</value>
         [JsonProperty("weight")]
         public WeightValidationRule Weight { get; set; }
     }

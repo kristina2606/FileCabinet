@@ -7,7 +7,7 @@ using FileCabinetApp.Helpers;
 namespace FileCabinetApp.CommandHandlers.Commands
 {
     /// <summary>
-    /// Contain code for handling import requests.
+    /// Represents a command handler for handling import requests.
     /// </summary>
     public class ImportCommandHandler : ServiceCommandHandlerBase
     {
@@ -17,16 +17,16 @@ namespace FileCabinetApp.CommandHandlers.Commands
         /// <summary>
         /// Initializes a new instance of the <see cref="ImportCommandHandler"/> class.
         /// </summary>
-        /// <param name="service">Interface instance IFileCabinetServise.</param>
+        /// <param name="service">The file cabinet service.</param>
         public ImportCommandHandler(IFileCabinetService service)
             : base(service)
         {
         }
 
         /// <summary>
-        /// Handling for import requests.
+        /// Handles 'import' requests.
         /// </summary>
-        /// <param name="appCommand">>Configuratiion the application command and options.</param>
+        /// <param name="appCommand">The application command and options.</param>
         public override void Handle(AppCommandRequest appCommand)
         {
             if (!appCommand.Command.Equals("import", StringComparison.OrdinalIgnoreCase))
@@ -39,7 +39,7 @@ namespace FileCabinetApp.CommandHandlers.Commands
 
             if (importParametrs.Length != 2)
             {
-                Console.WriteLine("You have entered an invalid export parameter. Two are needed.");
+                Console.WriteLine("Invalid import parameters. Two parameters are needed.");
                 return;
             }
 
@@ -48,13 +48,13 @@ namespace FileCabinetApp.CommandHandlers.Commands
 
             if (format != FileTypeCsv && format != FileTypeXml)
             {
-                Console.WriteLine("You entered an invalid format.");
+                Console.WriteLine("Invalid format specified.");
                 return;
             }
 
             if (!File.Exists(path))
             {
-                Console.WriteLine($"Import error: {path} is not exist.");
+                Console.WriteLine($"Import error: {path} does not exist.");
                 return;
             }
 
@@ -86,7 +86,7 @@ namespace FileCabinetApp.CommandHandlers.Commands
                     }
                 }
 
-                Console.WriteLine($"All records were imported from {path}.");
+                Console.WriteLine($"All records were imported from '{path}'.");
             }
         }
     }

@@ -6,17 +6,17 @@ using FileCabinetApp.UserInputValidator;
 namespace FileCabinetApp.CommandHandlers.Helpers
 {
     /// <summary>
-    /// User input validation.
+    /// Contains helper method for user input validation.
     /// </summary>
     public static class UserInputHelpers
     {
         /// <summary>
-        /// Validate user input.
+        /// Reads and validates user input.
         /// </summary>
-        /// <typeparam name="T">Generic types.</typeparam>
-        /// <param name="converter">Converts a string to a value of the required type.</param>
-        /// <param name="validator">Checks the value against the criteria.</param>
-        /// <returns>Resulting value.</returns>
+        /// <typeparam name="T">The generic type.</typeparam>
+        /// <param name="converter">A function that converts a string to the desired type.</param>
+        /// <param name="validator">A function that validates the converted value.</param>
+        /// <returns>The resulting value.</returns>
         public static T ReadInput<T>(Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator)
         {
             do
@@ -47,11 +47,11 @@ namespace FileCabinetApp.CommandHandlers.Helpers
         }
 
         /// <summary>
-        /// Promt [Y/n] oor [y/N] for user.
+        /// Prompts the user for a yes or no answer.
         /// </summary>
-        /// <param name="prompt">Information about the data to be overwritten. </param>
-        /// <param name="defaultAnswer">Default response if the user does not enter anything.</param>
-        /// <returns>Returns the user's choice.</returns>
+        /// <param name="prompt">The information about the data to be overwritten.</param>
+        /// <param name="defaultAnswer">The default response if the user does not enter anything.</param>
+        /// <returns>The user's choice.</returns>
         public static bool ReadYesOrNo(string prompt, bool defaultAnswer)
         {
             string chooseAnswer;
@@ -94,14 +94,14 @@ namespace FileCabinetApp.CommandHandlers.Helpers
         }
 
         /// <summary>
-        /// Validate user input parametrs.
+        /// Converts and validates user input parameters.
         /// </summary>
-        /// <typeparam name="T">Generic types.</typeparam>
-        /// <param name="converter">Converts a string to a value of the required type.</param>
-        /// <param name="validator">Checks the value against the criteria.</param>
+        /// <typeparam name="T">The generic type.</typeparam>
+        /// <param name="converter">A function that converts a string to the desired type.</param>
+        /// <param name="validator">A function that validates the converted value.</param>
         /// <param name="value">The string value to be converted and validated.</param>
-        /// <returns>>Resulting value.</returns>
-        /// <exception cref="ArgumentException">An exception with an error message received from the validator function.</exception>
+        /// <returns>The resulting value.</returns>
+        /// <exception cref="ArgumentException">Thrown when the validation fails.</exception>
         public static T Convert<T>(Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator, string value)
         {
             var conversionResult = converter(value);
@@ -118,7 +118,7 @@ namespace FileCabinetApp.CommandHandlers.Helpers
         /// Creates an array of conditions based on the specified array of fields.
         /// </summary>
         /// <param name="fields">The array of fields to create conditions from.</param>
-        /// <param name="inputValidation">Interface instance IUserInputValidation.</param>
+        /// <param name="inputValidation">The user input validation.</param>
         /// <returns>>An array of conditions.</returns>
         public static Condition[] CreateConditions(string[] fields, IUserInputValidation inputValidation)
         {
@@ -135,7 +135,7 @@ namespace FileCabinetApp.CommandHandlers.Helpers
 
                 if (splitResult.Length != 2)
                 {
-                    throw new ArgumentException("You introduced an incorrect parametrs.");
+                    throw new ArgumentException("Incorrect parameters were provided.");
                 }
 
                 var field = splitResult[0];

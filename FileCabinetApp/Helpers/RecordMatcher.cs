@@ -4,18 +4,18 @@ using FileCabinetApp.Models;
 namespace FileCabinetApp.Helpers
 {
     /// <summary>
-    /// Checking if the record matches the conditions.
+    /// Provides methods for checking if a record matches specified conditions.
     /// </summary>
     public static class RecordMatcher
     {
         /// <summary>
-        /// Checks if the object matches the conditions passed in the array.
+        /// Checks if the record matches the conditions specified in the array.
         /// </summary>
-        /// <param name="record">Record for cheack.</param>
-        /// <param name="conditions">Array with conditions.</param>
-        /// <param name="type">Сompliance conditions.</param>
-        /// <returns>Result if record matches the conditions.</returns>
-        /// <exception cref="ArgumentException">If Condition didn't find.</exception>
+        /// <param name="record">The record to check.</param>
+        /// <param name="conditions">An array of conditions.</param>
+        /// <param name="type">The type of condition matching (UnionType.And or UnionType.Or).</param>
+        /// <returns>True if the record matches the conditions; otherwise, false.</returns>
+        /// <exception cref="ArgumentException">Thrown when an unknown search criteria is encountered.</exception>
         public static bool IsMatch(FileCabinetRecord record, Condition[] conditions, UnionType type)
         {
             if (conditions.Length == 0)

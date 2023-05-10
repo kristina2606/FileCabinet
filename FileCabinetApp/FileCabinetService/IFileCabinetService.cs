@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using FileCabinetApp.FileCabinetService.ServiceComponents;
 using FileCabinetApp.Models;
 
@@ -15,34 +14,31 @@ namespace FileCabinetApp.FileCabinetService
         /// </summary>
         /// <param name="fileCabinetRecordNewData">The new date in the record.</param>
         /// <returns>Returns the id of the created record.</returns>
-        /// <exception cref="ArgumentNullException">If the firstName or lastName is equal null.</exception>
-        /// <exception cref="ArgumentException">The firstName or lastName length is less than 2 or greater than 60.The dateOfBirth is less than 01-Jun-1950 or greater today's date.
-        /// The gender isn't equal 'f' or 'm'. The height is less than 0 or greater than 250. The weight is less than 0.</exception>
         int CreateRecord(FileCabinetRecordNewData fileCabinetRecordNewData);
 
         /// <summary>
-        /// Gets the count of all existed and deleted records.
+        /// Gets the count of all existing and deleted records.
         /// </summary>
-        /// <returns>Returns the count of all existing records.</returns>
+        /// <returns>Returns the number of all existed and deleted records.</returns>
         (int activeRecords, int deletedRecords) GetStat();
 
         /// <summary>
         /// Passes the state of an object.
         /// </summary>
-        /// <returns>Class containing the state of an object.</returns>
+        /// <returns>A class containing the state of an object.</returns>
         FileCabinetServiceSnapshot MakeSnapshot();
 
         /// <summary>
-        /// Adding imported records to existing records.
+        /// Adds imported records to existing records.
         /// </summary>
         /// <param name="fileCabinetServiceSnapshot">Сlass instance.</param>
         void Restore(FileCabinetServiceSnapshot fileCabinetServiceSnapshot);
 
         /// <summary>
-        /// Checks if records with the specified id exists.
+        /// Checks if a record with the specified id exists.
         /// </summary>
         /// <param name="id">The id entered by the user.</param>
-        /// <returns>True if records exists and false if records don't exist.</returns>
+        /// <returns>True if the record exists, false if the record does not exist.</returns>
         bool IsExist(int id);
 
         /// <summary>
@@ -52,9 +48,9 @@ namespace FileCabinetApp.FileCabinetService
         int Purge();
 
         /// <summary>
-        /// Insert new record.
+        /// Inserts a new record.
         /// </summary>
-        /// <param name="record">New record from user.</param>
+        /// <param name="record">New record from the user.</param>
         void Insert(FileCabinetRecord record);
 
         /// <summary>
@@ -62,21 +58,20 @@ namespace FileCabinetApp.FileCabinetService
         /// </summary>
         /// <param name="conditions">Contains conditions with search parameters.</param>
         /// <param name="type">Contains an OR or AND operator.</param>
-        /// <returns>Returns finded records.</returns>
+        /// <returns>Returns found records.</returns>
         IEnumerable<FileCabinetRecord> Find(Condition[] conditions, UnionType type);
 
         /// <summary>
-        /// Delete record by parametrs.
+        /// Deletes a record by id.
         /// </summary>
-        /// <param name="id">Record id to remove.</param>
+        /// <param name="id">The id of the record to remove.</param>
         void Delete(int id);
 
         /// <summary>
-        /// Update an already existing record by id.
+        /// Updates an already existing record by id.
         /// </summary>
         /// <param name="id">The id of the record to be modified.</param>
         /// <param name="fileCabinetRecordNewData">The new date in the record.</param>
-        /// <exception cref="ArgumentException">if records with the specified ID do not exist.</exception>
         void Update(int id, FileCabinetRecordNewData fileCabinetRecordNewData);
     }
 }

@@ -9,7 +9,7 @@ using FileCabinetApp.UserInputValidator;
 namespace FileCabinetApp.CommandHandlers.Commands
 {
     /// <summary>
-    /// Contain code for handling delete requests.
+    /// Represents a command handler for handling delete requests.
     /// </summary>
     public class DeleteCommandHandler : ServiceCommandHandlerBase
     {
@@ -19,18 +19,18 @@ namespace FileCabinetApp.CommandHandlers.Commands
         /// <summary>
         /// Initializes a new instance of the <see cref="DeleteCommandHandler"/> class.
         /// </summary>
-        /// <param name="service">Interface instance IFileCabinetServise.</param>
-        /// <param name="inputValidation">Interface instance IUserInputValidation.</param>
+        /// <param name="service">The file cabinet service.</param>
+        /// <param name="inputValidation">The user input validation.</param>
         public DeleteCommandHandler(IFileCabinetService service, IUserInputValidation inputValidation)
-            : base(service)
+                  : base(service)
         {
             this.validationRules = inputValidation;
         }
 
         /// <summary>
-        /// Handling for delete requests.
+        /// Handles 'delete' requests.
         /// </summary>
-        /// <param name="appCommand">>Configuratiion the application command and options.</param>
+        /// <param name="appCommand">The application command and options.</param>
         public override void Handle(AppCommandRequest appCommand)
         {
             if (!appCommand.Command.Equals("delete", this.stringComparison))
@@ -72,15 +72,15 @@ namespace FileCabinetApp.CommandHandlers.Commands
 
                 if (deletedRecords.Count == 0)
                 {
-                    Console.WriteLine($"'{string.Join(",", conditionsToSearch.Select(x => x.Value))}' value for delete not found.");
+                    Console.WriteLine($"'{string.Join(",", conditionsToSearch.Select(x => x.Value))}' value for deletion not found.");
                     return;
                 }
 
-                Console.WriteLine($"Records #{string.Join(", #", deletedRecords)} are deleted.");
+                Console.WriteLine($"Records #{string.Join(", #", deletedRecords)} have been deleted.");
             }
             catch
             {
-                Console.WriteLine($"Record with {parametrs[0]} parametr doesn't exists.");
+                Console.WriteLine($"Record with parametr {parametrs[0]}  does not exist.");
             }
         }
     }

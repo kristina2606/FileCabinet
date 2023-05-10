@@ -4,7 +4,7 @@ using FileCabinetApp.Models;
 namespace FileCabinetApp.RecordValidator
 {
     /// <summary>
-    /// Validate a new record from user input with 'height' validate parametrs.
+    /// Validates a new record from user input based on 'height' validation parametrs.
     /// </summary>
     public class HeightValidator : IRecordValidator
     {
@@ -14,8 +14,8 @@ namespace FileCabinetApp.RecordValidator
         /// <summary>
         /// Initializes a new instance of the <see cref="HeightValidator"/> class.
         /// </summary>
-        /// <param name="minValue">Min growth.</param>
-        /// <param name="maxValue">Max growth.</param>
+        /// <param name="minValue">The minimum allowed height.</param>
+        /// <param name="maxValue">The maximum allowed height.</param>
         public HeightValidator(int minValue, int maxValue)
         {
             this.minValue = minValue;
@@ -23,15 +23,15 @@ namespace FileCabinetApp.RecordValidator
         }
 
         /// <summary>
-        /// Validate a new record from user input with 'height' validate parametrs.
+        /// Validates a new record from user input based on 'height' validation parametrs.
         /// </summary>
-        /// <param name="fileCabinetRecordNewData">The new date in the record.</param>
-        /// <exception cref="ArgumentException">Exception if the incoming entry does not match the parameters.</exception>
+        /// <param name="fileCabinetRecordNewData">The new data in the record.</param>
+        /// <exception cref="ArgumentException">Thrown if the 'height' value does not match the allowed range.</exception>
         public void ValidateParametrs(FileCabinetRecordNewData fileCabinetRecordNewData)
         {
             if (fileCabinetRecordNewData.Height <= this.minValue || fileCabinetRecordNewData.Height > this.maxValue)
             {
-                throw new ArgumentException($"height less then {this.minValue} or more then{this.maxValue}.");
+                throw new ArgumentException($"Height must be between {this.minValue} and {this.maxValue}.");
             }
         }
     }

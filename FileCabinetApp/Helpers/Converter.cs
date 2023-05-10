@@ -5,15 +5,15 @@ using System.Linq;
 namespace FileCabinetApp.Helpers
 {
     /// <summary>
-    /// Converts a string to a value of the desired type.
+    /// Provides conversion methods for converting strings to various data types.
     /// </summary>
     public static class Converter
     {
         /// <summary>
-        /// Checks a string for characters.
+        /// Converts a string to a string value type.
         /// </summary>
-        /// <param name="name">Get string from user input.</param>
-        /// <returns>Returns information about how the validation went, the string to convert, and the converted data type.</returns>
+        /// <param name="name">The string value to convert.</param>
+        /// <returns>A tuple containing information about the conversion result, the original string, and the converted value.</returns>
         public static Tuple<bool, string, string> StringConverter(string name)
         {
             bool isConverted = IsStringCorrect(name);
@@ -22,10 +22,10 @@ namespace FileCabinetApp.Helpers
         }
 
         /// <summary>
-        /// Converts a string to a DateTime type.
+        /// Converts a string to a DateTime value type.
         /// </summary>
-        /// <param name="date">Get string from user input.</param>
-        /// <returns>Returns information about how the validation went, the string to convert, and the converted data type.</returns>
+        /// <param name="date">The string value to convert.</param>
+        /// <returns>A tuple containing information about the conversion result, the original string, and the converted value.</returns>
         public static Tuple<bool, string, DateTime> DateConverter(string date)
         {
             bool isConverted = DateTime.TryParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var day);
@@ -34,10 +34,10 @@ namespace FileCabinetApp.Helpers
         }
 
         /// <summary>
-        /// Converts a string to a char type.
+        /// Converts a string to a char value type.
         /// </summary>
-        /// <param name="inputGender">Get string from user input.</param>
-        /// <returns>Returns information about how the validation went, the string to convert, and the converted data type.</returns>
+        /// <param name="inputGender">The string value to convert.</param>
+        /// <returns>A tuple containing information about the conversion result, the original string, and the converted value.</returns>
         public static Tuple<bool, string, char> CharConverter(string inputGender)
         {
             bool isConverted = char.TryParse(inputGender, out var gender);
@@ -46,10 +46,10 @@ namespace FileCabinetApp.Helpers
         }
 
         /// <summary>
-        /// Converts a string to a short type.
+        /// Converts a string to a short value type.
         /// </summary>
-        /// <param name="inputHeight">Get string from user input.</param>
-        /// <returns>Returns information about how the validation went, the string to convert, and the converted data type.</returns>
+        /// <param name="inputHeight">The string value to convert.</param>
+        /// <returns>A tuple containing information about the conversion result, the original string, and the converted value.</returns>
         public static Tuple<bool, string, short> ShortConverter(string inputHeight)
         {
             bool isConverted = short.TryParse(inputHeight, CultureInfo.InvariantCulture, out var height);
@@ -58,10 +58,10 @@ namespace FileCabinetApp.Helpers
         }
 
         /// <summary>
-        /// Converts a string to a decimal type.
+        /// Converts a string to a decimal value type.
         /// </summary>
-        /// <param name="inputWeight">Get string from user input.</param>
-        /// <returns>Returns information about how the validation went, the string to convert, and the converted data type.</returns>
+        /// <param name="inputWeight">The string value to convert.</param>
+        /// <returns>A tuple containing information about the conversion result, the original string, and the converted value.</returns>
         public static Tuple<bool, string, decimal> DecimalConverter(string inputWeight)
         {
             bool isConverted = short.TryParse(inputWeight, CultureInfo.InvariantCulture, out var weight);
@@ -70,10 +70,10 @@ namespace FileCabinetApp.Helpers
         }
 
         /// <summary>
-        /// Converts a string to a integer type.
+        /// Converts a string to a int value type.
         /// </summary>
-        /// <param name="inputNumber">Get string from user input.</param>
-        /// <returns>Returns information about how the validation went, the string to convert, and the converted data type.</returns>
+        /// <param name="inputNumber">The string value to convert.</param>
+        /// <returns>A tuple containing information about the conversion result, the original string, and the converted value.</returns>
         public static Tuple<bool, string, int> IntConverter(string inputNumber)
         {
             bool isConverted = int.TryParse(inputNumber, CultureInfo.InvariantCulture, out var number);
@@ -83,7 +83,7 @@ namespace FileCabinetApp.Helpers
 
         private static bool IsStringCorrect(string name)
         {
-            return name.All(letter => char.IsLetter(letter));
+            return name.All(char.IsLetter);
         }
     }
 }

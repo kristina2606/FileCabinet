@@ -151,37 +151,42 @@ namespace FileCabinetApp.CommandHandlers.Helpers
                     Value = new FileCabinetRecord(),
                 };
 
-                switch (condition.Field)
-                {
-                    case FileCabinetRecordFields.Id:
-                        condition.Value.Id = Converter.IntConverter(value).Item3;
-                        break;
-                    case FileCabinetRecordFields.FirstName:
-                        condition.Value.FirstName = Convert(Converter.StringConverter, inputValidation.ValidateFirstName, value);
-                        break;
-                    case FileCabinetRecordFields.LastName:
-                        condition.Value.LastName = Convert(Converter.StringConverter, inputValidation.ValidateLastName, value);
-                        break;
-                    case FileCabinetRecordFields.DateOfBirth:
-                        condition.Value.DateOfBirth = Convert(Converter.DateConverter, inputValidation.ValidateDateOfBirth, value);
-                        break;
-                    case FileCabinetRecordFields.Gender:
-                        condition.Value.Gender = Convert(Converter.CharConverter, inputValidation.ValidateGender, value);
-                        break;
-                    case FileCabinetRecordFields.Height:
-                        condition.Value.Height = Convert(Converter.ShortConverter, inputValidation.ValidateHeight, value);
-                        break;
-                    case FileCabinetRecordFields.Weight:
-                        condition.Value.Weight = Convert(Converter.DecimalConverter, inputValidation.ValidateWeight, value);
-                        break;
-                    default:
-                        throw new ArgumentException($"Unknown search criteria: {condition.Field}");
-                }
+                SetNewValueByField(inputValidation, value, condition);
 
                 conditions[i] = condition;
             }
 
             return conditions;
+        }
+
+        private static void SetNewValueByField(IUserInputValidation inputValidation, string value, Condition condition)
+        {
+            switch (condition.Field)
+            {
+                case FileCabinetRecordFields.Id:
+                    condition.Value.Id = Converter.IntConverter(value).Item3;
+                    break;
+                case FileCabinetRecordFields.FirstName:
+                    condition.Value.FirstName = Convert(Converter.StringConverter, inputValidation.ValidateFirstName, value);
+                    break;
+                case FileCabinetRecordFields.LastName:
+                    condition.Value.LastName = Convert(Converter.StringConverter, inputValidation.ValidateLastName, value);
+                    break;
+                case FileCabinetRecordFields.DateOfBirth:
+                    condition.Value.DateOfBirth = Convert(Converter.DateConverter, inputValidation.ValidateDateOfBirth, value);
+                    break;
+                case FileCabinetRecordFields.Gender:
+                    condition.Value.Gender = Convert(Converter.CharConverter, inputValidation.ValidateGender, value);
+                    break;
+                case FileCabinetRecordFields.Height:
+                    condition.Value.Height = Convert(Converter.ShortConverter, inputValidation.ValidateHeight, value);
+                    break;
+                case FileCabinetRecordFields.Weight:
+                    condition.Value.Weight = Convert(Converter.DecimalConverter, inputValidation.ValidateWeight, value);
+                    break;
+                default:
+                    throw new ArgumentException($"Unknown search criteria: {condition.Field}");
+            }
         }
     }
 }

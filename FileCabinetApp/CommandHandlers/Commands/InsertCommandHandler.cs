@@ -70,30 +70,7 @@ namespace FileCabinetApp.CommandHandlers.Commands
                     var fieldForInsert = Enum.Parse<FileCabinetRecordFields>(fields[i].Trim().ToLowerInvariant(), true);
                     var valueForInsert = values[i].Trim();
 
-                    switch (fieldForInsert)
-                    {
-                        case FileCabinetRecordFields.Id:
-                            record.Id = Converter.IntConverter(valueForInsert).Item3;
-                            break;
-                        case FileCabinetRecordFields.FirstName:
-                            record.FirstName = UserInputHelpers.Convert(Converter.StringConverter, this.validationRules.ValidateFirstName, valueForInsert);
-                            break;
-                        case FileCabinetRecordFields.LastName:
-                            record.LastName = UserInputHelpers.Convert(Converter.StringConverter, this.validationRules.ValidateLastName, valueForInsert);
-                            break;
-                        case FileCabinetRecordFields.DateOfBirth:
-                            record.DateOfBirth = UserInputHelpers.Convert(Converter.DateConverter, this.validationRules.ValidateDateOfBirth, valueForInsert);
-                            break;
-                        case FileCabinetRecordFields.Gender:
-                            record.Gender = UserInputHelpers.Convert(Converter.CharConverter, this.validationRules.ValidateGender, valueForInsert);
-                            break;
-                        case FileCabinetRecordFields.Height:
-                            record.Height = UserInputHelpers.Convert(Converter.ShortConverter, this.validationRules.ValidateHeight, valueForInsert);
-                            break;
-                        case FileCabinetRecordFields.Weight:
-                            record.Weight = UserInputHelpers.Convert(Converter.DecimalConverter, this.validationRules.ValidateWeight, valueForInsert);
-                            break;
-                    }
+                    this.SetNewRecordByField(record, fieldForInsert, valueForInsert);
                 }
 
                 this.Service.Insert(record);
@@ -101,6 +78,34 @@ namespace FileCabinetApp.CommandHandlers.Commands
             catch (ArgumentException ex)
             {
                 Console.WriteLine(ex.Message);
+            }
+        }
+
+        private void SetNewRecordByField(FileCabinetRecord record, FileCabinetRecordFields fieldForInsert, string valueForInsert)
+        {
+            switch (fieldForInsert)
+            {
+                case FileCabinetRecordFields.Id:
+                    record.Id = Converter.IntConverter(valueForInsert).Item3;
+                    break;
+                case FileCabinetRecordFields.FirstName:
+                    record.FirstName = UserInputHelpers.Convert(Converter.StringConverter, this.validationRules.ValidateFirstName, valueForInsert);
+                    break;
+                case FileCabinetRecordFields.LastName:
+                    record.LastName = UserInputHelpers.Convert(Converter.StringConverter, this.validationRules.ValidateLastName, valueForInsert);
+                    break;
+                case FileCabinetRecordFields.DateOfBirth:
+                    record.DateOfBirth = UserInputHelpers.Convert(Converter.DateConverter, this.validationRules.ValidateDateOfBirth, valueForInsert);
+                    break;
+                case FileCabinetRecordFields.Gender:
+                    record.Gender = UserInputHelpers.Convert(Converter.CharConverter, this.validationRules.ValidateGender, valueForInsert);
+                    break;
+                case FileCabinetRecordFields.Height:
+                    record.Height = UserInputHelpers.Convert(Converter.ShortConverter, this.validationRules.ValidateHeight, valueForInsert);
+                    break;
+                case FileCabinetRecordFields.Weight:
+                    record.Weight = UserInputHelpers.Convert(Converter.DecimalConverter, this.validationRules.ValidateWeight, valueForInsert);
+                    break;
             }
         }
     }

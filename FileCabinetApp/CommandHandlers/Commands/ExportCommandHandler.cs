@@ -57,18 +57,16 @@ namespace FileCabinetApp.CommandHandlers.Commands
             if (!Directory.Exists(folder))
             {
                 Console.WriteLine($"Export failed: Unable to open file {path}.");
+                return;
             }
-            else if (File.Exists(path))
-            {
-                if (UserInputHelpers.ReadYesOrNo($"The file already exists. Do you want to overwrite {path}?", true))
-                {
-                    ExportData(snapshot, format, path);
-                }
-            }
-            else
+
+            if (File.Exists(path) && UserInputHelpers.ReadYesOrNo($"The file already exists. Do you want to overwrite {path}?", true))
             {
                 ExportData(snapshot, format, path);
+                return;
             }
+
+            ExportData(snapshot, format, path);
         }
 
         private static void ExportData(FileCabinetServiceSnapshot snapshot, string format, string path)

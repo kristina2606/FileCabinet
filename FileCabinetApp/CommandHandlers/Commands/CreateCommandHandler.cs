@@ -18,11 +18,11 @@ namespace FileCabinetApp.CommandHandlers.Commands
         /// Initializes a new instance of the <see cref="CreateCommandHandler"/> class.
         /// </summary>
         /// <param name="service">The file cabinet service.</param>
-        /// <param name="inputValidation">The user input validation.</param>
-        public CreateCommandHandler(IFileCabinetService service, IUserInputValidation inputValidation)
+        /// <param name="inputValidationRules">The user input validation.</param>
+        public CreateCommandHandler(IFileCabinetService service, IUserInputValidation inputValidationRules)
             : base(service)
         {
-            this.validationRules = inputValidation;
+            this.validationRules = inputValidationRules;
         }
 
         /// <summary>
@@ -55,8 +55,8 @@ namespace FileCabinetApp.CommandHandlers.Commands
             Console.Write("Weight: ");
             var weight = UserInputHelpers.ReadInput(Converter.DecimalConverter, this.validationRules.ValidateWeight);
 
-            var fileCabinetRecordNewData = new FileCabinetRecordNewData(firstName, lastName, dateOfBirth, gender, height, weight);
-            int recordId = this.Service.CreateRecord(fileCabinetRecordNewData);
+            var newData = new FileCabinetRecordNewData(firstName, lastName, dateOfBirth, gender, height, weight);
+            int recordId = this.Service.CreateRecord(newData);
 
             Console.WriteLine($"Record #{recordId} is created.");
         }

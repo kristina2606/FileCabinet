@@ -30,16 +30,15 @@ namespace FileCabinetApp.FileCabinetService.Reader
         /// <returns>A list of FileCabinetRecord objects.</returns>
         public IList<FileCabinetRecord> ReadAll()
         {
-            IList<FileCabinetRecord> records = new List<FileCabinetRecord>();
+            var records = new List<FileCabinetRecord>();
 
             this.reader.ReadLine();
             while (this.reader.Peek() != -1)
             {
                 var csvLine = this.reader.ReadLine();
-                string[] values = csvLine
-                    .Split(',')
-                    .Select(p => p.Trim())
-                    .ToArray();
+                string[] values = csvLine.Split(',')
+                                         .Select(p => p.Trim())
+                                         .ToArray();
 
                 records.Add(new FileCabinetRecord
                 {

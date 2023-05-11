@@ -18,11 +18,11 @@ namespace FileCabinetApp.CommandHandlers.Commands
         /// Initializes a new instance of the <see cref="UpdateCommandHandler"/> class.
         /// </summary>
         /// <param name="service">The file cabinet service.</param>
-        /// <param name="inputValidation">The user input validation.</param>
-        public UpdateCommandHandler(IFileCabinetService service, IUserInputValidation inputValidation)
+        /// <param name="inputValidationRules">The user input validation.</param>
+        public UpdateCommandHandler(IFileCabinetService service, IUserInputValidation inputValidationRules)
             : base(service)
         {
-            this.validationRules = inputValidation;
+            this.validationRules = inputValidationRules;
         }
 
         /// <summary>
@@ -40,33 +40,31 @@ namespace FileCabinetApp.CommandHandlers.Commands
             var parameters = appCommand.Parameters.Split(QueryConstants.Where, StringSplitOptions.RemoveEmptyEntries);
 
             var updateFields = parameters[0].Replace(QueryConstants.Set, string.Empty, this.stringComparison)
-                                           .Replace("'", string.Empty, this.stringComparison)
-                                           .Split(',', StringSplitOptions.RemoveEmptyEntries);
+                                            .Replace("'", string.Empty, this.stringComparison)
+                                            .Split(',', StringSplitOptions.RemoveEmptyEntries);
 
             var conditionalOperator = UnionType.Or;
-            if (parameters.Length > 1 && parameters[1].Contains(QueryConstants.And, StringComparison.InvariantCultureIgnoreCase))
+            if (parameters.Length > 1 && parameters[1].Contains(QueryConstants.And, this.stringComparison))
             {
                 conditionalOperator = UnionType.And;
             }
 
             try
             {
-                Condition[] conditionsToSearch = Array.Empty<Condition>();
-
+                var searchConditions = Array.Empty<Condition>();
                 if (parameters.Length > 1)
                 {
                     var searchCriteria = parameters[1].ToLowerInvariant()
-                                  .Replace("'", string.Empty, this.stringComparison)
-                                  .Split(conditionalOperator.ToString().ToLowerInvariant(), StringSplitOptions.RemoveEmptyEntries);
+                                                      .Replace("'", string.Empty, this.stringComparison)
+                                                      .Split(conditionalOperator.ToString().ToLowerInvariant(), StringSplitOptions.RemoveEmptyEntries);
 
-                    conditionsToSearch = UserInputHelpers.CreateConditions(searchCriteria, this.validationRules);
+                    searchConditions = UserInputHelpers.CreateConditions(searchCriteria, this.validationRules);
                 }
 
-                Condition[] conditionsToUpdate = UserInputHelpers.CreateConditions(updateFields, this.validationRules);
+                var conditionsToUpdate = UserInputHelpers.CreateConditions(updateFields, this.validationRules);
+                var recordsToUpdate = this.Service.Find(searchConditions, conditionalOperator);
 
-                var recordsToUpdate = this.Service.Find(conditionsToSearch, conditionalOperator);
-
-                foreach (var record in recordsToUpdate)
+                foreach (FileCabinetRecord record in recordsToUpdate)
                 {
                     var newData = GetNewDataFromFields(record, conditionsToUpdate);
                     this.Service.Update(record.Id, newData);
@@ -89,7 +87,7 @@ namespace FileCabinetApp.CommandHandlers.Commands
             var height = record.Height;
             var weight = record.Weight;
 
-            foreach (var condition in conditionsToUpdate)
+            foreach (Condition condition in conditionsToUpdate)
             {
                 switch (condition.Field)
                 {

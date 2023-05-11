@@ -47,7 +47,7 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
             var fileCabinetRecordCsv = new FileCabinetRecordCsvWriter(streamWriter);
             streamWriter.WriteLine("Id,First Name,Last Name,Date of Birth,Gender,Height,Weight");
 
-            foreach (var record in this.records)
+            foreach (FileCabinetRecord record in this.records)
             {
                 fileCabinetRecordCsv.Write(record);
             }
@@ -59,19 +59,16 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
         /// <param name="streamWriter">The StreamWriter for the XML file.</param>
         public void SaveToXml(StreamWriter streamWriter)
         {
-            using (XmlWriter xmlWriter = XmlWriter.Create(streamWriter))
+            using XmlWriter xmlWriter = XmlWriter.Create(streamWriter);
+            var fileCabinetRecordXml = new FileCabinetRecordXmlWriter(xmlWriter);
+            xmlWriter.WriteStartElement("records");
+
+            foreach (FileCabinetRecord record in this.records)
             {
-                var fileCabinetRecordXml = new FileCabinetRecordXmlWriter(xmlWriter);
-
-                xmlWriter.WriteStartElement("records");
-
-                foreach (var record in this.records)
-                {
-                    fileCabinetRecordXml.Write(record);
-                }
-
-                xmlWriter.WriteEndElement();
+                fileCabinetRecordXml.Write(record);
             }
+
+            xmlWriter.WriteEndElement();
         }
 
         /// <summary>
@@ -90,11 +87,9 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
         /// <param name="reader">The StreamReader for the XML file.</param>
         public void LoadFromXml(StreamReader reader)
         {
-            using (XmlReader xmlReader = XmlReader.Create(reader))
-            {
-                var fileCabinetRecordXmlReader = new FileCabinetRecordXmlReader(xmlReader);
-                this.Records = new ReadOnlyCollection<FileCabinetRecord>(fileCabinetRecordXmlReader.ReadAll());
-            }
+            using XmlReader xmlReader = XmlReader.Create(reader);
+            var fileCabinetRecordXmlReader = new FileCabinetRecordXmlReader(xmlReader);
+            this.Records = new ReadOnlyCollection<FileCabinetRecord>(fileCabinetRecordXmlReader.ReadAll());
         }
     }
 }

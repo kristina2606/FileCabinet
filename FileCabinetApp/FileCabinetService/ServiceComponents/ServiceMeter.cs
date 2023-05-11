@@ -29,6 +29,7 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
         public int CreateRecord(FileCabinetRecordNewData fileCabinetRecordNewData)
         {
             Stopwatch stopWatch = Stopwatch.StartNew();
+
             try
             {
                 return this.service.CreateRecord(fileCabinetRecordNewData);
@@ -36,7 +37,6 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
             finally
             {
                 stopWatch.Stop();
-
                 MeasuringExecutionTime("Create", stopWatch);
             }
         }
@@ -49,6 +49,7 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
         public void Update(int id, FileCabinetRecordNewData fileCabinetRecordNewData)
         {
             Stopwatch stopWatch = Stopwatch.StartNew();
+
             try
             {
                 this.service.Update(id, fileCabinetRecordNewData);
@@ -56,7 +57,6 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
             finally
             {
                 stopWatch.Stop();
-
                 MeasuringExecutionTime("Edit", stopWatch);
             }
         }
@@ -68,6 +68,7 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
         public (int activeRecords, int deletedRecords) GetStat()
         {
             Stopwatch stopWatch = Stopwatch.StartNew();
+
             try
             {
                 return this.service.GetStat();
@@ -75,7 +76,6 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
             finally
             {
                 stopWatch.Stop();
-
                 MeasuringExecutionTime("Stat", stopWatch);
             }
         }
@@ -88,6 +88,7 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
         public bool IsExist(int id)
         {
             Stopwatch stopWatch = Stopwatch.StartNew();
+
             try
             {
                 return this.service.IsExist(id);
@@ -95,7 +96,6 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
             finally
             {
                 stopWatch.Stop();
-
                 MeasuringExecutionTime("IsExist", stopWatch);
             }
         }
@@ -107,6 +107,7 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
             Stopwatch stopWatch = Stopwatch.StartNew();
+
             try
             {
                 return this.service.MakeSnapshot();
@@ -114,7 +115,6 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
             finally
             {
                 stopWatch.Stop();
-
                 MeasuringExecutionTime("Export", stopWatch);
             }
         }
@@ -126,6 +126,7 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
         public int Purge()
         {
             Stopwatch stopWatch = Stopwatch.StartNew();
+
             try
             {
                 return this.service.Purge();
@@ -133,7 +134,6 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
             finally
             {
                 stopWatch.Stop();
-
                 MeasuringExecutionTime("Purge", stopWatch);
             }
         }
@@ -145,6 +145,7 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
         public void Delete(int id)
         {
             Stopwatch stopWatch = Stopwatch.StartNew();
+
             try
             {
                 this.service.Delete(id);
@@ -152,7 +153,6 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
             finally
             {
                 stopWatch.Stop();
-
                 MeasuringExecutionTime("Remove", stopWatch);
             }
         }
@@ -164,6 +164,7 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
         public void Restore(FileCabinetServiceSnapshot fileCabinetServiceSnapshot)
         {
             Stopwatch stopWatch = Stopwatch.StartNew();
+
             try
             {
                 this.service.Restore(fileCabinetServiceSnapshot);
@@ -171,7 +172,6 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
             finally
             {
                 stopWatch.Stop();
-
                 MeasuringExecutionTime("Import", stopWatch);
             }
         }
@@ -183,6 +183,7 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
         public void Insert(FileCabinetRecord record)
         {
             Stopwatch stopWatch = Stopwatch.StartNew();
+
             try
             {
                 this.service.Insert(record);
@@ -190,7 +191,6 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
             finally
             {
                 stopWatch.Stop();
-
                 MeasuringExecutionTime("Insert", stopWatch);
             }
         }
@@ -204,6 +204,7 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
         public IEnumerable<FileCabinetRecord> Find(Condition[] conditions, UnionType type)
         {
             Stopwatch stopWatch = Stopwatch.StartNew();
+
             try
             {
                 return this.service.Find(conditions, type);
@@ -211,7 +212,6 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
             finally
             {
                 stopWatch.Stop();
-
                 MeasuringExecutionTime("Find()", stopWatch);
             }
         }

@@ -28,7 +28,7 @@ namespace FileCabinetApp.CommandHandlers.Commands
             var similarCommands = new List<string>();
             int bestDistance = 2;
 
-            foreach (var command in this.allCommands)
+            foreach (string command in this.allCommands)
             {
                 if (bestDistance >= LevenshteinDistance(command, appCommand.Command))
                 {
@@ -39,7 +39,7 @@ namespace FileCabinetApp.CommandHandlers.Commands
             if (similarCommands.Count > 0)
             {
                 Console.WriteLine("The most similar commands are:");
-                foreach (var command in similarCommands)
+                foreach (string command in similarCommands)
                 {
                     Console.WriteLine(command);
                 }

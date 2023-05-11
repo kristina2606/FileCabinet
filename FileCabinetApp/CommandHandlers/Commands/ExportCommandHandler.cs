@@ -35,18 +35,17 @@ namespace FileCabinetApp.CommandHandlers.Commands
                 return;
             }
 
-            var makeSnapshot = this.Service.MakeSnapshot();
+            var snapshot = this.Service.MakeSnapshot();
 
-            var exportParametrs = appCommand.Parameters.Split(' ');
-
-            if (exportParametrs.Length != 2)
+            var exportParameters = appCommand.Parameters.Split(' ');
+            if (exportParameters.Length != 2)
             {
                 Console.WriteLine("Invalid export parameter. Two parameters are needed.");
                 return;
             }
 
-            var format = exportParametrs[0];
-            var path = exportParametrs[1];
+            var format = exportParameters[0];
+            var path = exportParameters[1];
 
             if (format != FileTypeCsv && format != FileTypeXml)
             {
@@ -63,26 +62,26 @@ namespace FileCabinetApp.CommandHandlers.Commands
             {
                 if (UserInputHelpers.ReadYesOrNo($"The file already exists. Do you want to overwrite {path}?", true))
                 {
-                    ExportData(makeSnapshot, format, path);
+                    ExportData(snapshot, format, path);
                 }
             }
             else
             {
-                ExportData(makeSnapshot, format, path);
+                ExportData(snapshot, format, path);
             }
         }
 
-        private static void ExportData(FileCabinetServiceSnapshot makeSnapshot, string format, string path)
+        private static void ExportData(FileCabinetServiceSnapshot snapshot, string format, string path)
         {
             using (var sw = new StreamWriter(path))
             {
                 switch (format)
                 {
                     case FileTypeCsv:
-                        makeSnapshot.SaveToCsv(sw);
+                        snapshot.SaveToCsv(sw);
                         break;
                     case FileTypeXml:
-                        makeSnapshot.SaveToXml(sw);
+                        snapshot.SaveToXml(sw);
                         break;
                 }
             }

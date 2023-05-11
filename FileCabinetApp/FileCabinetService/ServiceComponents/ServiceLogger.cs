@@ -50,7 +50,6 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
             catch (Exception ex)
             {
                 this.LoggingError(methodName, ex.Message);
-
                 throw;
             }
         }
@@ -68,6 +67,7 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
                                    $"Gender = '{fileCabinetRecordNewData.Gender}', Height = '{fileCabinetRecordNewData.Height}', weight = '{fileCabinetRecordNewData.Weight}' for record '{id}'.";
 
             this.LoggingActivity(methodName, methodParameters);
+
             try
             {
                 this.service.Update(id, fileCabinetRecordNewData);
@@ -76,7 +76,6 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
             catch (Exception ex)
             {
                 this.LoggingError(methodName, ex.Message);
-
                 throw;
             }
         }
@@ -90,6 +89,7 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
             var methodName = "Stat()";
 
             this.LoggingActivity(methodName);
+
             try
             {
                 var (activeRecords, deletedRecords) = this.service.GetStat();
@@ -99,7 +99,6 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
             catch (Exception ex)
             {
                 this.LoggingError(methodName, ex.Message);
-
                 throw;
             }
         }
@@ -114,6 +113,7 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
             var methodName = "IsExist()";
 
             this.LoggingActivity(methodName);
+
             try
             {
                 var status = this.service.IsExist(id);
@@ -123,7 +123,6 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
             catch (Exception ex)
             {
                 this.LoggingError(methodName, ex.Message);
-
                 throw;
             }
         }
@@ -137,16 +136,15 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
             var methodName = "Export()";
 
             this.LoggingActivity(methodName);
+
             try
             {
                 this.LoggingEndMethod(methodName, "returned an instance of the class.");
-
                 return this.service.MakeSnapshot();
             }
             catch (Exception ex)
             {
                 this.LoggingError(methodName, ex.Message);
-
                 throw;
             }
         }
@@ -160,6 +158,7 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
             string methodName = "Purge()";
 
             this.LoggingActivity(methodName);
+
             try
             {
                 var countPurgedRecords = this.service.Purge();
@@ -169,7 +168,6 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
             catch (Exception ex)
             {
                 this.LoggingError(methodName, ex.Message);
-
                 throw;
             }
         }
@@ -183,6 +181,7 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
             var methodName = "Remove()";
 
             this.LoggingActivity(methodName);
+
             try
             {
                 this.service.Delete(id);
@@ -191,7 +190,6 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
             catch
             {
                 this.LoggingError(methodName, $"Record #{id} doesn't exists.");
-
                 throw;
             }
         }
@@ -205,6 +203,7 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
             var methodName = "Import()";
 
             this.LoggingActivity(methodName);
+
             try
             {
                 this.service.Restore(fileCabinetServiceSnapshot);
@@ -232,6 +231,7 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
             var methodName = "Insert()";
 
             this.LoggingActivity(methodName);
+
             try
             {
                 this.service.Insert(record);
@@ -240,7 +240,6 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
             catch
             {
                 this.LoggingError(methodName, $"Record #{record.Id} is exists.");
-
                 throw;
             }
         }
@@ -257,16 +256,15 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
             var methodParameters = $"with parameter: '{string.Join(",", conditions.Select(x => x.Field))}'.";
 
             this.LoggingActivity(methodName, methodParameters);
+
             try
             {
                 this.LoggingEndMethod(methodName, "returned list with finded records.");
-
                 return this.service.Find(conditions, type);
             }
             catch (Exception ex)
             {
                 this.LoggingError(methodName, ex.Message);
-
                 throw;
             }
         }
@@ -286,6 +284,7 @@ namespace FileCabinetApp.FileCabinetService.ServiceComponents
         {
             this.WriteDateAndTime();
             this.streamWriter.Write($"Calling {methodName}");
+
             if (!string.IsNullOrEmpty(methodParameters))
             {
                 this.streamWriter.Write($" with parameter {methodParameters}");

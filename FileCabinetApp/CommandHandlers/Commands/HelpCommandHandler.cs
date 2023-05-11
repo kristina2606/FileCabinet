@@ -54,7 +54,7 @@ namespace FileCabinetApp.CommandHandlers.Commands
             {
                 Console.WriteLine("Available commands:");
 
-                foreach (var helpMessage in this.helpMessages)
+                foreach (string[] helpMessage in this.helpMessages)
                 {
                     Console.WriteLine($"\t{helpMessage[CommandHelpIndex]}\t- {helpMessage[DescriptionHelpIndex]}");
                 }

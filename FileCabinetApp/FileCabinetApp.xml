@@ -43,7 +43,7 @@
             <summary>
             Sets the next handler in the chain.
             </summary>
-            <param name="commandHandler">The next handler in the chain.</param>
+            <param name="nextHandler">The next handler in the chain.</param>
         </member>
         <member name="T:FileCabinetApp.CommandHandlers.Commands.CreateCommandHandler">
             <summary>
@@ -55,7 +55,7 @@
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.Commands.CreateCommandHandler"/> class.
             </summary>
             <param name="service">The file cabinet service.</param>
-            <param name="inputValidation">The user input validation.</param>
+            <param name="inputValidationRules">The user input validation.</param>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.Commands.CreateCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <summary>
@@ -73,7 +73,7 @@
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.Commands.DeleteCommandHandler"/> class.
             </summary>
             <param name="service">The file cabinet service.</param>
-            <param name="inputValidation">The user input validation.</param>
+            <param name="inputValidationRules">The user input validation.</param>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.Commands.DeleteCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <summary>
@@ -170,7 +170,7 @@
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.Commands.InsertCommandHandler"/> class.
             </summary>
             <param name="service">The file cabinet service.</param>
-            <param name="inputValidation">The user input validation.</param>
+            <param name="inputValidationRules">The user input validation.</param>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.Commands.InsertCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <summary>
@@ -216,7 +216,7 @@
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.Commands.SelectCommandHandler"/> class.
             </summary>
             <param name="service">The file cabinet service.</param>
-            <param name="inputValidation">The user input validation.</param>
+            <param name="inputValidationRules">The user input validation.</param>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.Commands.SelectCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <summary>
@@ -251,7 +251,7 @@
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.Commands.UpdateCommandHandler"/> class.
             </summary>
             <param name="service">The file cabinet service.</param>
-            <param name="inputValidation">The user input validation.</param>
+            <param name="inputValidationRules">The user input validation.</param>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.Commands.UpdateCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <summary>
@@ -1214,7 +1214,7 @@
             </summary>
             <param name="requiredFirstValue">The first gender identity.</param>
             <param name="requiredSecondValue">The second gender identity.</param>
-            <param name="sc">The string comparison type.</param>
+            <param name="comparison">The string comparison type.</param>
         </member>
         <member name="M:FileCabinetApp.RecordValidator.GenderValidator.ValidateParametrs(FileCabinetApp.Models.FileCabinetRecordNewData)">
             <summary>

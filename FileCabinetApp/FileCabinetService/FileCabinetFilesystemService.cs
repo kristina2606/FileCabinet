@@ -54,7 +54,6 @@ namespace FileCabinetApp.FileCabinetService
             }
 
             this.CreateRecord(ConvertToFileCabinetRecord(fileCabinetRecordNewData, id));
-
             return id;
         }
 
@@ -72,7 +71,7 @@ namespace FileCabinetApp.FileCabinetService
 
             this.validator.ValidateParametrs(fileCabinetRecordNewData);
 
-            foreach (var (position, record, status) in this.GetRecordsInternal())
+            foreach ((long position, FileCabinetRecord record, short status) in this.GetRecordsInternal())
             {
                 if (record.Id == id && (status & MaskForDelete) == 0)
                 {
@@ -113,7 +112,7 @@ namespace FileCabinetApp.FileCabinetService
             var importExceptionByRecordId = new Dictionary<int, string>();
             bool isError = false;
 
-            foreach (var record in records)
+            foreach (FileCabinetRecord record in records)
             {
                 this.idGenerator.SkipId(record.Id);
                 var recordNew = new FileCabinetRecordNewData(record.FirstName, record.LastName, record.DateOfBirth, record.Gender, record.Height, record.Weight);
@@ -155,17 +154,13 @@ namespace FileCabinetApp.FileCabinetService
                 throw new ArgumentException("Record's id isn't exist.");
             }
 
-            foreach (var (position, record, status) in this.GetRecordsInternal())
+            foreach ((long position, FileCabinetRecord record, short status) in this.GetRecordsInternal())
             {
                 if (record.Id == id)
                 {
-                    using (var writer = new BinaryWriter(this.fileStream, Encoding.ASCII, true))
-                    {
-                        writer.BaseStream.Seek(position, SeekOrigin.Begin);
-
-                        writer.Write(MaskForDelete | status);
-                    }
-
+                    using var writer = new BinaryWriter(this.fileStream, Encoding.ASCII, true);
+                    writer.BaseStream.Seek(position, SeekOrigin.Begin);
+                    writer.Write(MaskForDelete | status);
                     break;
                 }
             }
@@ -180,7 +175,7 @@ namespace FileCabinetApp.FileCabinetService
             var positionForWrite = 0;
             var countOfrecordsForPurge = this.GetStat().deletedRecords;
 
-            foreach (var record in this.GetExistingRecords())
+            foreach (FileCabinetRecord record in this.GetExistingRecords())
             {
                 this.WriteBinary(record, DefaultStatus, positionForWrite);
                 positionForWrite += LengthOfOneRecord;
@@ -272,36 +267,32 @@ namespace FileCabinetApp.FileCabinetService
 
         private void WriteBinary(FileCabinetRecord record, short status, long position)
         {
-            using (var writer = new BinaryWriter(this.fileStream, Encoding.ASCII, true))
-            {
-                writer.BaseStream.Seek(position, SeekOrigin.Begin);
+            using var writer = new BinaryWriter(this.fileStream, Encoding.ASCII, true);
+            writer.BaseStream.Seek(position, SeekOrigin.Begin);
 
-                writer.Write(status);
-                writer.Write(record.Id);
-                writer.Write(CreateCharArray(record.FirstName));
-                writer.Write(CreateCharArray(record.LastName));
-                writer.Write(record.DateOfBirth.Year);
-                writer.Write(record.DateOfBirth.Month);
-                writer.Write(record.DateOfBirth.Day);
-                writer.Write(record.Gender);
-                writer.Write(record.Height);
-                writer.Write(record.Weight);
-            }
+            writer.Write(status);
+            writer.Write(record.Id);
+            writer.Write(CreateCharArray(record.FirstName));
+            writer.Write(CreateCharArray(record.LastName));
+            writer.Write(record.DateOfBirth.Year);
+            writer.Write(record.DateOfBirth.Month);
+            writer.Write(record.DateOfBirth.Day);
+            writer.Write(record.Gender);
+            writer.Write(record.Height);
+            writer.Write(record.Weight);
         }
 
         private IEnumerable<(long position, FileCabinetRecord record, short status)> GetRecordsInternal()
         {
-            using (var reader = new BinaryReader(this.fileStream, Encoding.ASCII, true))
+            using var reader = new BinaryReader(this.fileStream, Encoding.ASCII, true);
+            long positionForRead = 0;
+
+            while (positionForRead < reader.BaseStream.Length)
             {
-                long positionForRead = 0;
+                var (record, status) = ReadOneRecordFromFile(reader, positionForRead);
 
-                while (positionForRead < reader.BaseStream.Length)
-                {
-                    var (record, status) = ReadOneRecordFromFile(reader, positionForRead);
-
-                    yield return (positionForRead, record, status);
-                    positionForRead += LengthOfOneRecord;
-                }
+                yield return (positionForRead, record, status);
+                positionForRead += LengthOfOneRecord;
             }
         }
 

@@ -20,11 +20,11 @@ namespace FileCabinetApp.CommandHandlers.Commands
         /// Initializes a new instance of the <see cref="DeleteCommandHandler"/> class.
         /// </summary>
         /// <param name="service">The file cabinet service.</param>
-        /// <param name="inputValidation">The user input validation.</param>
-        public DeleteCommandHandler(IFileCabinetService service, IUserInputValidation inputValidation)
+        /// <param name="inputValidationRules">The user input validation.</param>
+        public DeleteCommandHandler(IFileCabinetService service, IUserInputValidation inputValidationRules)
                   : base(service)
         {
-            this.validationRules = inputValidation;
+            this.validationRules = inputValidationRules;
         }
 
         /// <summary>
@@ -46,33 +46,32 @@ namespace FileCabinetApp.CommandHandlers.Commands
             }
 
             var conditionalOperator = UnionType.Or;
-
-            if (appCommand.Parameters.Contains(QueryConstants.And, StringComparison.InvariantCultureIgnoreCase))
+            if (appCommand.Parameters.Contains(QueryConstants.And, this.stringComparison))
             {
                 conditionalOperator = UnionType.And;
             }
 
-            var parametrs = appCommand.Parameters.ToLowerInvariant()
-                                                 .Replace(QueryConstants.Where, string.Empty, this.stringComparison)
-                                                 .Replace("'", string.Empty, this.stringComparison)
-                                                 .Split(conditionalOperator.ToString().ToLowerInvariant(), StringSplitOptions.RemoveEmptyEntries);
+            var parameters = appCommand.Parameters.ToLowerInvariant()
+                                                  .Replace(QueryConstants.Where, string.Empty, this.stringComparison)
+                                                  .Replace("'", string.Empty, this.stringComparison)
+                                                  .Split(conditionalOperator.ToString().ToLowerInvariant(), StringSplitOptions.RemoveEmptyEntries);
 
             try
             {
                 var deletedRecords = new List<int>();
-                Condition[] conditionsToSearch = UserInputHelpers.CreateConditions(parametrs, this.validationRules);
-                var recordsForDelete = this.Service.Find(conditionsToSearch, conditionalOperator);
+                var searchConditions = UserInputHelpers.CreateConditions(parameters, this.validationRules);
+                var recordsForDelete = this.Service.Find(searchConditions, conditionalOperator);
 
-                foreach (var recordId in recordsForDelete.Select(x => x.Id).ToList())
+                foreach (int id in recordsForDelete.Select(record => record.Id).ToList())
                 {
-                    this.Service.Delete(recordId);
+                    this.Service.Delete(id);
 
-                    deletedRecords.Add(recordId);
+                    deletedRecords.Add(id);
                 }
 
                 if (deletedRecords.Count == 0)
                 {
-                    Console.WriteLine($"'{string.Join(",", conditionsToSearch.Select(x => x.Value))}' value for deletion not found.");
+                    Console.WriteLine($"'{string.Join(",", searchConditions.Select(condition => condition.Value))}' value for deletion not found.");
                     return;
                 }
 
@@ -80,7 +79,7 @@ namespace FileCabinetApp.CommandHandlers.Commands
             }
             catch
             {
-                Console.WriteLine($"Record with parametr {parametrs[0]}  does not exist.");
+                Console.WriteLine($"Record with parametr {parameters[0]}  does not exist.");
             }
         }
     }

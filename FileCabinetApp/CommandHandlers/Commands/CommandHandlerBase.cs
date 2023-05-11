@@ -19,10 +19,10 @@
         /// <summary>
         /// Sets the next handler in the chain.
         /// </summary>
-        /// <param name="commandHandler">The next handler in the chain.</param>
-        public void SetNext(ICommandHandler commandHandler)
+        /// <param name="nextHandler">The next handler in the chain.</param>
+        public void SetNext(ICommandHandler nextHandler)
         {
-            this.nextHandler = commandHandler;
+            this.nextHandler = nextHandler;
         }
     }
 }

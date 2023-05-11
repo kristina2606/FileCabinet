@@ -30,11 +30,11 @@ namespace FileCabinetApp.CommandHandlers.Commands
         /// Initializes a new instance of the <see cref="SelectCommandHandler"/> class.
         /// </summary>
         /// <param name="service">The file cabinet service.</param>
-        /// <param name="inputValidation">The user input validation.</param>
-        public SelectCommandHandler(IFileCabinetService service, IUserInputValidation inputValidation)
+        /// <param name="inputValidationRules">The user input validation.</param>
+        public SelectCommandHandler(IFileCabinetService service, IUserInputValidation inputValidationRules)
             : base(service)
         {
-            this.validationRules = inputValidation;
+            this.validationRules = inputValidationRules;
         }
 
         /// <summary>
@@ -52,32 +52,32 @@ namespace FileCabinetApp.CommandHandlers.Commands
             var parameters = appCommand.Parameters.Split(QueryConstants.Where, StringSplitOptions.RemoveEmptyEntries);
 
             var conditionalOperator = UnionType.Or;
-            if (parameters.Length > 1 && parameters[1].Contains(QueryConstants.And, StringComparison.InvariantCultureIgnoreCase))
+            if (parameters.Length > 1 && parameters[1].Contains(QueryConstants.And, this.stringComparison))
             {
                 conditionalOperator = UnionType.And;
             }
 
             try
             {
-                string[] printFields = Array.Empty<string>();
+                var printFields = Array.Empty<string>();
                 if (parameters.Length > 0)
                 {
                     printFields = parameters[0].ToLowerInvariant().Split(',', StringSplitOptions.RemoveEmptyEntries);
                 }
 
-                Condition[] conditionsToSearch = Array.Empty<Condition>();
+                var searchConditions = Array.Empty<Condition>();
                 if (parameters.Length > 1)
                 {
                     var searchCriteria = parameters[1].ToLowerInvariant()
-                                  .Replace(" ", string.Empty, this.stringComparison)
-                                  .Replace("'", string.Empty, this.stringComparison)
-                                  .Split(conditionalOperator.ToString().ToLowerInvariant(), StringSplitOptions.RemoveEmptyEntries);
+                                                      .Replace(" ", string.Empty, this.stringComparison)
+                                                      .Replace("'", string.Empty, this.stringComparison)
+                                                      .Split(conditionalOperator.ToString().ToLowerInvariant(), StringSplitOptions.RemoveEmptyEntries);
 
-                    conditionsToSearch = UserInputHelpers.CreateConditions(searchCriteria, this.validationRules);
+                    searchConditions = UserInputHelpers.CreateConditions(searchCriteria, this.validationRules);
                 }
 
                 var fieldsToPrint = GetFieldsToPrint(printFields);
-                var recordsToPrint = this.Service.Find(conditionsToSearch, conditionalOperator);
+                var recordsToPrint = this.Service.Find(searchConditions, conditionalOperator);
 
                 this.PrintTable(recordsToPrint, fieldsToPrint);
             }
@@ -109,47 +109,46 @@ namespace FileCabinetApp.CommandHandlers.Commands
                 return new List<FileCabinetRecordFields>((FileCabinetRecordFields[])Enum.GetValues(typeof(FileCabinetRecordFields)));
             }
 
-            var fieldsToPrinr = new List<FileCabinetRecordFields>();
+            var fieldsToPrint = new List<FileCabinetRecordFields>();
 
-            foreach (var field in fields)
+            foreach (string field in fields)
             {
                 if (!Enum.TryParse<FileCabinetRecordFields>(field, true, out var enumField))
                 {
                     throw new ArgumentException("Invalid parameters for printing.");
                 }
 
-                fieldsToPrinr.Add(enumField);
+                fieldsToPrint.Add(enumField);
             }
 
-            return fieldsToPrinr;
+            return fieldsToPrint;
         }
 
-        private static string GetTableHeader(List<FileCabinetRecordFields> fields, int[] columnWidht)
+        private static string GetTableHeader(List<FileCabinetRecordFields> fields, int[] columnWidth)
         {
             var header = new StringBuilder();
-            header.Append(GetDemarcationLine(columnWidht));
+            header.Append(GetDemarcationLine(columnWidth));
             header.Append(NewLine);
 
             for (var i = 0; i < fields.Count; i++)
             {
-                header.Append(CultureInfo.InvariantCulture, $"{VerticalLine} {fields[i].ToString().PadRight(columnWidht[i])} ");
+                header.Append(CultureInfo.InvariantCulture, $"{VerticalLine} {fields[i].ToString().PadRight(columnWidth[i])} ");
             }
 
             header.Append(VerticalLine);
             header.Append(NewLine);
-
-            header.Append(GetDemarcationLine(columnWidht));
+            header.Append(GetDemarcationLine(columnWidth));
 
             return header.ToString();
         }
 
-        private static string GetDemarcationLine(int[] columnWidht)
+        private static string GetDemarcationLine(int[] columnWidth)
         {
             var line = new StringBuilder();
 
-            foreach (var widht in columnWidht)
+            foreach (int width in columnWidth)
             {
-                line.Append(CultureInfo.InvariantCulture, $"{Intersection}{new string(HorizontalLine, widht + 2)}");
+                line.Append(CultureInfo.InvariantCulture, $"{Intersection}{new string(HorizontalLine, width + 2)}");
             }
 
             line.Append(Intersection);
@@ -159,7 +158,8 @@ namespace FileCabinetApp.CommandHandlers.Commands
 
         private void PrintTable(IEnumerable<FileCabinetRecord> records, List<FileCabinetRecordFields> fields)
         {
-            int[] columnWidth = new int[fields.Count];
+            var columnWidth = new int[fields.Count];
+
             for (var i = 0; i < fields.Count; i++)
             {
                 var maxRecordColumnWidth = records.Select(x => GetFieldValueString(x, fields[i]).Length).Max();
@@ -170,7 +170,7 @@ namespace FileCabinetApp.CommandHandlers.Commands
 
             var table = records.Select(record => fields.Select(field => GetFieldValueString(record, field)).ToArray());
 
-            foreach (var rowValues in table)
+            foreach (string[] rowValues in table)
             {
                 Console.WriteLine(this.GetRow(rowValues, fields, columnWidth));
             }

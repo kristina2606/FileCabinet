@@ -20,11 +20,11 @@ namespace FileCabinetApp.CommandHandlers.Commands
         /// Initializes a new instance of the <see cref="InsertCommandHandler"/> class.
         /// </summary>
         /// <param name="service">The file cabinet service.</param>
-        /// <param name="inputValidation">The user input validation.</param>
-        public InsertCommandHandler(IFileCabinetService service, IUserInputValidation inputValidation)
+        /// <param name="inputValidationRules">The user input validation.</param>
+        public InsertCommandHandler(IFileCabinetService service, IUserInputValidation inputValidationRules)
             : base(service)
         {
-            this.validationRules = inputValidation;
+            this.validationRules = inputValidationRules;
         }
 
         /// <summary>
@@ -39,22 +39,21 @@ namespace FileCabinetApp.CommandHandlers.Commands
                 return;
             }
 
-            var parametrs = appCommand.Parameters.Split(QueryConstants.Values);
-
-            if (parametrs.Length != 2)
+            var parameters = appCommand.Parameters.Split(QueryConstants.Values);
+            if (parameters.Length != 2)
             {
                 Console.WriteLine("Incorrect data entered.");
                 return;
             }
 
-            string[] fields = parametrs[0].Replace("(", string.Empty, this.stringComparison)
-                                          .Replace(")", string.Empty, this.stringComparison)
-                                          .Split(',');
+            string[] fields = parameters[0].Replace("(", string.Empty, this.stringComparison)
+                                           .Replace(")", string.Empty, this.stringComparison)
+                                           .Split(',');
 
-            string[] values = parametrs[1].Replace("(", string.Empty, this.stringComparison)
-                                          .Replace(")", string.Empty, this.stringComparison)
-                                          .Replace("'", string.Empty, this.stringComparison)
-                                          .Split(',');
+            string[] values = parameters[1].Replace("(", string.Empty, this.stringComparison)
+                                           .Replace(")", string.Empty, this.stringComparison)
+                                           .Replace("'", string.Empty, this.stringComparison)
+                                           .Split(',');
 
             if (fields.Length != NumberFieldsInRecord || values.Length != NumberFieldsInRecord)
             {
@@ -63,34 +62,35 @@ namespace FileCabinetApp.CommandHandlers.Commands
             }
 
             var record = new FileCabinetRecord();
+
             try
             {
                 for (var i = 0; i < fields.Length; i++)
                 {
-                    var fieldForInsert = fields[i].Trim().ToLowerInvariant();
+                    var fieldForInsert = Enum.Parse<FileCabinetRecordFields>(fields[i].Trim().ToLowerInvariant(), true);
                     var valueForInsert = values[i].Trim();
 
                     switch (fieldForInsert)
                     {
-                        case "id":
+                        case FileCabinetRecordFields.Id:
                             record.Id = Converter.IntConverter(valueForInsert).Item3;
                             break;
-                        case "firstname":
+                        case FileCabinetRecordFields.FirstName:
                             record.FirstName = UserInputHelpers.Convert(Converter.StringConverter, this.validationRules.ValidateFirstName, valueForInsert);
                             break;
-                        case "lastname":
+                        case FileCabinetRecordFields.LastName:
                             record.LastName = UserInputHelpers.Convert(Converter.StringConverter, this.validationRules.ValidateLastName, valueForInsert);
                             break;
-                        case "dateofbirth":
+                        case FileCabinetRecordFields.DateOfBirth:
                             record.DateOfBirth = UserInputHelpers.Convert(Converter.DateConverter, this.validationRules.ValidateDateOfBirth, valueForInsert);
                             break;
-                        case "gender":
+                        case FileCabinetRecordFields.Gender:
                             record.Gender = UserInputHelpers.Convert(Converter.CharConverter, this.validationRules.ValidateGender, valueForInsert);
                             break;
-                        case "height":
+                        case FileCabinetRecordFields.Height:
                             record.Height = UserInputHelpers.Convert(Converter.ShortConverter, this.validationRules.ValidateHeight, valueForInsert);
                             break;
-                        case "weight":
+                        case FileCabinetRecordFields.Weight:
                             record.Weight = UserInputHelpers.Convert(Converter.DecimalConverter, this.validationRules.ValidateWeight, valueForInsert);
                             break;
                     }

@@ -35,16 +35,15 @@ namespace FileCabinetApp.CommandHandlers.Commands
                 return;
             }
 
-            var importParametrs = appCommand.Parameters.Split(' ');
-
-            if (importParametrs.Length != 2)
+            var importParameters = appCommand.Parameters.Split(' ');
+            if (importParameters.Length != 2)
             {
                 Console.WriteLine("Invalid import parameters. Two parameters are needed.");
                 return;
             }
 
-            var format = importParametrs[0];
-            var path = importParametrs[1];
+            var format = importParameters[0];
+            var path = importParameters[1];
 
             if (format != FileTypeCsv && format != FileTypeXml)
             {
@@ -58,36 +57,34 @@ namespace FileCabinetApp.CommandHandlers.Commands
                 return;
             }
 
-            using (var fs = new FileStream(path, FileMode.Open))
+            using var fs = new FileStream(path, FileMode.Open);
+            var snapshot = new FileCabinetServiceSnapshot();
+            using (var sr = new StreamReader(fs))
             {
-                var fileCabinetServiceSnapshot = new FileCabinetServiceSnapshot();
-                using (var sr = new StreamReader(fs))
+                switch (format)
                 {
-                    switch (format)
-                    {
-                        case FileTypeCsv:
-                            fileCabinetServiceSnapshot.LoadFromCsv(sr);
-                            break;
-                        case FileTypeXml:
-                            fileCabinetServiceSnapshot.LoadFromXml(sr);
-                            break;
-                    }
+                    case FileTypeCsv:
+                        snapshot.LoadFromCsv(sr);
+                        break;
+                    case FileTypeXml:
+                        snapshot.LoadFromXml(sr);
+                        break;
                 }
-
-                try
-                {
-                    this.Service.Restore(fileCabinetServiceSnapshot);
-                }
-                catch (ImportException dict)
-                {
-                    foreach (var exeption in dict.ImportExceptionByRecordId)
-                    {
-                        Console.WriteLine($"Record with id = {exeption.Key} - {exeption.Value}.");
-                    }
-                }
-
-                Console.WriteLine($"All records were imported from '{path}'.");
             }
+
+            try
+            {
+                this.Service.Restore(snapshot);
+            }
+            catch (ImportException dict)
+            {
+                foreach (var exeption in dict.ImportExceptionByRecordId)
+                {
+                    Console.WriteLine($"Record with id = {exeption.Key} - {exeption.Value}.");
+                }
+            }
+
+            Console.WriteLine($"All records were imported from '{path}'.");
         }
     }
 }

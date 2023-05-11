@@ -70,7 +70,7 @@ namespace FileCabinetApp.CommandHandlers.Helpers
             Console.Write(chooseAnswer);
 
             var usersAnswer = Console.ReadLine().ToLowerInvariant();
-            do
+            while (!string.IsNullOrEmpty(usersAnswer))
             {
                 if (usersAnswer == "y")
                 {
@@ -80,7 +80,7 @@ namespace FileCabinetApp.CommandHandlers.Helpers
                 {
                     return false;
                 }
-                else if (!string.IsNullOrEmpty(usersAnswer))
+                else
                 {
                     Console.WriteLine("You entered an invalid character.");
                     Console.Write(prompt);
@@ -88,7 +88,6 @@ namespace FileCabinetApp.CommandHandlers.Helpers
                     usersAnswer = Console.ReadLine().ToLowerInvariant();
                 }
             }
-            while (!string.IsNullOrEmpty(usersAnswer));
 
             return defaultAnswer;
         }

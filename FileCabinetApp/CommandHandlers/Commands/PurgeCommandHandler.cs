@@ -30,7 +30,6 @@ namespace FileCabinetApp.CommandHandlers.Commands
             }
 
             var (activeRecords, deletedRecords) = this.Service.GetStat();
-
             var purgedRecordsCount = this.Service.Purge();
 
             Console.WriteLine($"Data file processing completed: {purgedRecordsCount} of {activeRecords + deletedRecords} records were purged.");

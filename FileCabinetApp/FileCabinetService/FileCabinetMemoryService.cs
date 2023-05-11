@@ -86,7 +86,6 @@ namespace FileCabinetApp.FileCabinetService
             this.validator.ValidateParametrs(fileCabinetRecordNewData);
 
             var result = this.list.FirstOrDefault(x => x.Id == id);
-
             if (result is null)
             {
                 throw new ArgumentException("records with the specified ID do not exist.");
@@ -119,7 +118,7 @@ namespace FileCabinetApp.FileCabinetService
             var importExceptionByRecordId = new Dictionary<int, string>();
             bool isError = false;
 
-            foreach (var record in records)
+            foreach (FileCabinetRecord record in records)
             {
                 this.idGenerator.SkipId(record.Id);
 
@@ -239,7 +238,7 @@ namespace FileCabinetApp.FileCabinetService
 
             var fieldsValueForKey = new List<string>();
 
-            foreach (var condition in conditions)
+            foreach (Condition condition in conditions)
             {
                 switch (condition.Field)
                 {

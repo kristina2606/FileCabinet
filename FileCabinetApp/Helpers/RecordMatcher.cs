@@ -23,7 +23,7 @@ namespace FileCabinetApp.Helpers
                 return true;
             }
 
-            foreach (var condition in conditions)
+            foreach (Condition condition in conditions)
             {
                 bool isMatch = condition.Field switch
                 {

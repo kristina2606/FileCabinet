@@ -19,7 +19,7 @@ A console application that accepts user commands and manages user data, as well 
 -v CuStOm
 --validation-rules=Default
 ```
-**Method call log** ( --use-logger)
+**Method call log** ( --use-logger)  
 **Performance monitoring** ( --use-stopwatch)
 
 # Commands
@@ -84,7 +84,7 @@ Data file processing completed: 12 of 98 records were purged.
 **Insert**
 
 Adds a record using the transmitted data.   
-Available fields: id, firstname, lastname, dateofbirth, gender, height, weight.
+Available fields: *id, firstname, lastname, dateofbirth, gender, height, weight.*
 
 *Usage example:*
 ```
@@ -95,7 +95,7 @@ Available fields: id, firstname, lastname, dateofbirth, gender, height, weight.
 **Delete**
 
 Deletes records using the specified criteria.  
-Available fields: id, firstname, lastname, dateofbirth, gender, height, weight.
+Available fields: *id, firstname, lastname, dateofbirth, gender, height, weight.*
 
 *Usage example:*
 ```
@@ -108,7 +108,7 @@ Records #2, #3, #4 are deleted.
 **Update**
 
 Updates record fields (except id) using the specified search criteria.   
-Available fields: id, firstname, lastname, dateofbirth, gender, height, weight.
+Available fields: *id, firstname, lastname, dateofbirth, gender, height, weight.*
 
 *Usage example:*
 ```
@@ -118,7 +118,7 @@ Record(s) updated.
 **Select**
 
 Accepts a list of fields to display and search criteria.   
-Available fields: id, firstname, lastname, dateofbirth, gender, height, weight.
+Available fields: *id, firstname, lastname, dateofbirth, gender, height, weight.*
 
 *Usage example:*
 ```

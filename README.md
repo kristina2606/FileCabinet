@@ -1,10 +1,10 @@
 # File Cabinet Application
 ## Description
---------------------------------------------------------
+
 A console application that accepts user commands and manages user data, as well as stores records with personal information about a person.
 
 ## Available command line parameters
---------------------------------------------------------
+
 **Storage type** (-s, --storage):
 - file
 - memory (default value)
@@ -23,7 +23,7 @@ A console application that accepts user commands and manages user data, as well 
 **Performance monitoring** ( --use-stopwatch)
 
 # Commands
---------------------------------------------------------
+
 **Help**
 
 Show all available commands.
@@ -155,12 +155,13 @@ When this command is executed, the application will terminate and close.
 Exiting an application...
 ```
 
+--------------------------------------------------------
 # Data Generator
 ## Description
---------------------------------------------------------
+
 Generates data randomly, the values must correspond to the "default" set of rules. The generation of the ID field starts with the value that is set by the start-id parameter.
 ## Available command line parameters
---------------------------------------------------------
+
 **Output format type (csv, xml)** (-t, --output-type)
 ```
 -t xml

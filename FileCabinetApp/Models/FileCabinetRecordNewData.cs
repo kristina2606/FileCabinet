@@ -7,18 +7,6 @@ namespace FileCabinetApp.Models
     /// </summary>
     public class FileCabinetRecordNewData
     {
-        private readonly string firstName;
-
-        private readonly string lastName;
-
-        private readonly DateTime dateOfBirth;
-
-        private readonly char gender;
-
-        private readonly short height;
-
-        private readonly decimal weight;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetRecordNewData"/> class.
         /// </summary>
@@ -30,48 +18,48 @@ namespace FileCabinetApp.Models
         /// <param name="weight">The new weight obtained from user input.</param>
         public FileCabinetRecordNewData(string firstName, string lastName, DateTime dateOfBirth, char gender, short height, decimal weight)
         {
-            this.firstName = firstName;
-            this.lastName = lastName;
-            this.dateOfBirth = dateOfBirth;
-            this.gender = gender;
-            this.height = height;
-            this.weight = weight;
+            this.FirstName = firstName;
+            this.LastName = lastName;
+            this.DateOfBirth = dateOfBirth;
+            this.Gender = gender;
+            this.Height = height;
+            this.Weight = weight;
         }
 
         /// <summary>
         ///  Gets the new first name obtained from user input.
         /// </summary>
         /// <value>The new first name of a person. </value>
-        public string FirstName => this.firstName;
+        public string FirstName { get; }
 
         /// <summary>
         /// Gets the new last name obtained from user input.
         /// </summary>
         /// <value>The new last name of a person. </value>
-        public string LastName => this.lastName;
+        public string LastName { get; }
 
         /// <summary>
         /// Gets the new date of birth obtained from user input.
         /// </summary>
         /// <value>The new date of birth of a person. </value>
-        public DateTime DateOfBirth => this.dateOfBirth;
+        public DateTime DateOfBirth { get; }
 
         /// <summary>
         /// Gets the new gender obtained from user input.
         /// </summary>
         /// <value>The new gender of a person. </value>
-        public char Gender => this.gender;
+        public char Gender { get; }
 
         /// <summary>
         /// Gets the new height obtained from user input.
         /// </summary>
         /// <value>The new height of a person. </value>
-        public short Height => this.height;
+        public short Height { get; }
 
         /// <summary>
         /// Gets the new weight obtained from user input.
         /// </summary>
         /// <value>The new weight of a person. </value>
-        public decimal Weight => this.weight;
+        public decimal Weight { get; }
     }
 }

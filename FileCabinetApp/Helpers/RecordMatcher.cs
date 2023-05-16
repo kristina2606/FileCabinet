@@ -1,4 +1,5 @@
 ﻿using System;
+using FileCabinetApp.Enums;
 using FileCabinetApp.Models;
 
 namespace FileCabinetApp.Helpers

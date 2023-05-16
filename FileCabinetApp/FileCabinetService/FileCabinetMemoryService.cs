@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using FileCabinetApp.FileCabinetService.ServiceComponents;
+using FileCabinetApp.Constants;
+using FileCabinetApp.Entity;
+using FileCabinetApp.Enums;
+using FileCabinetApp.Exceptions;
 using FileCabinetApp.Helpers;
 using FileCabinetApp.Models;
 using FileCabinetApp.RecordValidator;
@@ -252,7 +255,7 @@ namespace FileCabinetApp.FileCabinetService
                         fieldsValueForKey.Add(condition.Value.LastName);
                         break;
                     case FileCabinetRecordFields.DateOfBirth:
-                        fieldsValueForKey.Add(condition.Value.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture));
+                        fieldsValueForKey.Add(condition.Value.DateOfBirth.ToString(DateTimeConstants.FullDateFormat, CultureInfo.InvariantCulture));
                         break;
                     case FileCabinetRecordFields.Gender:
                         fieldsValueForKey.Add(condition.Value.Gender.ToString(CultureInfo.InvariantCulture));

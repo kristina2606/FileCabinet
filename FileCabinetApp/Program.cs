@@ -4,6 +4,7 @@ using FileCabinetApp.CommandHandlers;
 using FileCabinetApp.CommandHandlers.Commands;
 using FileCabinetApp.FileCabinetService;
 using FileCabinetApp.FileCabinetService.ServiceComponents;
+using FileCabinetApp.Helpers;
 using FileCabinetApp.RecordValidator;
 using FileCabinetApp.UserInputValidator;
 
@@ -22,9 +23,6 @@ namespace FileCabinetApp
         private const string FileNameFormatTxt = "log.txt";
 
         private static bool isRunning = true;
-        private static IRecordValidator validatorBuilder = new ValidatorBuilder().CreateDefault();
-        private static IFileCabinetService fileCabinetService = new FileCabinetMemoryService(validatorBuilder);
-        private static IUserInputValidation inputValidation = new UserInputValidationDafault();
         private static string validationRules = DefaultValidationRules;
 
         /// <summary>
@@ -35,13 +33,13 @@ namespace FileCabinetApp
         {
             Console.WriteLine($"File Cabinet Application, developed by {DeveloperName}");
 
-            ParseArguments(args, out StreamWriter streamWriter, out FileStream fileStream);
+            ParseArguments(args, out IFileCabinetService fileCabinetService, out IUserInputValidation inputValidation, out StreamWriter streamWriter, out FileStream fileStream);
 
             Console.WriteLine(validationRules);
             Console.WriteLine(HintMessage);
             Console.WriteLine();
 
-            var commandHandler = CreateCommandHandlers();
+            var commandHandler = CreateCommandHandlers(fileCabinetService, inputValidation);
 
             try
             {
@@ -73,10 +71,14 @@ namespace FileCabinetApp
             }
         }
 
-        private static void ParseArguments(string[] args, out StreamWriter streamWriter, out FileStream fileStream)
+        private static void ParseArguments(string[] args, out IFileCabinetService fileCabinetService, out IUserInputValidation inputValidation, out StreamWriter streamWriter, out FileStream fileStream)
         {
+            IRecordValidator validatorBuilder = new ValidatorBuilder().CreateDefault();
+
             streamWriter = null;
             fileStream = null;
+            inputValidation = new UserInputValidationDafault();
+            fileCabinetService = new FileCabinetMemoryService(validatorBuilder);
 
             for (var i = 0; i < args.Length; i++)
             {
@@ -114,7 +116,7 @@ namespace FileCabinetApp
             isRunning = !exit;
         }
 
-        private static ICommandHandler CreateCommandHandlers()
+        private static ICommandHandler CreateCommandHandlers(IFileCabinetService fileCabinetService, IUserInputValidation inputValidation)
         {
             var helpHandler = new HelpCommandHandler();
             var createHandler = new CreateCommandHandler(fileCabinetService, inputValidation);

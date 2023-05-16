@@ -5,9 +5,9 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
-using FileCabinetApp.FileCabinetService.Writer;
 using FileCabinetApp.Models;
-using FileCabinetApp.Serializers.Xml;
+using FileCabinetApp.Serializers.Models.Xml;
+using FileCabinetApp.Serializers.Writer;
 
 namespace FileCabinetGenerator
 {

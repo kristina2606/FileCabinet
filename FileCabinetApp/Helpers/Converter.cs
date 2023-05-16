@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
+using FileCabinetApp.Constants;
 
 namespace FileCabinetApp.Helpers
 {
@@ -16,9 +17,9 @@ namespace FileCabinetApp.Helpers
         /// <returns>A tuple containing information about the conversion result, the original string, and the converted value.</returns>
         public static Tuple<bool, string, string> StringConverter(string name)
         {
-            bool isConverted = IsStringCorrect(name);
+            bool isCorrect = name.All(char.IsLetter);
 
-            return new Tuple<bool, string, string>(isConverted, name, name);
+            return new Tuple<bool, string, string>(isCorrect, name, name);
         }
 
         /// <summary>
@@ -28,7 +29,7 @@ namespace FileCabinetApp.Helpers
         /// <returns>A tuple containing information about the conversion result, the original string, and the converted value.</returns>
         public static Tuple<bool, string, DateTime> DateConverter(string date)
         {
-            bool isConverted = DateTime.TryParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var day);
+            bool isConverted = DateTime.TryParseExact(date, DateTimeConstants.EUDateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out var day);
 
             return new Tuple<bool, string, DateTime>(isConverted, date, day);
         }
@@ -79,11 +80,6 @@ namespace FileCabinetApp.Helpers
             bool isConverted = int.TryParse(inputNumber, CultureInfo.InvariantCulture, out var number);
 
             return new Tuple<bool, string, int>(isConverted, inputNumber, number);
-        }
-
-        private static bool IsStringCorrect(string name)
-        {
-            return name.All(char.IsLetter);
         }
     }
 }

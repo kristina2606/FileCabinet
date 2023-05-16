@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
-using FileCabinetApp.FileCabinetService.ServiceComponents;
+using FileCabinetApp.Entity;
+using FileCabinetApp.Enums;
 using FileCabinetApp.Models;
 
 namespace FileCabinetApp.FileCabinetService

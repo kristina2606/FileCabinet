@@ -1,20 +1,20 @@
 ﻿namespace FileCabinetApp.CommandHandlers
 {
     /// <summary>
-    /// Processes the request redirects the request to the next handler.
+    /// Represents a command handler in the chain of responsibility pattern.
     /// </summary>
     public interface ICommandHandler
     {
         /// <summary>
-        /// Changing a field to store a link to the next handler in the chain.
+        /// Sets the next handler in the chain.
         /// </summary>
-        /// <param name="commandHandler">Next handler in the chain.</param>
-        void SetNext(ICommandHandler commandHandler);
+        /// <param name="nextHandler">The next handler in the chain.</param>
+        void SetNext(ICommandHandler nextHandler);
 
         /// <summary>
-        /// Processes the request redirects the request to the next handler.
+        /// Handles the command by processing it or redirecting it to the next handler in the chain.
         /// </summary>
-        /// <param name="appCommand">Configuratiion the application command and options.</param>
+        /// <param name="appCommand">The application command and options.</param>
         void Handle(AppCommandRequest appCommand);
     }
 }

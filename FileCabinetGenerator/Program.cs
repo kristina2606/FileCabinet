@@ -5,7 +5,9 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
-using FileCabinetApp;
+using FileCabinetApp.Models;
+using FileCabinetApp.Serializers.Models.Xml;
+using FileCabinetApp.Serializers.Writer;
 
 namespace FileCabinetGenerator
 {
@@ -20,10 +22,29 @@ namespace FileCabinetGenerator
 
         public static void Main(string[] args)
         {
-            string type = string.Empty;
-            string path = string.Empty;
-            string amount = string.Empty;
-            string startId = string.Empty;
+            ParseArguments(args, out string type, out string path, out int amount, out int startId);
+
+            CreateRecords(startId, amount);
+
+            if (type == FileTypeXml)
+            {
+                ExportXml(path);
+            }
+            else if (type == FileTypeCsv)
+            {
+                ExportCsv(path);
+            }
+
+            Console.WriteLine($"{amount} records were written to {path}.");
+
+        }
+
+        private static void ParseArguments(string[] args, out string type, out string path, out int amount, out int startId)
+        {
+            type = string.Empty;
+            path = string.Empty;
+            amount = 0;
+            startId = 0;
 
             for (var i = 0; i < args.Length; i++)
             {
@@ -48,12 +69,12 @@ namespace FileCabinetGenerator
 
                     if (comand[0] == "--records-amount")
                     {
-                        amount = comand[1];
+                        amount = IntConverter(comand[1]);
                     }
 
                     if (comand[0] == "--start-id")
                     {
-                        startId = comand[1];
+                        startId = IntConverter(comand[1]);
                     }
                 }
                 else
@@ -75,33 +96,19 @@ namespace FileCabinetGenerator
 
                     if (args[i] == "-a")
                     {
-                        amount = args[i + 1];
+                        amount = IntConverter(args[i + 1]);
 
                     }
 
                     if (args[i] == "-i")
                     {
-                        startId = args[i + 1];
+                        startId = IntConverter(args[i + 1]);
                     }
                 }
             }
-
-            Create(IntConverter(startId), IntConverter(amount));
-
-            if (type == FileTypeXml)
-            {
-                ExportXml(path);
-            }
-            else if (type == FileTypeCsv)
-            {
-                ExportCsv(path);
-            }
-
-            Console.WriteLine($"{amount} records were written to {path}.");
-
         }
 
-        private static void Create(int idStart, int amount)
+        private static void CreateRecords(int idStart, int amount)
         {
             var startDate = new DateTime(1950, 1, 1);
             var daysCount = (DateTime.Now.Year - new DateTime(1950, 1, 1).Year) * 365;
@@ -130,7 +137,7 @@ namespace FileCabinetGenerator
 
             var nameLength = random.Next(2, 61);
 
-            StringBuilder name = new StringBuilder();
+            var name = new StringBuilder();
 
             for (int i = 0; i < nameLength; i++)
             {
@@ -152,15 +159,13 @@ namespace FileCabinetGenerator
 
         private static void ExportCsv(string path)
         {
-            using (StreamWriter sw = new StreamWriter(path))
-            {
-                FileCabinetRecordCsvWriter recordCsvWriter = new FileCabinetRecordCsvWriter(sw);
-                sw.WriteLine("Id,First Name,Last Name,Date of Birth,Gender,Height,Weight");
+            using var sw = new StreamWriter(path);
+            var recordCsvWriter = new FileCabinetRecordCsvWriter(sw);
+            sw.WriteLine("Id,First Name,Last Name,Date of Birth,Gender,Height,Weight");
 
-                foreach (var record in list)
-                {
-                    recordCsvWriter.Write(record);
-                }
+            foreach (var record in list)
+            {
+                recordCsvWriter.Write(record);
             }
         }
 
@@ -168,30 +173,28 @@ namespace FileCabinetGenerator
         {
             var ns = new XmlSerializerNamespaces(new[] { XmlQualifiedName.Empty });
 
-            using (var writer = XmlWriter.Create(path))
+            using var writer = XmlWriter.Create(path);
+            var serializer = new XmlSerializer(typeof(RecordsSeralization));
+
+            var records = new RecordsSeralization();
+            var recordNew = new List<FileCabinetRecordSeralization>();
+
+            foreach (var record in list)
             {
-                var serializer = new XmlSerializer(typeof(RecordsSeralization));
-
-                var records = new RecordsSeralization();
-                var recordNew = new List<FileCabinetRecordSeralization>();
-
-                foreach (var record in list)
+                recordNew.Add(new FileCabinetRecordSeralization
                 {
-                    recordNew.Add(new FileCabinetRecordSeralization
-                    {
-                        Id = record.Id,
-                        FullName = new FullNameSeralization(record.FirstName, record.LastName),
-                        DateOfBirth = record.DateOfBirth,
-                        Gender = record.Gender,
-                        Height = record.Height,
-                        Weight = record.Weight,
-                    });
+                    Id = record.Id,
+                    FullName = new FullNameSeralization(record.FirstName, record.LastName),
+                    DateOfBirth = record.DateOfBirth,
+                    Gender = record.Gender,
+                    Height = record.Height,
+                    Weight = record.Weight,
+                });
 
-                    records.Records = recordNew;
-                }
-
-                serializer.Serialize(writer, records, ns);
+                records.Records = recordNew;
             }
+
+            serializer.Serialize(writer, records, ns);
         }
     }
 }

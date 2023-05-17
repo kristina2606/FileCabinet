@@ -88,25 +88,25 @@ namespace FileCabinetApp.CommandHandlers.Commands
             switch (fieldForInsert)
             {
                 case FileCabinetRecordFields.Id:
-                    record.Id = Converter.IntConverter(valueForInsert).Item3;
+                    record.Id = Converters.IntConverter(valueForInsert).Item3;
                     break;
                 case FileCabinetRecordFields.FirstName:
-                    record.FirstName = UserInputHelpers.Convert(Converter.StringConverter, this.validationRules.ValidateFirstName, valueForInsert);
+                    record.FirstName = UserInputHelpers.Convert(Converters.StringConverter, this.validationRules.ValidateFirstName, valueForInsert);
                     break;
                 case FileCabinetRecordFields.LastName:
-                    record.LastName = UserInputHelpers.Convert(Converter.StringConverter, this.validationRules.ValidateLastName, valueForInsert);
+                    record.LastName = UserInputHelpers.Convert(Converters.StringConverter, this.validationRules.ValidateLastName, valueForInsert);
                     break;
                 case FileCabinetRecordFields.DateOfBirth:
-                    record.DateOfBirth = UserInputHelpers.Convert(Converter.DateConverter, this.validationRules.ValidateDateOfBirth, valueForInsert);
+                    record.DateOfBirth = UserInputHelpers.Convert(Converters.DateConverter, this.validationRules.ValidateDateOfBirth, valueForInsert);
                     break;
                 case FileCabinetRecordFields.Gender:
-                    record.Gender = UserInputHelpers.Convert(Converter.CharConverter, this.validationRules.ValidateGender, valueForInsert);
+                    record.Gender = UserInputHelpers.Convert(Converters.CharConverter, this.validationRules.ValidateGender, valueForInsert);
                     break;
                 case FileCabinetRecordFields.Height:
-                    record.Height = UserInputHelpers.Convert(Converter.ShortConverter, this.validationRules.ValidateHeight, valueForInsert);
+                    record.Height = UserInputHelpers.Convert(Converters.ShortConverter, this.validationRules.ValidateHeight, valueForInsert);
                     break;
                 case FileCabinetRecordFields.Weight:
-                    record.Weight = UserInputHelpers.Convert(Converter.DecimalConverter, this.validationRules.ValidateWeight, valueForInsert);
+                    record.Weight = UserInputHelpers.Convert(Converters.DecimalConverter, this.validationRules.ValidateWeight, valueForInsert);
                     break;
             }
         }

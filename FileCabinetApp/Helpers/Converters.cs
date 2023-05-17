@@ -8,7 +8,7 @@ namespace FileCabinetApp.Helpers
     /// <summary>
     /// Provides conversion methods for converting strings to various data types.
     /// </summary>
-    public static class Converter
+    public static class Converters
     {
         /// <summary>
         /// Converts a string to a string value type.

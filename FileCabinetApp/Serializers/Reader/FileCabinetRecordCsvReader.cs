@@ -42,13 +42,13 @@ namespace FileCabinetApp.Serializers.Reader
 
                 records.Add(new FileCabinetRecord
                 {
-                    Id = Converter.IntConverter(values[0]).Item3,
-                    FirstName = Converter.StringConverter(values[1]).Item3,
-                    LastName = Converter.StringConverter(values[2]).Item3,
+                    Id = Converters.IntConverter(values[0]).Item3,
+                    FirstName = Converters.StringConverter(values[1]).Item3,
+                    LastName = Converters.StringConverter(values[2]).Item3,
                     DateOfBirth = Convert.ToDateTime(values[3], CultureInfo.InvariantCulture),
-                    Gender = Converter.CharConverter(values[4]).Item3,
-                    Height = Converter.ShortConverter(values[5]).Item3,
-                    Weight = Converter.DecimalConverter(values[6]).Item3,
+                    Gender = Converters.CharConverter(values[4]).Item3,
+                    Height = Converters.ShortConverter(values[5]).Item3,
+                    Weight = Converters.DecimalConverter(values[6]).Item3,
                 });
             }
 

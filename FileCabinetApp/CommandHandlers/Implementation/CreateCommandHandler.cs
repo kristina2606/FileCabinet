@@ -39,22 +39,22 @@ namespace FileCabinetApp.CommandHandlers.Commands
             }
 
             Console.Write("First name: ");
-            var firstName = UserInputHelpers.ReadInput(Converter.StringConverter, this.validationRules.ValidateFirstName);
+            var firstName = UserInputHelpers.ReadInput(Converters.StringConverter, this.validationRules.ValidateFirstName);
 
             Console.Write("Last name: ");
-            var lastName = UserInputHelpers.ReadInput(Converter.StringConverter, this.validationRules.ValidateLastName);
+            var lastName = UserInputHelpers.ReadInput(Converters.StringConverter, this.validationRules.ValidateLastName);
 
             Console.Write("Date of birth: ");
-            var dateOfBirth = UserInputHelpers.ReadInput(Converter.DateConverter, this.validationRules.ValidateDateOfBirth);
+            var dateOfBirth = UserInputHelpers.ReadInput(Converters.DateConverter, this.validationRules.ValidateDateOfBirth);
 
             Console.Write("Gender (man - 'm' or woman - 'f'): ");
-            var gender = UserInputHelpers.ReadInput(Converter.CharConverter, this.validationRules.ValidateGender);
+            var gender = UserInputHelpers.ReadInput(Converters.CharConverter, this.validationRules.ValidateGender);
 
             Console.Write("Height: ");
-            var height = UserInputHelpers.ReadInput(Converter.ShortConverter, this.validationRules.ValidateHeight);
+            var height = UserInputHelpers.ReadInput(Converters.ShortConverter, this.validationRules.ValidateHeight);
 
             Console.Write("Weight: ");
-            var weight = UserInputHelpers.ReadInput(Converter.DecimalConverter, this.validationRules.ValidateWeight);
+            var weight = UserInputHelpers.ReadInput(Converters.DecimalConverter, this.validationRules.ValidateWeight);
 
             var newData = new FileCabinetRecordNewData(firstName, lastName, dateOfBirth, gender, height, weight);
             int recordId = this.Service.CreateRecord(newData);

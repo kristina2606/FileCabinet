@@ -778,47 +778,47 @@
             <param name="id">The id of the record to be modified.</param>
             <param name="fileCabinetRecordNewData">The new date in the record.</param>
         </member>
-        <member name="T:FileCabinetApp.Helpers.Converter">
+        <member name="T:FileCabinetApp.Helpers.Converters">
             <summary>
             Provides conversion methods for converting strings to various data types.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.Helpers.Converter.StringConverter(System.String)">
+        <member name="M:FileCabinetApp.Helpers.Converters.StringConverter(System.String)">
             <summary>
             Converts a string to a string value type.
             </summary>
             <param name="name">The string value to convert.</param>
             <returns>A tuple containing information about the conversion result, the original string, and the converted value.</returns>
         </member>
-        <member name="M:FileCabinetApp.Helpers.Converter.DateConverter(System.String)">
+        <member name="M:FileCabinetApp.Helpers.Converters.DateConverter(System.String)">
             <summary>
             Converts a string to a DateTime value type.
             </summary>
             <param name="date">The string value to convert.</param>
             <returns>A tuple containing information about the conversion result, the original string, and the converted value.</returns>
         </member>
-        <member name="M:FileCabinetApp.Helpers.Converter.CharConverter(System.String)">
+        <member name="M:FileCabinetApp.Helpers.Converters.CharConverter(System.String)">
             <summary>
             Converts a string to a char value type.
             </summary>
             <param name="inputGender">The string value to convert.</param>
             <returns>A tuple containing information about the conversion result, the original string, and the converted value.</returns>
         </member>
-        <member name="M:FileCabinetApp.Helpers.Converter.ShortConverter(System.String)">
+        <member name="M:FileCabinetApp.Helpers.Converters.ShortConverter(System.String)">
             <summary>
             Converts a string to a short value type.
             </summary>
             <param name="inputHeight">The string value to convert.</param>
             <returns>A tuple containing information about the conversion result, the original string, and the converted value.</returns>
         </member>
-        <member name="M:FileCabinetApp.Helpers.Converter.DecimalConverter(System.String)">
+        <member name="M:FileCabinetApp.Helpers.Converters.DecimalConverter(System.String)">
             <summary>
             Converts a string to a decimal value type.
             </summary>
             <param name="inputWeight">The string value to convert.</param>
             <returns>A tuple containing information about the conversion result, the original string, and the converted value.</returns>
         </member>
-        <member name="M:FileCabinetApp.Helpers.Converter.IntConverter(System.String)">
+        <member name="M:FileCabinetApp.Helpers.Converters.IntConverter(System.String)">
             <summary>
             Converts a string to a int value type.
             </summary>

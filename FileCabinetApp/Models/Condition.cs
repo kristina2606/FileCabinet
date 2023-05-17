@@ -73,25 +73,25 @@ namespace FileCabinetApp.Models
             switch (condition.Field)
             {
                 case FileCabinetRecordFields.Id:
-                    condition.Value.Id = Converter.IntConverter(value).Item3;
+                    condition.Value.Id = Converters.IntConverter(value).Item3;
                     break;
                 case FileCabinetRecordFields.FirstName:
-                    condition.Value.FirstName = UserInputHelpers.Convert(Converter.StringConverter, inputValidation.ValidateFirstName, value);
+                    condition.Value.FirstName = UserInputHelpers.Convert(Converters.StringConverter, inputValidation.ValidateFirstName, value);
                     break;
                 case FileCabinetRecordFields.LastName:
-                    condition.Value.LastName = UserInputHelpers.Convert(Converter.StringConverter, inputValidation.ValidateLastName, value);
+                    condition.Value.LastName = UserInputHelpers.Convert(Converters.StringConverter, inputValidation.ValidateLastName, value);
                     break;
                 case FileCabinetRecordFields.DateOfBirth:
-                    condition.Value.DateOfBirth = UserInputHelpers.Convert(Converter.DateConverter, inputValidation.ValidateDateOfBirth, value);
+                    condition.Value.DateOfBirth = UserInputHelpers.Convert(Converters.DateConverter, inputValidation.ValidateDateOfBirth, value);
                     break;
                 case FileCabinetRecordFields.Gender:
-                    condition.Value.Gender = UserInputHelpers.Convert(Converter.CharConverter, inputValidation.ValidateGender, value);
+                    condition.Value.Gender = UserInputHelpers.Convert(Converters.CharConverter, inputValidation.ValidateGender, value);
                     break;
                 case FileCabinetRecordFields.Height:
-                    condition.Value.Height = UserInputHelpers.Convert(Converter.ShortConverter, inputValidation.ValidateHeight, value);
+                    condition.Value.Height = UserInputHelpers.Convert(Converters.ShortConverter, inputValidation.ValidateHeight, value);
                     break;
                 case FileCabinetRecordFields.Weight:
-                    condition.Value.Weight = UserInputHelpers.Convert(Converter.DecimalConverter, inputValidation.ValidateWeight, value);
+                    condition.Value.Weight = UserInputHelpers.Convert(Converters.DecimalConverter, inputValidation.ValidateWeight, value);
                     break;
                 default:
                     throw new ArgumentException($"Unknown search criteria: {condition.Field}");
